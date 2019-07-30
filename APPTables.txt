@@ -1,0 +1,17 @@
+CREATE TABLE Users (id integer PRIMARY KEY auto_increment, uName varchar(20) UNIQUE not null);
+
+CREATE TABLE Communities (id integer PRIMARY KEY auto_increment, cName varchar(20) UNIQUE not null);
+
+CREATE TABLE Roles (id integer PRIMARY KEY auto_increment, rName varchar(20) UNIQUE not null, aLevel integer not null);
+
+CREATE TABLE Events (id integer PRIMARY KEY auto_increment, eName varchar(30) not null, start DATE not null, end DATE not null, cID integer not null);
+
+CREATE TABLE RolesUsersCommunities (id integer PRIMARY KEY auto_increment, uID integer not null, cID integer not null, rID integer not null, dStart DATE not null, dEnd DATE not null);
+
+
+
+Criar o INDEX:
+CREATE UNIQUE INDEX ruc ON RolesUsersCommunities (uID, cID, rID);
+
+ruc= RolesUsersCommunities
+

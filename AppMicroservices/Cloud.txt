@@ -1,0 +1,32 @@
+Microservices
+https://en.wikipedia.org/wiki/Microservices
+
+Monolithic aplication
+https://blog.heptio.com/what-is-a-monolithic-application-e375f5ad5ecb
+
+Monolithic vs Microservices approach
+https://medium.com/@shivendraodean/software-architecture-the-monolithic-approach-b948ded8c333
+
+Moving monolithic apps (not re
+https://blog.heptio.com/moving-monolithic-apps-e8f7483938db
+
+Kubernetes
+https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/
+
+CI/CD
+https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment
+
+Videos on Microservices
+https://www.youtube.com/watch?v=hzOf41B-xtE&list=PLqq-6Pq4lTTZSKAFG6aCDVDP86Qx4lNas&index=12
+
+Videos on Microservices 2
+https://www.youtube.com/watch?v=o8RO38KbWvA&list=PLqq-6Pq4lTTbXZY_elyGv7IkKrfkSrX5e
+
+Design Patterns for Microservices
+https://dzone.com/articles/design-patterns-for-microservices
+
+Spring Boot
+https://www.youtube.com/watch?v=nXApK2xrgJk
+
+Apache Tomcat
+https://www.vogella.com/tutorials/ApacheTomcat/article.html#installation
