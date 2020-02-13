@@ -4,7 +4,8 @@ CREATE TABLE Communities (id integer PRIMARY KEY auto_increment, cName varchar(2
 
 CREATE TABLE Roles (id integer PRIMARY KEY auto_increment, rName varchar(20) UNIQUE not null, aLevel integer not null);
 
-CREATE TABLE Events (id integer PRIMARY KEY auto_increment, eName varchar(30) not null, start DATE not null, end DATE not null, cID integer not null);
+//Devia poder haver dois eventos com o mesmo nome?
+CREATE TABLE Events (id integer PRIMARY KEY auto_increment, eName varchar(30) UNIQUE not null, start DATE not null, end DATE not null, cID integer not null, cName varchar(20) not null);
 
 CREATE TABLE RolesUsersCommunities (id integer PRIMARY KEY auto_increment, uID integer not null, cID integer not null, rID integer not null, dStart DATE not null, dEnd DATE not null);
 
