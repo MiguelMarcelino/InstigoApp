@@ -16,3 +16,4 @@ CREATE UNIQUE INDEX ruc ON RolesUsersCommunities (uID, cID, rID);
 
 ruc= RolesUsersCommunities
 
+Date Format: %d-%c-%Y,%H:%i

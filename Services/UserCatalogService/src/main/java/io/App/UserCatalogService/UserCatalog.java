@@ -120,60 +120,7 @@ public class UserCatalog {
 			System.out.println(e);
 		}
 		return el;
-	}
-	
-	/**
-	 * Vai inserir na tabela RolesUsersCommunities --> Eh adicionado o id do
-	 * utilizador na tabela --> Na aplicacao vai ser disposta uma lista de
-	 * Communities das quais o utilizador vai poder escolher de quais quer receber
-	 * notificacoes. Quando escolher as communities o seu id sera adicionado a
-	 * tabela --> O utilizador tambem vai indicar o seu Role --> O utilizador indica
-	 * a data de inicio e a data de fom do seu role
-	 * 
-	 * @param c
-	 * @param r
-	 * @param dStart
-	 * @param dEnd
-	 */
-	public void addCommunity(User u, Community c, Role r, String dStart, String dEnd) {
-		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
-
-			// ir buscar o proximo id da tabela RolesUsersCommunities
-			GetId getid = new GetId();
-			int id = getid.getTableId(con, "RolesUtilCommunities", "RolesUsersCommunities");
-
-			Statement stmt = con.createStatement();
-			stmt.executeUpdate("INSERT INTO RolesUsersCommunities (id, uID, cID, rID, dStart, dEnd) VALUES (" + id + ","
-					+ u.getId() + "," + c.getId() + "," + r.getId() + ",TO_DATE(" + dStart + ", YYYY-MM-DD) "
-					+ ", TO_DATE(" + dEnd + ", YYYY-MM-DD))");
-
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
-	
-	public void removeCommunity(User u, Community c) {
-		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
-
-			PreparedStatement st = con
-					.prepareStatement("DELETE FROM RolesUsersCommunities WHERE cID = " + c.getId() + " AND uID = " + u.getId() + ";");
-			st.executeUpdate();
-
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
-	
+	}	
 
 	public boolean isRegistered(User u, String communityName) {
 		try {
@@ -200,6 +147,50 @@ public class UserCatalog {
 			System.out.println(e);
 		}
 		return false;
+	}
+	
+	public User getUserInfo(int uID) {
+		String uName = null;
+		Connection con = null;
+		ResultSet rs = null;
+		
+		try {
+			String timezone = "?serverTimezone=UTC";
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
+					"miguel", "M12345");
+
+			// ver se o Utilizador esta associado a uma dada communidade
+			Statement stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT uName FROM Users WHERE id = " + uID + ";");
+			
+			//get next value
+			rs.next();
+			uName = rs.getString(1);
+
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		User u = new User(uID, uName);
+		return u;
 	}
 	
 }

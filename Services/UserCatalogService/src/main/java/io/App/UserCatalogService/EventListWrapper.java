@@ -2,22 +2,23 @@ package io.App.UserCatalogService;
 
 import java.util.List;
 
-//Esta classe foi criada visto que no RegisterService o 
-//restTemplate.getForObject nao aceita listas
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EventListWrapper {
 
-	private List<Event> list;
-	
+    @JsonProperty("listEvents")
+    private List<Event> list;
+
+
     public EventListWrapper() {
-    	
+        //For REST Only
     }
 
-	public List<Event> getList() {
-		return list;
-	}
+    public List<Event> getList() {
+        return list;
+    }
 
-	public void setList(List<Event> someList) {
-		this.list = someList;
-	}
-
+    public void setList(List<Event> someList) {
+        this.list = someList;
+    }
 }

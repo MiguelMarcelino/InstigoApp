@@ -11,7 +11,7 @@ public class CommunityListWrapper {
 
 
     public CommunityListWrapper() {
-        // TODO Auto-generated constructor stub
+        // Empty constructor for REST
     }
 
     public List<Community> getList() {

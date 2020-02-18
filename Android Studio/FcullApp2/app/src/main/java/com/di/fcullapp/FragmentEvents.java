@@ -25,6 +25,9 @@ import java.util.concurrent.ExecutionException;
 
 public class FragmentEvents extends Fragment {
 
+    //For Testing Only!
+    private static final int testUserId = 1;
+
     TextView progressTextView;
     Context context;
     ListView eventListView;
@@ -87,7 +90,7 @@ public class FragmentEvents extends Fragment {
             EventListAdapter cA = null;
 
             try {
-                EventListWrapper eLW = rT.getForObject(url, EventListWrapper.class);        //check exception
+                EventListWrapper eLW = rT.getForObject(url, EventListWrapper.class);                //check exception
                 cA = new EventListAdapter(context, eLW.getList());
             } catch (ResourceAccessException e) {
                 return null;
@@ -109,7 +112,7 @@ public class FragmentEvents extends Fragment {
     }
 
     public void prepareEventAdapter () throws ExecutionException, InterruptedException {
-        final String url = "http://10.0.2.2:8084/eventCatalogList";
+        final String url = "http://10.0.2.2:8081/eventsFromSubbedCommunities/" + testUserId;
         FragmentEvents.RestGet rg = new FragmentEvents.RestGet();
         EventListAdapter cA = rg.execute(url).get();
         eventListView.setAdapter(cA);

@@ -15,6 +15,10 @@ public class User {
 	private int id;
 	private String name;
 	// password
+	
+	public User() {
+		//For REST only
+	}
 
 	/**
 	 * Existe um construtor so com o nome, visto que o id é atribuido ao user quando		//why?
