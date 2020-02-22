@@ -10,7 +10,7 @@ public class CommunityListWrapper {
 	private List<Community> list;
 	
     public CommunityListWrapper() {
-    	// Empty constructor for REST
+    	// For REST only
 	}
 
 	public List<Community> getList() {

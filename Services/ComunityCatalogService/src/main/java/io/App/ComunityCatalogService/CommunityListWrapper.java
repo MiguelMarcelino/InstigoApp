@@ -5,12 +5,12 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CommunityListWrapper {
-	
+
 	@JsonProperty("list")
 	private List<Community> list;
-	
-    public CommunityListWrapper() {
-		// TODO Auto-generated constructor stub
+
+	public CommunityListWrapper() {
+		// For REST only
 	}
 
 	public List<Community> getList() {

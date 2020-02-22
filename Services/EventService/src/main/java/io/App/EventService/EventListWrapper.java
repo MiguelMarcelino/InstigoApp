@@ -11,7 +11,7 @@ public class EventListWrapper {
 
 
     public EventListWrapper() {
-        // TODO Auto-generated constructor stub
+        // For REST only
     }
 
     public List<Event> getList() {

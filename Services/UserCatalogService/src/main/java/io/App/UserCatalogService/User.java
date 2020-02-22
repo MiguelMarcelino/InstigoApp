@@ -1,30 +1,20 @@
 package io.App.UserCatalogService;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.web.client.RestTemplate;
-
 public class User {
 
 	private int id;
 	private String name;
-	// password
-	
+	// seguranca tratada por API externa
+
 	public User() {
-		//For REST only
+		// For REST only
 	}
 
 	/**
-	 * Existe um construtor so com o nome, visto que o id é atribuido ao user quando		//why?
+	 * Existe um construtor so com o nome, visto que o id é atribuido ao user quando
 	 * ele eh introduzido na tabela
 	 * 
-	 * @param name - o nome do utilizador
+	 * @param name - name of teh User
 	 */
 	public User(String name) {
 		this.name = name;
@@ -34,8 +24,8 @@ public class User {
 	 * Existe tambem um construtor com id e name para quando queremos ir buscar os
 	 * Utilizadores a tabela de utilizadores, visto que ai eles ja incluem o id
 	 * 
-	 * @param id   - o id do utilizador
-	 * @param name - o nome do utilizador
+	 * @param id   - id of the user
+	 * @param name - name of the user
 	 */
 	public User(int id, String name) {
 		this.id = id;

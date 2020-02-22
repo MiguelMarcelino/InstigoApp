@@ -1,95 +1,184 @@
 package io.App.EventService;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@EnableAutoConfiguration
 public class EventCatalog {
 
+	private DatabaseConnection databaseConnection;
+
 	public EventCatalog() {
-		// TODO Auto-generated constructor stub
+		this.databaseConnection = new DatabaseConnection();
 	}
 
+	/**
+	 * 
+	 * @return a list of all events in the system
+	 */
 	public EventListWrapper getAllEvents() {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
+		ResultSet rs = null;
+		EventListWrapper eLW = new EventListWrapper();
 		List<Event> eventList = new ArrayList<Event>();
-		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
 
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM Events");
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Events");
 			while (rs.next()) {
 				Event event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
 						rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
 				eventList.add(event);
 			}
-
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		EventListWrapper eLW = new EventListWrapper();
+
 		eLW.setList(eventList);
 		return eLW;
 	}
 
-	@RequestMapping("/comEventList/{communityID}")
-	public EventListWrapper getEventsFromCommunity(@PathVariable("communityID") int id) {
+	/**
+	 * This method return all events from a community given its id
+	 * 
+	 * @param id - the id of the community
+	 * @return events from a community where cID = id
+	 */
+	public EventListWrapper getEventsFromCommunity(int id) {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
+		ResultSet rs = null;
 		EventListWrapper lW = new EventListWrapper();
 		List<Event> eventList = new ArrayList<Event>();
-		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
 
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM CommunityEvents WHERE (cID = " + id + ")");
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM CommunityEvents WHERE (cID = " + id + ")");
 			while (rs.next()) {
 				Event event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
 						rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
 				eventList.add(event);
 			}
-
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+
 		lW.setList(eventList);
 		return lW;
 	}
 
+	/**
+	 * This method register a new Event on the System
+	 * 
+	 * @param event - the event to register
+	 */
 	public void registerNewEvent(Event event) {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
+
 		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
+			stmt = con.createStatement();
+			stmt.executeUpdate("INSERT INTO Events (eName, start, end, cID, cName) VALUES ('" + event.getName()
+					+ "',STR_TO_DATE('" + event.getStart() + "', '%d-%c-%Y,%H:%i'), STR_TO_DATE('" + event.getEnd()
+					+ "', '%d-%c-%Y,%H:%i'), " + event.getId() + ", '" + event.getcName() + "')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
-			// ir buscar o proximo id do proximo Evento
-			GetId getid = new GetId();
-			int id = getid.getTableId(con, "RolesUtilCommunities", "Events");
+	}
 
-			Statement stmt = con.createStatement();
-			stmt.executeUpdate("INSERT INTO Events (id, eName, start, end, cID, cName) VALUES ( " + id + ", '"
-					+ event.getName() + "',STR_TO_DATE('" + event.getStart() + "', '%d-%c-%Y,%H:%i'), STR_TO_DATE('"
-					+ event.getEnd() + "', '%d-%c-%Y,%H:%i'), " + event.getId() + ", '" + event.getcName() + "')");
+	/**
+	 * This method deletes and event from the database
+	 * 
+	 * @param event - the event to delete
+	 */
+	public void deleteEvent(Event event) {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
 
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
+		try {
+			stmt = con.createStatement();
+			stmt.executeUpdate("DELETE FROM Events WHERE id = " + event.getId() + ";");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package io.App.RoleCatalogService;
 
-//--> cuidado: dEnd > dStart
 public class Role {
 
 	private int id;
@@ -16,6 +15,10 @@ public class Role {
 	public Role(String name, int authLevel) {
 		this.name = name;
 		this.authLevel = authLevel;
+	}
+	
+	public Role () {
+		//For REST only
 	}
 
 	public int getId() {

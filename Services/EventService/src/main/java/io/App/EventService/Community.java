@@ -1,7 +1,7 @@
 package io.App.EventService;
 
 public class Community {
-	
+
 	private int id;
 	private String name;
 
@@ -9,17 +9,25 @@ public class Community {
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	public Community() {
-		//For REST only
+		// For REST only
 	}
-	
+
 	public int getId() {
 		return id;
 	}
 
 	public String getName() {
 		return name;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

@@ -1,79 +1,146 @@
 package io.App.RoleCatalogService;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoleCatalog {
 
-	public RoleCatalog() {
+	private DatabaseConnection databaseConnection;
 
+	public RoleCatalog() {
+		databaseConnection = new DatabaseConnection();
 	}
 
-	public List<Role> getRoleList() {
+	/**
+	 * Tis method returns the list of Roles on the database
+	 * 
+	 * @return a list of roles
+	 */
+	public RoleListWrapper getRoleList() {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
+		ResultSet rs = null;
+		RoleListWrapper rLW = new RoleListWrapper();
 		List<Role> roleList = new ArrayList<Role>();
-		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
 
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM Roles;");
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Roles;");
 			while (rs.next()) {
 				Role role = new Role(rs.getInt(1), rs.getString(2), rs.getInt(3));
 				roleList.add(role);
 			}
-
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		return roleList;
+
+		rLW.setRoleList(roleList);
+		return rLW;
 	}
 
+	/**
+	 * This method adds a role to the database
+	 * 
+	 * @param role - the role to add
+	 */
 	public void addRole(Role role) {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement st = null;
+
 		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
-
-			// ir buscar o proximo id do proximo Role
-			GetId getid = new GetId();
-			int id = getid.getTableId(con, "RolesUtilCommunities", "Roles");
-
-			PreparedStatement st = con.prepareStatement("INSERT INTO Roles (id, rName, authLevel) VALUES (" + id + ",'"
-					+ role.getName() + "'," + role.getAuthLevel() + ");");
+			st = con.prepareStatement("INSERT INTO Roles (rName, authLevel) VALUES ('" + role.getName() + "',"
+					+ role.getAuthLevel() + ");");
 			st.executeUpdate();
-
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (st != null) {
+				try {
+					st.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+
 	}
 
+	/**
+	 * This method removes a role from the database
+	 * 
+	 * @param role - The role to remove
+	 */
 	public void removeRole(Role role) {
-		try {
-			String timezone = "?serverTimezone=UTC";
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/RolesUtilCommunities" + timezone,
-					"miguel", "M12345");
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement st1 = null;
+		PreparedStatement st2 = null;
 
-			PreparedStatement st1 = con.prepareStatement("DELETE FROM Roles WHERE id = " + role.getId() + ";");
+		try {
+			st1 = con.prepareStatement("DELETE FROM Roles WHERE id = " + role.getId() + ";");
 			st1.executeUpdate();
 
-			PreparedStatement st2 = con
-					.prepareStatement("DELETE FROM RolesUsersCommunities WHERE rID = " + role.getId() + ";");
+			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE rID = " + role.getId() + ";");
 			st2.executeUpdate();
 
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (st1 != null) {
+				try {
+					st1.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (st2 != null) {
+				try {
+					st2.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+
 	}
 }

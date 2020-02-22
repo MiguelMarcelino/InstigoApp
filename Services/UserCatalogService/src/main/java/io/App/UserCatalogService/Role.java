@@ -1,6 +1,5 @@
 package io.App.UserCatalogService;
 
-//--> cuidado: dEnd > dStart
 public class Role {
 
 	private int id;

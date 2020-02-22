@@ -1,0 +1,5 @@
+@RequestMapping(path = "registerNewEvent/event", method = RequestMethod.POST, consumes = "application/json") //Need to add @RequestBody 
+
+@RequestMapping("registerNewEvent/{cID}/{cName}/...") //Need to add @RequestBody 
+
+@PostMapping("registerNewEvent/event")
