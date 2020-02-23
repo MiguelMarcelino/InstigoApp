@@ -1,8 +1,12 @@
 package io.App.UserCatalogService;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class User {
 
+	@JsonProperty("id")
 	private int id;
+	@JsonProperty("name")
 	private String name;
 	// seguranca tratada por API externa
 

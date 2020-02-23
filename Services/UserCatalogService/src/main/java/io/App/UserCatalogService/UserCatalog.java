@@ -4,6 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class UserCatalog {
 
 	private DatabaseConnection databaseConnection;
@@ -105,7 +108,7 @@ public class UserCatalog {
 		PreparedStatement st2 = null;
 
 		try {
-			st1 = con.prepareStatement("DELETE FROM Users WHERE id = " + user.getId() + ";");
+			st1 = con.prepareStatement("DELETE FROM Users WHERE uID = " + user.getId() + ";");
 			st1.executeUpdate();
 
 			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE uID = " + user.getId() + ";");
@@ -139,57 +142,6 @@ public class UserCatalog {
 	}
 
 	/**
-	 * This method verifies if a user has subscribed to a given community
-	 * 
-	 * @param uID - the user to verify
-	 * @param cID - the community to verify if User u is registered to it
-	 * @return
-	 */
-	public boolean isRegistered(int uID, int cID) {
-		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
-		ResultSet rs = null;
-
-		// ver se o Utilizador esta associado a uma dada communidade
-		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(
-					"SELECT cID FROM RolesUtilCommunities WHERE cID = " + cID + " AND uID = " + uID + ";");
-
-			// rever isto
-			while (rs.next()) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * 
 	 * @param uID - Get user info based on user id
 	 * @return a user with all parameters from database
@@ -204,7 +156,7 @@ public class UserCatalog {
 		try {
 			// ver se o Utilizador esta associado a uma dada communidade
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT uName FROM Users WHERE id = " + uID + ";");
+			rs = stmt.executeQuery("SELECT uName FROM Users WHERE uID = " + uID + ";");
 
 			// get next value
 			rs.next();

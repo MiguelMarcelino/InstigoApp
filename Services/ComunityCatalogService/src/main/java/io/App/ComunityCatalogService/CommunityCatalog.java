@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class CommunityCatalog {
 
 	private DatabaseConnection databaseConnection;
@@ -110,7 +113,7 @@ public class CommunityCatalog {
 		PreparedStatement st2 = null;
 
 		try {
-			st1 = con.prepareStatement("DELETE FROM Communities WHERE id = " + community.getId());
+			st1 = con.prepareStatement("DELETE FROM Communities WHERE cID = " + community.getId());
 			st1.executeUpdate();
 
 			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE cID = " + community.getId() + ";");
@@ -158,7 +161,7 @@ public class CommunityCatalog {
 
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT cName FROM Communities WHERE id = " + id);
+			rs = stmt.executeQuery("SELECT cName FROM Communities WHERE cID = " + id);
 			c.setName(rs.getString(1));
 		} catch (SQLException e) {
 			e.printStackTrace();

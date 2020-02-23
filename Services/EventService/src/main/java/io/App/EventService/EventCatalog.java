@@ -7,6 +7,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class EventCatalog {
 
 	private DatabaseConnection databaseConnection;
@@ -79,7 +82,7 @@ public class EventCatalog {
 
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM CommunityEvents WHERE (cID = " + id + ")");
+			rs = stmt.executeQuery("SELECT * FROM Events WHERE (cID = " + id + ")");
 			while (rs.next()) {
 				Event event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
 						rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
@@ -161,7 +164,7 @@ public class EventCatalog {
 
 		try {
 			stmt = con.createStatement();
-			stmt.executeUpdate("DELETE FROM Events WHERE id = " + event.getId() + ";");
+			stmt.executeUpdate("DELETE FROM Events WHERE eID = " + event.getId() + ";");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

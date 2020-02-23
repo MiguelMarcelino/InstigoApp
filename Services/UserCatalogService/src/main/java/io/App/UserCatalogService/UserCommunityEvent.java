@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class UserCommunityEvent {
 
 	private DatabaseConnection databaseConnection;
@@ -32,8 +35,8 @@ public class UserCommunityEvent {
 
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Communities AS C WHERE (C.id = "
-					+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.id = RUC.cID " + "AND RUC.uID = " + uID
+			rs = stmt.executeQuery("SELECT * FROM Communities AS C WHERE (C.cID = "
+					+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.cID = RUC.cID " + "AND RUC.uID = " + uID
 					+ "));");
 			while (rs.next()) {
 				int cID = rs.getInt(1);
@@ -138,5 +141,56 @@ public class UserCommunityEvent {
 		eLW.setList(listEvents);
 
 		return eLW;
+	}
+
+	/**
+	 * This method verifies if a user has subscribed to a given community
+	 * 
+	 * @param uID - the user to verify
+	 * @param cID - the community to verify if User u is registered to it
+	 * @return
+	 */
+	public boolean isRegistered(int uID, int cID) {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
+		ResultSet rs = null;
+
+		// ver se o Utilizador esta associado a uma dada communidade
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(
+					"SELECT cID FROM RolesUsersCommunities WHERE cID = " + cID + " AND uID = " + uID + ";");
+
+			// rever isto
+			while (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return false;
 	}
 }

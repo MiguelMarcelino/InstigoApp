@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class RoleCatalog {
 
 	private DatabaseConnection databaseConnection;
@@ -110,7 +113,7 @@ public class RoleCatalog {
 		PreparedStatement st2 = null;
 
 		try {
-			st1 = con.prepareStatement("DELETE FROM Roles WHERE id = " + role.getId() + ";");
+			st1 = con.prepareStatement("DELETE FROM Roles WHERE rID = " + role.getId() + ";");
 			st1.executeUpdate();
 
 			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE rID = " + role.getId() + ";");

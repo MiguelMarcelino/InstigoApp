@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,8 +26,8 @@ public class UserCatalogController {
 		return uC.getUsers();
 	}
 
-	@PostMapping("addUser/user")
-	public void addUser(User user) {
+	@PostMapping(path="addUser/user", consumes= {"application/json"})
+	public void addUser(@RequestBody User user) {
 		uC.addUser(user);
 	}
 	
@@ -37,7 +38,7 @@ public class UserCatalogController {
 	
 	@RequestMapping("isRegistered/{uID}/{cID}")
 	public void isRegistered(@PathVariable("uID") int uID, @PathVariable("cID") int cID) {
-		uC.isRegistered(uID, cID);
+		uCE.isRegistered(uID, cID);
 	}
 	
 	@RequestMapping("getUserInfo/{uID}")
