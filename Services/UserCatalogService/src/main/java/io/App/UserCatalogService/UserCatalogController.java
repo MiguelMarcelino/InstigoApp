@@ -67,11 +67,7 @@ public class UserCatalogController {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		User user = new User(1, "Ola");
-		objectMapper.writeValue(new File("ola.txt"), user);
 		System.out.println(objectMapper.writeValueAsString(user));
-		//continue
-//		while
-//		os.write(b);
 	}
 	
 	@PostMapping("removeUser/user")
