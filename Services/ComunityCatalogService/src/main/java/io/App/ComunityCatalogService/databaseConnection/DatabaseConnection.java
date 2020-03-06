@@ -1,4 +1,4 @@
-package io.App.ComunityCatalogService;
+package io.App.ComunityCatalogService.databaseConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

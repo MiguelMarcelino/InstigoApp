@@ -1,8 +1,10 @@
-package io.App.ComunityCatalogService;
+package io.App.ComunityCatalogService.dto;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.App.ComunityCatalogService.Community;
 
 public class CommunityListWrapper {
 
