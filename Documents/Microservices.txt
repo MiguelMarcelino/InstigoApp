@@ -33,3 +33,6 @@ https://www.vogella.com/tutorials/ApacheTomcat/article.html#installation
 
 Backup Database Command
 sudo mysqldump -p RolesUtilCommunities > RolesUtilCommunities.sql
+
+Dependency Injection
+https://www.youtube.com/watch?v=Eqi-hYX50MI
