@@ -79,7 +79,7 @@ DROP TABLE IF EXISTS `Roles`;
 CREATE TABLE `Roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `rName` varchar(20) NOT NULL,
-  `aLevel` int(11) NOT NULL,
+  `operations` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rName` (`rName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

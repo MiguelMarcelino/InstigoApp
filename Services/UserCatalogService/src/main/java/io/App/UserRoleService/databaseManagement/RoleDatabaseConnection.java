@@ -1,4 +1,4 @@
-package io.App.RoleCatalogService;
+package io.App.UserRoleService.databaseManagement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,16 +6,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import io.App.UserRoleService.databaseManagement.DatabaseConnection;
+import io.App.UserRoleService.dto.RoleListWrapper;
+import io.App.UserRoleService.roleComponent.Operation;
+import io.App.UserRoleService.roleComponent.Role;
+
 @SpringBootApplication
-public class RoleCatalog {
+public class RoleDatabaseConnection {
 
 	private DatabaseConnection databaseConnection;
 
-	public RoleCatalog() {
+	public RoleDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
 	}
 
@@ -29,13 +33,26 @@ public class RoleCatalog {
 		Statement stmt = null;
 		ResultSet rs = null;
 		RoleListWrapper rLW = new RoleListWrapper();
-		List<Role> roleList = new ArrayList<Role>();
+		ArrayList<Role> roleList = new ArrayList<Role>();
 
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM Roles;");
 			while (rs.next()) {
-				Role role = new Role(rs.getInt(1), rs.getString(2), rs.getInt(3));
+				
+				/*
+				 * Operations in the database have the following format
+				 * opAuthLevel:opDescription;opAuthLevel:opDescription ...
+				 */
+				String allOpps = rs.getString(3);
+				String[] rest = allOpps.split(";");
+				ArrayList<Operation> operations = new ArrayList<Operation>();
+				String[] temp = null;
+				for (int i = 0; i < rest.length; i++) {
+					temp = rest[i].split(":");
+					operations.add(new Operation(Integer.parseInt(temp[0]), temp[1]));
+				}
+				Role role = new Role(rs.getInt(1), rs.getString(2), operations);
 				roleList.add(role);
 			}
 		} catch (SQLException e) {

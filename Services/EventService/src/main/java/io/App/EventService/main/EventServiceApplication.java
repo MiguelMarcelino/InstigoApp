@@ -1,14 +1,13 @@
-package io.App.RoleCatalogService;
+package io.App.EventService.main;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@Deprecated
 @SpringBootApplication
-public class RoleCatalogServiceApplication {
+public class EventServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RoleCatalogServiceApplication.class, args);
+		SpringApplication.run(EventServiceApplication.class, args);
 	}
 
 }
