@@ -1,3 +1,6 @@
+Spring initializr
+https://start.spring.io/
+
 Microservices
 https://en.wikipedia.org/wiki/Microservices
 
@@ -17,16 +20,16 @@ CI/CD
 https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment
 
 Videos on Microservices
-https://www.youtube.com/watch?v=hzOf41B-xtE&list=PLqq-6Pq4lTTZSKAFG6aCDVDP86Qx4lNas&index=12
+https://www.youtube.com/watch?v=y8IQb4ofjDo&list=PLqq-6Pq4lTTZSKAFG6aCDVDP86Qx4lNas&index=1
 
 Videos on Microservices 2
 https://www.youtube.com/watch?v=o8RO38KbWvA&list=PLqq-6Pq4lTTbXZY_elyGv7IkKrfkSrX5e
 
+Video on Spring Boot
+https://www.youtube.com/watch?v=nXApK2xrgJk
+
 Design Patterns for Microservices
 https://dzone.com/articles/design-patterns-for-microservices
-
-Spring Boot
-https://www.youtube.com/watch?v=nXApK2xrgJk
 
 Apache Tomcat
 https://www.vogella.com/tutorials/ApacheTomcat/article.html#installation
@@ -34,5 +37,16 @@ https://www.vogella.com/tutorials/ApacheTomcat/article.html#installation
 Backup Database Command
 sudo mysqldump -p RolesUtilCommunities > RolesUtilCommunities.sql
 
+HTTP statuses
+https://httpstatuses.com/
+
+Exceptions in REST
+https://dzone.com/articles/exception-handling-spring-rest
+
+Project Structure
+https://medium.com/the-resonant-web/spring-boot-2-0-project-structure-and-best-practices-part-2-7137bdcba7d3
+
+
+------------TODO------------
 Dependency Injection
 https://www.youtube.com/watch?v=Eqi-hYX50MI
