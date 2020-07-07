@@ -1,4 +1,4 @@
-package io.App.CommunityService.databaseConnection;
+package io.App.RoleCatalogService.databaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,39 +6,37 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.App.RoleCatalogService.dto.RoleListWrapper;
+import io.App.RoleCatalogService.roleComponent.Role;
 
-import io.App.CommunityService.communityComponent.Community;
-import io.App.CommunityService.dto.CommunityListWrapper;
-
-@SpringBootApplication
-public class CommunityDatabaseConnection {
+public class RoleDatabaseConnection {
 
 	private DatabaseConnection databaseConnection;
 
-	public CommunityDatabaseConnection() {
-		databaseConnection = new DatabaseConnection();
+	public RoleDatabaseConnection() {
+		this.databaseConnection = new DatabaseConnection();
 	}
 
 	/**
-	 * This method return a list of all communities found on the database
+	 * This method returns the list of Roles on the database
 	 * 
-	 * @return a list of all communities found on the database
+	 * @return a list of roles
 	 */
-	public CommunityListWrapper getCommunityDatabaseList() {
+	public RoleListWrapper getRoleDatabaseList() {
 		Connection con = databaseConnection.connectToDatabase();
-		ArrayList<Community> communityList = new ArrayList<Community>();
-		CommunityListWrapper cLW = new CommunityListWrapper();
 		Statement stmt = null;
 		ResultSet rs = null;
+		RoleListWrapper rLW = new RoleListWrapper();
+		List<Role> roleList = new ArrayList<Role>();
 
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Communities");
+			rs = stmt.executeQuery("SELECT * FROM Roles;");
 			while (rs.next()) {
-				Community community = new Community(rs.getInt(1), rs.getString(2));
-				communityList.add(community);
+				Role role = new Role(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(3));
+				roleList.add(role);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -64,24 +62,24 @@ public class CommunityDatabaseConnection {
 					e.printStackTrace();
 				}
 			}
-
 		}
 
-		cLW.setList(communityList);
-		return cLW;
+		rLW.setRoleList(roleList);
+		return rLW;
 	}
 
 	/**
-	 * This method adds a community to the Communities Database
+	 * This method adds a role to the database
 	 * 
-	 * @param community - the community to add
+	 * @param role - the role to add
 	 */
-	public void addCommunityToDatabase(Community community) {
+	public void addRoleToDatabase(Role role) {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 
 		try {
-			st = con.prepareStatement("INSERT INTO Communities (cName) VALUES ('" + community.getName() + "')");
+			st = con.prepareStatement("INSERT INTO Roles (rName, authLevel) VALUES ('" + role.getName() + "',"
+					+ role.getAuthLevel() + ");");
 			st.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -105,20 +103,20 @@ public class CommunityDatabaseConnection {
 	}
 
 	/**
-	 * This method remove a community from the Communities Database
+	 * This method removes a role from the database
 	 * 
-	 * @param community - the community to remove
+	 * @param role - The role to remove
 	 */
-	public void removeCommunityFromDatabase(Community community) {
+	public void removeRoleFromDatabase(Role role) {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st1 = null;
 		PreparedStatement st2 = null;
 
 		try {
-			st1 = con.prepareStatement("DELETE FROM Communities WHERE cID = " + community.getId());
+			st1 = con.prepareStatement("DELETE FROM Roles WHERE rID = " + role.getId() + ";");
 			st1.executeUpdate();
 
-			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE cID = " + community.getId() + ";");
+			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE rID = " + role.getId() + ";");
 			st2.executeUpdate();
 
 		} catch (SQLException e) {
@@ -149,22 +147,20 @@ public class CommunityDatabaseConnection {
 
 	}
 
-	/**
-	 * This method returns a community name given a community id
-	 * 
-	 * @param id - the id of the community to get the name
-	 * @return the name of the given community id
-	 */
-	public Community getCommunityById(int id) {
+	public Role getRoleByName(String name) {
 		Connection con = databaseConnection.connectToDatabase();
 		Statement stmt = null;
 		ResultSet rs = null;
-		Community c = null;
+		Role role = null;
 
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT cName FROM Communities WHERE cID = " + id);
-			c = new Community(id, rs.getString(1));
+			rs = stmt.executeQuery("SELECT r FROM Roles WHERE (rName =" + name + ");");
+
+			// get role
+			rs.next();
+			role = new Role(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(3));
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -191,8 +187,6 @@ public class CommunityDatabaseConnection {
 			}
 		}
 
-		return c;
-
+		return role;
 	}
-
 }

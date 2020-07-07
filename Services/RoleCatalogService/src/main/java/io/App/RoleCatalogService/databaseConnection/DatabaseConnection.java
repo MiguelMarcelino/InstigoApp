@@ -1,12 +1,13 @@
-package io.App.CommunityService.databaseConnection;
+package io.App.RoleCatalogService.databaseConnection;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * This Class was created for the purpose of facilitating changes to database
- * related data if needed
+ * This Class was created for the purpose of facilitating changes to the
+ * database address if needed
  */
 public class DatabaseConnection {
 

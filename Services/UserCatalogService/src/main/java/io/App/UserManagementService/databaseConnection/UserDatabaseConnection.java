@@ -1,4 +1,4 @@
-package io.App.CommunityService.databaseConnection;
+package io.App.UserManagementService.databaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,36 +9,36 @@ import java.util.ArrayList;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.App.CommunityService.communityComponent.Community;
-import io.App.CommunityService.dto.CommunityListWrapper;
+import io.App.UserManagementService.dto.UserListWrapper;
+import io.App.UserManagementService.userComponent.User;
 
 @SpringBootApplication
-public class CommunityDatabaseConnection {
+public class UserDatabaseConnection {
 
 	private DatabaseConnection databaseConnection;
 
-	public CommunityDatabaseConnection() {
+	public UserDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
 	}
 
 	/**
-	 * This method return a list of all communities found on the database
+	 * This method returns a list of registered users on the database
 	 * 
-	 * @return a list of all communities found on the database
+	 * @return List of users on the database
 	 */
-	public CommunityListWrapper getCommunityDatabaseList() {
+	public UserListWrapper getUsersFromDatabase() {
 		Connection con = databaseConnection.connectToDatabase();
-		ArrayList<Community> communityList = new ArrayList<Community>();
-		CommunityListWrapper cLW = new CommunityListWrapper();
 		Statement stmt = null;
 		ResultSet rs = null;
+		UserListWrapper uLW = new UserListWrapper();
+		ArrayList<User> userList = new ArrayList<User>();
 
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Communities");
+			rs = stmt.executeQuery("SELECT * FROM Users");
 			while (rs.next()) {
-				Community community = new Community(rs.getInt(1), rs.getString(2));
-				communityList.add(community);
+				User user = new User(rs.getInt(1), rs.getString(2));
+				userList.add(user);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -64,24 +64,23 @@ public class CommunityDatabaseConnection {
 					e.printStackTrace();
 				}
 			}
-
 		}
 
-		cLW.setList(communityList);
-		return cLW;
+		uLW.setList(userList);
+		return uLW;
 	}
 
 	/**
-	 * This method adds a community to the Communities Database
+	 * This method adds a user to the User database
 	 * 
-	 * @param community - the community to add
+	 * @param user - the user to add
 	 */
-	public void addCommunityToDatabase(Community community) {
+	public void addUser(User user) {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 
 		try {
-			st = con.prepareStatement("INSERT INTO Communities (cName) VALUES ('" + community.getName() + "')");
+			st = con.prepareStatement("INSERT INTO Users (uName) VALUES ('" + user.getName() + "')");
 			st.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -105,22 +104,21 @@ public class CommunityDatabaseConnection {
 	}
 
 	/**
-	 * This method remove a community from the Communities Database
+	 * This method removes a user from the User Database
 	 * 
-	 * @param community - the community to remove
+	 * @param user - the user to remove
 	 */
-	public void removeCommunityFromDatabase(Community community) {
+	public void removeUser(User user) {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st1 = null;
 		PreparedStatement st2 = null;
 
 		try {
-			st1 = con.prepareStatement("DELETE FROM Communities WHERE cID = " + community.getId());
+			st1 = con.prepareStatement("DELETE FROM Users WHERE uID = " + user.getId() + ";");
 			st1.executeUpdate();
 
-			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE cID = " + community.getId() + ";");
+			st2 = con.prepareStatement("DELETE FROM RolesUsersCommunities WHERE uID = " + user.getId() + ";");
 			st2.executeUpdate();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -150,23 +148,28 @@ public class CommunityDatabaseConnection {
 	}
 
 	/**
-	 * This method returns a community name given a community id
 	 * 
-	 * @param id - the id of the community to get the name
-	 * @return the name of the given community id
+	 * @param uID - Get user info based on user id
+	 * @return a user with all parameters from database
 	 */
-	public Community getCommunityById(int id) {
+	public User getUserInfo(int uID) {
 		Connection con = databaseConnection.connectToDatabase();
 		Statement stmt = null;
 		ResultSet rs = null;
-		Community c = null;
+		User u = null;
+		String uName = null;
 
 		try {
+			// ver se o Utilizador esta associado a uma dada communidade
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT cName FROM Communities WHERE cID = " + id);
-			c = new Community(id, rs.getString(1));
-		} catch (SQLException e) {
-			e.printStackTrace();
+			rs = stmt.executeQuery("SELECT uName FROM Users WHERE uID = " + uID + ";");
+
+			// get next value
+			rs.next();
+			uName = rs.getString(1);
+
+		} catch (Exception e) {
+			System.out.println(e);
 		} finally {
 			if (con != null) {
 				try {
@@ -191,8 +194,51 @@ public class CommunityDatabaseConnection {
 			}
 		}
 
-		return c;
+		u = new User(uID, uName);
+		return u;
+	}
+	
+	public User getUserByName(String name) {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
+		ResultSet rs = null;
+		User u = null;
 
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM Users WHERE uName = " + name + ";");
+
+			// get user
+			rs.next();
+			u = new User(rs.getInt(1), rs.getString(2));
+
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return u;
 	}
 
 }

@@ -26,13 +26,15 @@ CREATE TABLE Communities (
 	cName varchar(20) UNIQUE not null
 );
 
+-- ---------TODO---------
 CREATE TABLE Roles (
 	rID integer PRIMARY KEY auto_increment, 
-	rName varchar(20) UNIQUE not null, 
+	rName varchar(20) UNIQUE not null,
+	
 	aLevel integer not null
 );
+-- -----------------------
 
-/* Devia poder haver dois eventos com o mesmo nome? */
 CREATE TABLE Events (
 	id integer PRIMARY KEY auto_increment, 
 	eName varchar(50) UNIQUE not null, 

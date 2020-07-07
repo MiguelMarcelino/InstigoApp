@@ -1,60 +1,46 @@
 package io.App.EventService.EventComponent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.App.EventService.databaseConnection.EventDatabaseConnection;
 import io.App.EventService.dto.EventListWrapper;
+import io.App.EventService.exceptions.EventAlreadyExistsException;
+import io.App.EventService.exceptions.EventDoesNotExistException;
+import io.App.EventService.exceptions.NoEventsFromCommunityException;
 
 @SpringBootApplication
 public class EventCatalog {
 
 	private EventDatabaseConnection eDC;
-	private HashMap<Integer, Event> events;
 
 	public EventCatalog() {
-		events = new HashMap<Integer, Event>();
 		eDC = new EventDatabaseConnection();
-		ArrayList<Event> eventList = eDC.getAllEvents().getList();
-		for (int i = 0; i < eventList.size(); i++) {
-			events.put(eventList.get(i).getId(), eventList.get(i));
-		}
 	}
 
 	public EventListWrapper getAllEvents() {
-		EventListWrapper eLW = new EventListWrapper();
-		ArrayList<Event> eventList = new ArrayList<Event>(events.values());
-		eLW.setList(eventList);
+		return this.eDC.getAllEvents();
+	}
+
+	public EventListWrapper getEventsFromCommunity(int cID) throws NoEventsFromCommunityException {
+		EventListWrapper eLW = this.eDC.getEventsFromCommunity(cID);
+		if(eLW == null) {
+			throw new NoEventsFromCommunityException();
+		}
 		return eLW;
 	}
 
-	public EventListWrapper getEventsFromCommunity(int cID) {
-		EventListWrapper eLW = new EventListWrapper();
-		ArrayList<Event> eventsFromCommunity = new ArrayList<Event>();
-		ArrayList<Event> allEventList = new ArrayList<Event>(events.values());
-		for (int i = 0; i < allEventList.size(); i++) {
-			if (allEventList.get(i).getcID() == cID) {
-				eventsFromCommunity.add(allEventList.get(i));
-			}
+	public void registerNewEvent(Event event) throws EventAlreadyExistsException {
+		if(this.eDC.getEventByName(event.getName()) != null) {
+			throw new EventAlreadyExistsException();
 		}
-		eLW.setList(eventsFromCommunity);
-		return eLW;
+		this.eDC.registerNewEvent(event);
 	}
 
-	public void registerNewEvent(Event event) {
-		if (!events.containsKey(event.getId())) {
-			events.put(event.getId(), event);
-			eDC.registerNewEvent(event); 				// VER ISTO!
+	public void deleteEvent(Event event) throws EventDoesNotExistException {
+		if(this.eDC.getEventByName(event.getName()) == null) {
+			throw new EventDoesNotExistException();
 		}
-	}
-
-	public void deleteEvent(Event event) {
-		if (events.containsKey(event.getId())) {
-			events.remove(event.getId());
-			eDC.deleteEvent(event); 					// VER ISTO!
-		}
+		eDC.deleteEvent(event);
 	}
 
 }

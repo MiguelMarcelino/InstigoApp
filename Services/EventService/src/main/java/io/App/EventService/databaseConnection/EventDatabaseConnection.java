@@ -187,4 +187,38 @@ public class EventDatabaseConnection {
 			}
 		}
 	}
+
+	public Event getEventByName(String eName) {
+		Connection con = databaseConnection.connectToDatabase();
+		Statement stmt = null;
+		ResultSet rs = null;
+		Event event = null;
+
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT e FROM Events WHERE eName = " + eName + ";");
+			//get the event
+			rs.next();
+			event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
+					rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return event;
+	}
 }
