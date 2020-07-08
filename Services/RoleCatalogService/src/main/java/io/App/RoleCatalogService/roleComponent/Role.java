@@ -4,13 +4,13 @@ public class Role {
 
 	private int id;
 	private String name;
-	private String communityName;
+	private int communityID;
 	private int authLevel;
 
-	public Role(int id, String name, String communityName, int authLevel) {
+	public Role(int id, String name, int communityID, int authLevel) {
 		this.id = id;
 		this.name = name;
-		this.communityName = communityName;
+		this.communityID = communityID;
 		this.authLevel = authLevel;
 	}
 
@@ -22,8 +22,8 @@ public class Role {
 		return name;
 	}
 
-	public String getCommunityName() {
-		return communityName;
+	public int getCommunityID() {
+		return communityID;
 	}
 	
 	public int getAuthLevel() {

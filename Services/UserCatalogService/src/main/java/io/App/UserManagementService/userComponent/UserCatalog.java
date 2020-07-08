@@ -13,10 +13,19 @@ public class UserCatalog {
 		uDC = new UserDatabaseConnection();
 	}
 
+	/**
+	 * Get all users registered
+	 * @return
+	 */
 	public UserListWrapper getUsers() {
 		return uDC.getUsersFromDatabase();
 	}
 
+	/**
+	 * Add a user to the system
+	 * @param user - user to add
+	 * @throws UserAlreadyExistsException - in case the user already exists
+	 */
 	public void addUser(User user) throws UserAlreadyExistsException {
 		if(uDC.getUserByName(user.getName()) != null) {
 			throw new UserAlreadyExistsException();
@@ -24,6 +33,11 @@ public class UserCatalog {
 		uDC.addUser(user);
 	}
 
+	/**
+	 * Remove a user from the system
+	 * @param user - user to remove
+	 * @throws UserDoesNotExistException
+	 */
 	public void removeUser(User user) throws UserDoesNotExistException {
 		if(uDC.getUserByName(user.getName()) == null) {
 			throw new UserDoesNotExistException();

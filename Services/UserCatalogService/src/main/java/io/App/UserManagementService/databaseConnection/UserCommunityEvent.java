@@ -1,23 +1,32 @@
-package io.App.UserManagementService.userComponent;
+package io.App.UserManagementService.databaseConnection;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.App.UserManagementService.databaseConnection.DatabaseConnection;
 import io.App.UserManagementService.dto.CommunityListWrapper;
 import io.App.UserManagementService.dto.EventListWrapper;
+import io.App.UserManagementService.userComponent.Community;
+import io.App.UserManagementService.userComponent.Event;
 
 @SpringBootApplication
 public class UserCommunityEvent {
 
+	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
+
+	// SQL Queries
+	private static final String USER_SUBSCRIBED_COMMUNITIES_SQL = "SELECT * FROM Communities AS C WHERE (C.cID = "
+			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.cID = RUC.cID " + "AND RUC.uID = ?));";
+	private static final String EVENTS_FROM_SUBSCRIBED_COMMUNITIES_SQL = "SELECT * FROM Events AS E WHERE (E.cID = "
+			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE (RUC.cID = E.cID) AND (RUC.uID = ?)));";
+	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT cID FROM RolesUsersCommunities WHERE cID = ? AND uID = ?;";
 
 	public UserCommunityEvent() {
 		databaseConnection = new DatabaseConnection();
@@ -31,16 +40,15 @@ public class UserCommunityEvent {
 	 */
 	public CommunityListWrapper userSubCommunities(int uID) {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		CommunityListWrapper cLW = new CommunityListWrapper();
 		ArrayList<Community> lC = new ArrayList<Community>();
 
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Communities AS C WHERE (C.cID = "
-					+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.cID = RUC.cID " + "AND RUC.uID = " + uID
-					+ "));");
+			stmt = con.prepareStatement(USER_SUBSCRIBED_COMMUNITIES_SQL);
+			stmt.setInt(1, uID);
+			rs = stmt.executeQuery();
 			while (rs.next()) {
 				int cID = rs.getInt(1);
 				String cName = rs.getString(2);
@@ -86,16 +94,15 @@ public class UserCommunityEvent {
 	 */
 	public EventListWrapper eventsFromSubCommunities(int uID) {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		EventListWrapper eLW = new EventListWrapper();
 		ArrayList<Event> listEvents = new ArrayList<Event>();
 
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Events AS E WHERE (E.cID = "
-					+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE (RUC.cID = E.cID) AND " + "(RUC.uID = " + uID
-					+ ")));");
+			stmt = con.prepareStatement(EVENTS_FROM_SUBSCRIBED_COMMUNITIES_SQL);
+			stmt.setInt(1, uID);
+			rs = stmt.executeQuery();
 			while (rs.next()) {
 				int eID = rs.getInt(1);
 				String eName = rs.getString(2);
@@ -153,19 +160,19 @@ public class UserCommunityEvent {
 	 * @param cID - the community to verify if User u is registered to it
 	 * @return
 	 */
-	public boolean isRegistered(int uID, int cID) {
+	public boolean isRegisteredToCommunity(int uID, int cID) {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 
 		// ver se o Utilizador esta associado a uma dada communidade
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(
-					"SELECT cID FROM RolesUsersCommunities WHERE cID = " + cID + " AND uID = " + uID + ";");
+			stmt = con.prepareStatement(CHECK_USER_COMMUNITY_REGISTRATION_SQL);
+			stmt.setInt(1, cID);
+			stmt.setInt(2, uID);
 
-			// rever isto
-			while (rs.next()) {
+			rs = stmt.executeQuery();
+			if (rs.next()) {
 				return true;
 			}
 		} catch (SQLException e) {

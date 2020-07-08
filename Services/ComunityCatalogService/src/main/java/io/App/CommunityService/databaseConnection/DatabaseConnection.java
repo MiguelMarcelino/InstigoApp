@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 /**
  * This Class was created for the purpose of facilitating changes to database
- * related data if needed
+ * related data
  */
 public class DatabaseConnection {
 

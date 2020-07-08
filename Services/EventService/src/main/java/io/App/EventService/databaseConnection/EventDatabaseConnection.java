@@ -1,40 +1,45 @@
 package io.App.EventService.databaseConnection;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import io.App.EventService.EventComponent.Event;
-import io.App.EventService.databaseConnection.DatabaseConnection;
 import io.App.EventService.dto.EventListWrapper;
 
-@SpringBootApplication
 public class EventDatabaseConnection {
 
+	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
+
+	// SQL Queries
+	private static final String GET_ALL_EVENTS_SQL = "SELECT * FROM Events";
+	private static final String GET_EVENTS_FROM_COMMUNITY_SQL = "SELECT * FROM Events WHERE (cID = ?)";
+	private static final String REGISTER_NEW_EVENT_SQL = "INSERT INTO Events (eName, cID, cName, start, end) VALUES (?, ?, ?"
+			+ "STR_TO_DATE(?, '%d-%c-%Y,%H:%i'), STR_TO_DATE(?, '%d-%c-%Y,%H:%i'))";
+	private static final String DELETE_EVENT_SQL = "DELETE FROM Events WHERE eID =?;";
+	private static final String GET_EVENT_BY_NAME_SQL = "SELECT e FROM Events WHERE eName = ?;";
 
 	public EventDatabaseConnection() {
 		this.databaseConnection = new DatabaseConnection();
 	}
 
 	/**
-	 * 
-	 * @return a list of all events in the system
+	 * This method gets a list of all events in the database
+	 * @return - a list of all events in the system
 	 */
 	public EventListWrapper getAllEvents() {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		EventListWrapper eLW = new EventListWrapper();
 		ArrayList<Event> eventList = new ArrayList<Event>();
 
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Events");
+			stmt = con.prepareStatement(GET_ALL_EVENTS_SQL);
+			rs = stmt.executeQuery();
 			while (rs.next()) {
 				Event event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
 						rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
@@ -78,14 +83,15 @@ public class EventDatabaseConnection {
 	 */
 	public EventListWrapper getEventsFromCommunity(int id) {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		EventListWrapper lW = new EventListWrapper();
 		ArrayList<Event> eventList = new ArrayList<Event>();
 
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM Events WHERE (cID = " + id + ")");
+			stmt = con.prepareStatement(GET_EVENTS_FROM_COMMUNITY_SQL);
+			stmt.setInt(1, id);
+			rs = stmt.executeQuery();
 			while (rs.next()) {
 				Event event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
 						rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
@@ -128,13 +134,17 @@ public class EventDatabaseConnection {
 	 */
 	public void registerNewEvent(Event event) {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 
 		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate("INSERT INTO Events (eName, start, end, cID, cName) VALUES ('" + event.getName()
-					+ "',STR_TO_DATE('" + event.getStart() + "', '%d-%c-%Y,%H:%i'), STR_TO_DATE('" + event.getEnd()
-					+ "', '%d-%c-%Y,%H:%i'), " + event.getId() + ", '" + event.getcName() + "')");
+			stmt = con.prepareStatement(REGISTER_NEW_EVENT_SQL);
+			stmt.setString(1, event.getName());
+			stmt.setInt(2, event.getcID());
+			stmt.setString(3, event.getcName());
+			stmt.setString(4, event.getStart());
+			stmt.setString(5, event.getEnd());
+			stmt.executeUpdate();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -163,11 +173,12 @@ public class EventDatabaseConnection {
 	 */
 	public void deleteEvent(Event event) {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 
 		try {
-			stmt = con.createStatement();
-			stmt.executeUpdate("DELETE FROM Events WHERE eID = " + event.getId() + ";");
+			stmt = con.prepareStatement(DELETE_EVENT_SQL);
+			stmt.setInt(1, event.getId());
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -188,19 +199,27 @@ public class EventDatabaseConnection {
 		}
 	}
 
+	/**
+	 * Gets an event by name
+	 * 
+	 * @param eName - the name of the event to get
+	 * @return - the event with the given name
+	 */
 	public Event getEventByName(String eName) {
 		Connection con = databaseConnection.connectToDatabase();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Event event = null;
 
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT e FROM Events WHERE eName = " + eName + ";");
-			//get the event
+			stmt = con.prepareStatement(GET_EVENT_BY_NAME_SQL);
+			stmt.setString(1, eName);
+			rs = stmt.executeQuery();
+
+			// get the event
 			rs.next();
-			event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
-					rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
+			event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(), rs.getDate(4).toString(),
+					rs.getInt(5), rs.getString(6));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

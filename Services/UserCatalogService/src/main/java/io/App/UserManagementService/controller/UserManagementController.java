@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.App.UserManagementService.databaseConnection.UserCommunityEvent;
 import io.App.UserManagementService.dto.CommunityListWrapper;
 import io.App.UserManagementService.dto.EventListWrapper;
 import io.App.UserManagementService.dto.UserListWrapper;
@@ -24,7 +25,6 @@ import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
 import io.App.UserManagementService.userComponent.User;
 import io.App.UserManagementService.userComponent.UserCatalog;
-import io.App.UserManagementService.userComponent.UserCommunityEvent;
 
 @RestController
 @EnableAutoConfiguration
@@ -85,7 +85,7 @@ public class UserManagementController {
 
 	@RequestMapping("isRegistered/{uID}/{cID}")
 	public void isRegistered(@PathVariable("uID") int uID, @PathVariable("cID") int cID) {
-		uCE.isRegistered(uID, cID);
+		uCE.isRegisteredToCommunity(uID, cID);
 	}
 
 	@RequestMapping("getUserInfo/{uID}")
