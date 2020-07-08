@@ -46,6 +46,8 @@ https://dzone.com/articles/exception-handling-spring-rest
 Project Structure
 https://medium.com/the-resonant-web/spring-boot-2-0-project-structure-and-best-practices-part-2-7137bdcba7d3
 
+Changelog
+https://keepachangelog.com/en/1.0.0/
 
 ------------TODO------------
 Dependency Injection
