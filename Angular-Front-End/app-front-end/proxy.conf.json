@@ -1,0 +1,14 @@
+{
+    "/communityCatalogApi/*": {
+        "target": "http://localhost:8082",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    },
+    "/eventCatalogApi/*": {
+        "target": "http://localhost:8081",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
+}

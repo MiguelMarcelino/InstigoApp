@@ -20,24 +20,24 @@ public class CommunityCatalogController {
 	@Autowired
 	private CommunityCatalog cC;
 
-	@GetMapping(path = "/communityCatalogList")
+	@GetMapping(path = "/communities")
 	public CommunityListWrapper communityList() {
 		return this.cC.getCommunityList();
 	}
 
-	@PostMapping(path = "addCommunity/community", consumes = { "application/json" })
+	@PostMapping(path = "community/create", consumes = { "application/json" })
 	public void addCommunity(@RequestBody int cID, @RequestBody String cName) throws CommunityAlreadyExistsException {
 		Community c = new Community(cID, cName);
 		this.cC.addCommunity(c);
 	}
 
-	@PostMapping(path = "removeCommunity/community", consumes = { "application/json" })
+	@PostMapping(path = "community/delete", consumes = { "application/json" })
 	public void removeCommunity(@RequestBody int cID, @RequestBody String cName) throws CommunityDoesNotExistException {
 		Community c = new Community(cID, cName);
 		this.cC.removeCommunity(c);
 	}
 
-	@GetMapping(path = "/getCommunityById/{cID}")
+	@GetMapping(path = "/community/{cID}")
 	public CommunityDTO getCommunityById(@PathVariable("cID") int cID) throws CommunityDoesNotExistException {
 		Community c = this.cC.getCommunityById(cID);
 		CommunityDTO cDTO = new CommunityDTO(c.getId(), c.getName());
