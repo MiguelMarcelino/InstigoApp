@@ -31,17 +31,31 @@ public class CommunityCatalogController {
 	@Autowired
 	private CommunityCatalog cC;
 
+//	@GetMapping(path = "/communities")
+//	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
+//		CommunityListWrapper cLW = null;
+//		try {
+//			cLW = this.cC.getCommunityList();
+//		} catch (InternalAppException e) {
+//			System.err.println(e.getMessage());
+//			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+//					HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//		return new ResponseEntity<>(new Pair<>("Successfull request", cLW), HttpStatus.OK);
+//	}
+	
 	@GetMapping(path = "/communities")
-	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
+	public CommunityListWrapper communityList() {
 		CommunityListWrapper cLW = null;
 		try {
 			cLW = this.cC.getCommunityList();
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
+//			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+//					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(new Pair<>("Successfull request", cLW), HttpStatus.OK);
+//		return new ResponseEntity<>(new Pair<>("Successfull request", cLW), HttpStatus.OK);
+		return cLW;
 	}
 
 	@PostMapping(path = "/community/create", consumes = { "application/json" })

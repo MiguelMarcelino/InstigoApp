@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommunityModel } from 'src/app/models/community.model';
-import { CommunitiesService } from 'src/app/services/controllers/communities-controller.service.ts.service';
+import { CommunitiesService } from 'src/app/services/controllers/communities-controller.service';
 
 @Component({
   selector: 'app-communities-list',
