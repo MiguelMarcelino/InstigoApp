@@ -79,7 +79,7 @@ public class UserManagementController {
 	}
 
 	@PostMapping("removeUser/user")
-	public void removeUser(User user) throws UserDoesNotExistException {
+	public void removeUser(@RequestBody User user) throws UserDoesNotExistException {
 		uC.removeUser(user);
 	}
 

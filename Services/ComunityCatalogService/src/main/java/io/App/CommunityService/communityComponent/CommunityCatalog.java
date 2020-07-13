@@ -1,10 +1,13 @@
 package io.App.CommunityService.communityComponent;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import io.App.CommunityService.databaseConnection.CommunityDatabaseConnection;
 import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.exceptions.CommunityAlreadyExistsException;
-import io.App.CommunityService.exceptions.CommunityDoesNotExistException;
+import io.App.CommunityService.exceptions.InternalAppException;
 
+@SpringBootApplication
 public class CommunityCatalog {
 
 	private CommunityDatabaseConnection cDC;
@@ -13,31 +16,25 @@ public class CommunityCatalog {
 		cDC = new CommunityDatabaseConnection();
 	}
 
-	public CommunityListWrapper getCommunityList() {
+	public CommunityListWrapper getCommunityList() throws InternalAppException {
 		return cDC.getCommunityDatabaseList();
 	}
 
-	public void addCommunity(Community c) throws CommunityAlreadyExistsException {
-		if (this.cDC.getCommunityById(c.getId()) == null) {
-			cDC.addCommunityToDatabase(c);
-		} else {
-			throw new CommunityAlreadyExistsException();
-		}
+	public void addCommunity(Community c) throws CommunityAlreadyExistsException, InternalAppException {
+		cDC.addCommunityToDatabase(c);
 	}
 
-	public void removeCommunity(Community c) throws CommunityDoesNotExistException {
-		if (this.cDC.getCommunityById(c.getId()) != null) {
-			cDC.removeCommunityFromDatabase(c);
-		} else {
-			throw new CommunityDoesNotExistException();
-		}
+	public void removeCommunity(Community c) throws InternalAppException {
+		cDC.removeCommunityFromDatabase(c);
 	}
 
-	public Community getCommunityById(int cID) throws CommunityDoesNotExistException {
+	public Community getCommunityById(int cID) throws InternalAppException {
 		Community community = cDC.getCommunityById(cID);
-		if (community == null) {
-			throw new CommunityDoesNotExistException();
-		}
+		return community;
+	}
+
+	public Community getCommunityByName(String cName) throws InternalAppException {
+		Community community = cDC.getCommunityByName(cName);
 		return community;
 	}
 

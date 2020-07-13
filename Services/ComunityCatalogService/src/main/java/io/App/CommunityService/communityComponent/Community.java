@@ -10,9 +10,14 @@ public class Community {
 		this.name = name;
 	}
 
+	public Community(String name) {
+		this.name = name;
+	}
+
 	public Community() {
 		// For REST only
 	}
+
 
 	public int getId() {
 		return id;
