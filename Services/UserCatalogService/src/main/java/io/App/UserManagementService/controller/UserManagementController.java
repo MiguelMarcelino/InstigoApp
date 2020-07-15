@@ -7,6 +7,9 @@ import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +20,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.App.UserManagementService.dto.Pair;
+import io.App.UserManagementService.dto.UserDTO;
 import io.App.UserManagementService.databaseConnection.UserCommunityEvent;
 import io.App.UserManagementService.dto.CommunityListWrapper;
 import io.App.UserManagementService.dto.EventListWrapper;
@@ -28,6 +33,7 @@ import io.App.UserManagementService.userComponent.UserCatalog;
 
 @RestController
 @EnableAutoConfiguration
+@RequestMapping("/userCatalogApi")
 public class UserManagementController {
 
 	@Autowired
@@ -39,27 +45,39 @@ public class UserManagementController {
 		// Empty constructor
 	}
 
-	@RequestMapping("/userCatalogList")
+	@GetMapping(path = "/users")
 	public UserListWrapper userList() {
 		return uC.getUsers();
 	}
 
 	@PostMapping(path = "addUser", consumes = { "application/json" })
-	public void addUser(@RequestBody String userJSON) throws UserAlreadyExistsException {
+	public ResponseEntity<Pair<String, UserDTO>> addUser(@RequestBody String userJSON) throws UserAlreadyExistsException {
 		System.out.println(userJSON);
 		ObjectMapper objectMapper = new ObjectMapper();
 		User user = null;
 		try {
 			user = objectMapper.readValue(userJSON, User.class);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		uC.addUser(user);
+		UserDTO uDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO), HttpStatus.OK);
 	}
+
+	// Update User
+	
+	// Login User
 
 	/*
 	 * VER ISTO!
@@ -74,7 +92,7 @@ public class UserManagementController {
 		OutputStream os = conn.getOutputStream();
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		User user = new User(1, "Ola");
+		User user = new User(1, "Ola", "test@test.com", "password");
 		System.out.println(objectMapper.writeValueAsString(user));
 	}
 

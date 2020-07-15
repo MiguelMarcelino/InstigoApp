@@ -18,44 +18,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.App.CommunityService.communityComponent.Community;
 import io.App.CommunityService.communityComponent.CommunityCatalog;
-import io.App.CommunityService.communityComponent.Pair;
 import io.App.CommunityService.dto.CommunityDTO;
 import io.App.CommunityService.dto.CommunityListWrapper;
+import io.App.CommunityService.dto.Pair;
 import io.App.CommunityService.exceptions.CommunityAlreadyExistsException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
 @RestController
-@RequestMapping("/communityCatalog")
+@RequestMapping("/communityCatalogApi")
 public class CommunityCatalogController {
 
 	@Autowired
 	private CommunityCatalog cC;
 
-//	@GetMapping(path = "/communities")
-//	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
-//		CommunityListWrapper cLW = null;
-//		try {
-//			cLW = this.cC.getCommunityList();
-//		} catch (InternalAppException e) {
-//			System.err.println(e.getMessage());
-//			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
-//					HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//		return new ResponseEntity<>(new Pair<>("Successfull request", cLW), HttpStatus.OK);
-//	}
-	
 	@GetMapping(path = "/communities")
-	public CommunityListWrapper communityList() {
+	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
 		CommunityListWrapper cLW = null;
 		try {
 			cLW = this.cC.getCommunityList();
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
-//			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
-//					HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-//		return new ResponseEntity<>(new Pair<>("Successfull request", cLW), HttpStatus.OK);
-		return cLW;
+		return new ResponseEntity<>(new Pair<>("Successfull request", cLW), HttpStatus.OK);
 	}
 
 	@PostMapping(path = "/community/create", consumes = { "application/json" })
@@ -122,7 +108,7 @@ public class CommunityCatalogController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null), HttpStatus.CONFLICT);
 		}
-		CommunityDTO cDTO = new CommunityDTO(c.getId(), c.getName());
+		CommunityDTO cDTO = new CommunityDTO(c.getId(), c.getName(), c.getDescription());
 		return new ResponseEntity<>(new Pair<>("Successfull request", cDTO), HttpStatus.OK);
 	}
 

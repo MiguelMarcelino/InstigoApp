@@ -22,7 +22,7 @@ export class CommunitiesListComponent implements OnInit {
 
   getCommunityList(): void {
     this.communitiesService.getAll().subscribe((communitiesList) => {
-      this.communities = communitiesList;
+      this.communities = communitiesList.second.list;
     })
   }
 }

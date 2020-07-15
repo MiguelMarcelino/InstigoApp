@@ -12,10 +12,13 @@ public class CommunityDTO implements Serializable{
 	private int cID;
 	@JsonProperty("cName")
 	private String cName;
+	@JsonProperty("description")
+	private String description;
 	
-	public CommunityDTO(int id, String name) {
+	public CommunityDTO(int id, String name, String description) {
 		this.cID = id;
 		this.cName = name;
+		this.description = description;
 	}
 
 	public CommunityDTO(String name) {
@@ -32,6 +35,10 @@ public class CommunityDTO implements Serializable{
 
 	public String getName() {
 		return cName;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 
 }

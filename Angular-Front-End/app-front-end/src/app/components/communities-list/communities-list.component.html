@@ -1,6 +1,11 @@
 
 <h2>Communities</h2>
 
-<div *ngFor="let community of communities">
-    <p>{{community.name}}</p>
+<div class="floating-card" *ngFor="let community of communities">
+    <div class="name-left">
+        <p>{{community.name}}</p>
+    </div>
+    <div class="description-right">
+        <p>{{community.description}}</p>
+    </div>
 </div>

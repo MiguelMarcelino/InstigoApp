@@ -19,7 +19,7 @@ public class CommunityDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT * FROM Communities";
+	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT * FROM Communities WHERE cID > 3";
 	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO Communities (cName) VALUES (?)";
 	private static final String DELETE_COMMUNITY_SQL = "DELETE FROM Communities WHERE cName = ?";
 	// private static final String DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL =
@@ -47,7 +47,7 @@ public class CommunityDatabaseConnection {
 			stmt = con.prepareStatement(GET_ALL_COMMUNITIES_SQL);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Community community = new Community(rs.getInt(1), rs.getString(2));
+				Community community = new Community(rs.getInt(1), rs.getString(2), rs.getString(3));
 				communityList.add(community);
 			}
 		} catch (SQLException e) {
@@ -194,7 +194,7 @@ public class CommunityDatabaseConnection {
 			stmt.setInt(1, id);
 			rs = stmt.executeQuery();
 			rs.next();
-			c = new Community(rs.getInt(1), rs.getString(2));
+			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3));
 		} catch (SQLException e) {
 			// TODO Review this
 			System.err.println(e.getMessage());
@@ -239,7 +239,7 @@ public class CommunityDatabaseConnection {
 			stmt.setString(1, cName);
 			rs = stmt.executeQuery();
 			rs.next();
-			c = new Community(rs.getInt(1), rs.getString(2));
+			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3));
 		} catch (SQLException e) {
 			// TODO Review this
 			System.err.println(e.getMessage());

@@ -1,10 +1,13 @@
 package io.App.UserManagementService.userComponent;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import io.App.UserManagementService.databaseConnection.UserDatabaseConnection;
 import io.App.UserManagementService.dto.UserListWrapper;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
 
+@SpringBootApplication
 public class UserCatalog {
 
 	private UserDatabaseConnection uDC;

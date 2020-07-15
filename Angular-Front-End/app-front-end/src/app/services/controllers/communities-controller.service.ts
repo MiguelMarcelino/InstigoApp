@@ -14,7 +14,7 @@ export class CommunitiesService extends TemplateControllerService<CommunityModel
     super(http);
   }
 
-  private communitiesUrl = '/communityCatalogApi/communityCatalog/communities';
+  private communitiesUrl = '/communityCatalogApi/communities';
   private getCommunityById = '/communityCatalogApi/community/';
 
   // Abstract class methods

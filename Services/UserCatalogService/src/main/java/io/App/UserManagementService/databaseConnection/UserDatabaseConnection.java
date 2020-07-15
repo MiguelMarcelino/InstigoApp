@@ -45,7 +45,7 @@ public class UserDatabaseConnection {
 			st = con.prepareStatement(GET_ALL_USERS_SQL);
 			rs = st.executeQuery();
 			while (rs.next()) {
-				User user = new User(rs.getInt(1), rs.getString(2));
+				User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 				userList.add(user);
 			}
 		} catch (SQLException e) {
@@ -205,6 +205,8 @@ public class UserDatabaseConnection {
 		ResultSet rs = null;
 		User u = null;
 		String uName = null;
+		String uEmail = null;
+		String uPassword = null;
 
 		try {
 			// ver se o Utilizador esta associado a uma dada communidade
@@ -214,7 +216,9 @@ public class UserDatabaseConnection {
 
 			// get next value
 			rs.next();
-			uName = rs.getString(1);
+			uName = rs.getString(2);
+			uEmail = rs.getString(3);
+			uPassword = rs.getString(4);
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -242,7 +246,7 @@ public class UserDatabaseConnection {
 			}
 		}
 
-		u = new User(uID, uName);
+		u = new User(uID, uName, uEmail, uPassword);
 		return u;
 	}
 
@@ -259,7 +263,7 @@ public class UserDatabaseConnection {
 
 			// get user
 			rs.next();
-			u = new User(rs.getInt(1), rs.getString(2));
+			u = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 
 		} catch (Exception e) {
 			System.out.println(e);

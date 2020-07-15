@@ -1,4 +1,4 @@
-package io.App.CommunityService.communityComponent;
+package io.App.CommunityService.dto;
 
 import java.io.Serializable;
 

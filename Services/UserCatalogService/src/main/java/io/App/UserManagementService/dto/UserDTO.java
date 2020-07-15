@@ -1,13 +1,19 @@
-package io.App.UserManagementService.userComponent;
+package io.App.UserManagementService.dto;
 
-public class User {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class UserDTO {
+
+	@JsonProperty("id")
 	private int id;
+	@JsonProperty("name")
 	private String name;
+	@JsonProperty("email")
 	private String email;
+	@JsonProperty("password")
 	private String password;
 
-	public User() {
+	public UserDTO() {
 		// For REST only
 	}
 
@@ -18,7 +24,7 @@ public class User {
 	 * @param name
 	 *            - name of the user
 	 */
-	public User(int id, String name, String email, String password) {
+	public UserDTO(int id, String name, String email, String password) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
@@ -40,5 +46,4 @@ public class User {
 	public String getPassword() {
 		return password;
 	}
-
 }

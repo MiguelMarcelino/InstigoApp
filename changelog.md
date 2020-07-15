@@ -3,6 +3,32 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.2] - 2020-07-15
+### Changed
+- Login Page was changed. Now trying to do login with simple mysql database
+- User Service updated. 
+- Continued working on User Component. Signup still not working
+- Finished working on database. Everything now working
+
+
+## [0.1.2] - 2020-07-14
+### Changed
+- Testing with community Component in Angular
+- Changed Database Structure
+
+
+## [0.1.2] - 2020-07-13
+### Added
+- New Angular Interface
+- Login Page for login with firebase
+- Working Communities Page 
+- Prepared bootstrap navbar
+- Added new home page component 
+
+### Changed
+- Completed Community Service. Everything is now working (tested with Postman)
+
+
 ## [0.1.2] - 2020-07-08
 ### Added
 - Creation of a general community where all users belong to called "ALL_USER_COMMUNITY"
