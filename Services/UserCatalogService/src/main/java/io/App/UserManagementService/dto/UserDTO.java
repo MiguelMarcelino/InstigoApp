@@ -1,17 +1,31 @@
 package io.App.UserManagementService.dto;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserDTO {
+public class UserDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("id")
 	private int id;
+
 	@JsonProperty("name")
 	private String name;
+
+	@JsonProperty("firstName")
+	private String firstName;
+
+	@JsonProperty("lastName")
+	private String lastName;
+
 	@JsonProperty("email")
 	private String email;
-	@JsonProperty("password")
-	private String password;
+
+	@JsonProperty("dateLogin")
+	private Date dateLogin;
 
 	public UserDTO() {
 		// For REST only
@@ -19,16 +33,17 @@ public class UserDTO {
 
 	/**
 	 * 
-	 * @param id
-	 *            - id of the user
-	 * @param name
-	 *            - name of the user
+	 * @param id - id of the user
+	 * @param name - name of the user
 	 */
-	public UserDTO(int id, String name, String email, String password) {
+	public UserDTO(int id, String name, String firstName, String lastName,
+			String email, Date dateLogin) {
 		this.id = id;
 		this.name = name;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
-		this.password = password;
+		this.dateLogin = dateLogin;
 	}
 
 	public int getId() {
@@ -43,7 +58,15 @@ public class UserDTO {
 		return this.email;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public Date getDateLogin() {
+		return dateLogin;
 	}
 }

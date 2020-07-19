@@ -5,10 +5,13 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import io.App.UserManagementService.dto.UserListWrapper;
+import io.App.UserManagementService.exceptions.InternalAppException;
+import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.userComponent.User;
 
 public class UserDatabaseConnection {
@@ -18,7 +21,7 @@ public class UserDatabaseConnection {
 
 	// SQL Queries
 	private static final String GET_ALL_USERS_SQL = "SELECT * FROM Users";
-	private static final String INSERT_USER_SQL = "INSERT INTO Users (uName) VALUES (?)";
+	private static final String INSERT_USER_SQL = "INSERT INTO Users (uName, firstName, lastName, uEmail, uPassword) VALUES (?, ?, ?, ?, ?)";
 	private static final String ADD_USER_ROLE_AND_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities VALUES (?, ?, ?, ?, ?)";
 	private static final String DELETE_USER_FROM_USER_TABLE_SQL = "DELETE FROM Users WHERE uID = ?;";
 	private static final String DELETE_USER_FROM_ROLESUSERSCOMMUNITIES_SQL = "DELETE FROM RolesUsersCommunities WHERE uID = ?;";
@@ -45,7 +48,9 @@ public class UserDatabaseConnection {
 			st = con.prepareStatement(GET_ALL_USERS_SQL);
 			rs = st.executeQuery();
 			while (rs.next()) {
-				User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				User user = new User(rs.getInt(1), rs.getString(2),
+						rs.getString(3), rs.getString(4), rs.getString(5),
+						rs.getString(6));
 				userList.add(user);
 			}
 		} catch (SQLException e) {
@@ -82,8 +87,11 @@ public class UserDatabaseConnection {
 	 * This method adds a user to the User database
 	 * 
 	 * @param user - the user to add
+	 * @throws UserAlreadyExistsException
+	 * @throws InternalAppException
 	 */
-	public void addUser(User user) {
+	public void addUser(User user)
+			throws UserAlreadyExistsException, InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		PreparedStatement st2 = null;
@@ -92,6 +100,10 @@ public class UserDatabaseConnection {
 		try {
 			st = con.prepareStatement(INSERT_USER_SQL);
 			st.setString(1, user.getName());
+			st.setString(2, user.getFirstName());
+			st.setString(2, user.getLastName());
+			st.setString(2, user.getEmail());
+			st.setString(2, user.getPassword());
 			st.executeUpdate();
 
 			// Get newly generated id
@@ -99,9 +111,11 @@ public class UserDatabaseConnection {
 			rs.next();
 			int newUserID = rs.getInt(1);
 
-			// Insert user into "ALL_USER_COMMUNITY" (cID=1) community with "DEFAULT_ROLE"
+			// Insert user into "ALL_USER_COMMUNITY" (cID=1) community with
+			// "DEFAULT_ROLE"
 			// (rID=1)
-			// default role time will be 1 year. After that it will have to be renewed
+			// default role time will be 1 year. After that it will have to be
+			// renewed
 			int cID = 1;
 			int rID = 1;
 			LocalDate dateStart = LocalDate.now();
@@ -113,8 +127,11 @@ public class UserDatabaseConnection {
 			st2.setDate(4, Date.valueOf(dateStart));
 			st2.setDate(5, Date.valueOf(dateEnd));
 			st2.executeUpdate();
+		} catch (SQLIntegrityConstraintViolationException e) {
+			throw new UserAlreadyExistsException();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -152,8 +169,9 @@ public class UserDatabaseConnection {
 	 * This method removes a user from the User Database
 	 * 
 	 * @param user - the user to remove
+	 * @throws InternalAppException
 	 */
-	public void removeUser(User user) {
+	public void removeUser(User user) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st1 = null;
 		PreparedStatement st2 = null;
@@ -163,11 +181,13 @@ public class UserDatabaseConnection {
 			st1.setInt(1, user.getId());
 			st1.executeUpdate();
 
-			st2 = con.prepareStatement(DELETE_USER_FROM_ROLESUSERSCOMMUNITIES_SQL);
+			st2 = con.prepareStatement(
+					DELETE_USER_FROM_ROLESUSERSCOMMUNITIES_SQL);
 			st2.setInt(1, user.getId());
 			st2.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -198,13 +218,16 @@ public class UserDatabaseConnection {
 	 * 
 	 * @param uID - Get user info based on user id
 	 * @return a user with all parameters from database
+	 * @throws InternalAppException
 	 */
-	public User getUserInfo(int uID) {
+	public User getUserInfo(int uID) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		User u = null;
 		String uName = null;
+		String uFirstName = null;
+		String uLastName = null;
 		String uEmail = null;
 		String uPassword = null;
 
@@ -217,11 +240,14 @@ public class UserDatabaseConnection {
 			// get next value
 			rs.next();
 			uName = rs.getString(2);
-			uEmail = rs.getString(3);
-			uPassword = rs.getString(4);
+			uFirstName = rs.getString(3);
+			uLastName = rs.getString(4);
+			uEmail = rs.getString(5);
+			uPassword = rs.getString(6);
 
 		} catch (Exception e) {
-			System.out.println(e);
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -246,11 +272,17 @@ public class UserDatabaseConnection {
 			}
 		}
 
-		u = new User(uID, uName, uEmail, uPassword);
+		u = new User(uID, uName, uFirstName, uLastName, uEmail, uPassword);
 		return u;
 	}
 
-	public User getUserByName(String name) {
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 * @throws InternalAppException
+	 */
+	public User getUserByName(String name) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
@@ -263,10 +295,12 @@ public class UserDatabaseConnection {
 
 			// get user
 			rs.next();
-			u = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+			u = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
+					rs.getString(4), rs.getString(5), rs.getString(6));
 
 		} catch (Exception e) {
-			System.out.println(e);
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {

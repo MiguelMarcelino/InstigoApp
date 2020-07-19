@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "startSSL": "ng serve --ssl true --ssl-cert ssl/server.cr --ssl-key ssl/server.key --proxy-config proxy.conf.json",
+    "startApp": "ng serve --proxy-config proxy.conf.json"
   },
   "private": true,
   "dependencies": {

@@ -1,9 +1,7 @@
 package io.App.UserManagementService.controller;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -20,14 +18,15 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.UserManagementService.dto.Pair;
-import io.App.UserManagementService.dto.UserDTO;
 import io.App.UserManagementService.databaseConnection.UserCommunityEvent;
 import io.App.UserManagementService.dto.CommunityListWrapper;
 import io.App.UserManagementService.dto.EventListWrapper;
+import io.App.UserManagementService.dto.Pair;
+import io.App.UserManagementService.dto.UserDTO;
 import io.App.UserManagementService.dto.UserListWrapper;
+import io.App.UserManagementService.dto.UserLoginModel;
+import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
-import io.App.UserManagementService.exceptions.UserDoesNotExistException;
 import io.App.UserManagementService.userComponent.User;
 import io.App.UserManagementService.userComponent.UserCatalog;
 
@@ -51,58 +50,130 @@ public class UserManagementController {
 	}
 
 	@PostMapping(path = "addUser", consumes = { "application/json" })
-	public ResponseEntity<Pair<String, UserDTO>> addUser(@RequestBody String userJSON) throws UserAlreadyExistsException {
-		System.out.println(userJSON);
+	public ResponseEntity<String> addUser(@RequestBody String userJSON)
+			throws UserAlreadyExistsException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		User user = null;
 		try {
 			user = objectMapper.readValue(userJSON, User.class);
+
+			uC.addUser(user);
 		} catch (JsonParseException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+			return new ResponseEntity<>("Internal Application Error",
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (JsonMappingException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+			return new ResponseEntity<>("Internal Application Error",
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
+			return new ResponseEntity<>("Internal Application Error",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		uC.addUser(user);
-		UserDTO uDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
-		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO), HttpStatus.OK);
+		System.out.println("Successfully added new User");
+		return new ResponseEntity<>("Successfully added new User",
+				HttpStatus.OK);
+	}
+
+	@PostMapping(path = "login", consumes = { "application/json" })
+	public ResponseEntity<Pair<String, UserDTO>> loginUser(
+			@RequestBody String userModelJSON) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		UserLoginModel uMD = null;
+		User user = null;
+		try {
+			uMD = objectMapper.readValue(userModelJSON, UserLoginModel.class);
+
+			// check User information
+			user = uC.getUserByName(uMD.getuName());
+			if (user.getPassword() != uMD.getPassword()) {
+				return new ResponseEntity<>(new Pair<>(
+						"The inserted password doesn't match that users password",
+						null), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (JsonParseException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(
+					new Pair<>("Internal Application Error", null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (JsonMappingException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(
+					new Pair<>("Internal Application Error", null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(
+					new Pair<>("Internal Application Error", null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		// if password matches
+		// create new Date which represents moment from which user is logged in
+		Date currDate = new Date();
+		UserDTO uDTO = new UserDTO(user.getId(), user.getName(),
+				user.getFirstName(), user.getLastName(), user.getEmail(),
+				currDate);
+		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
+				HttpStatus.OK);
 	}
 
 	// Update User
-	
-	// Login User
-
-	/*
-	 * VER ISTO!
-	 */
-	@RequestMapping("/test")
-	public void test() throws IOException {
-		URL url = new URL("http://localhost:8081/addUser/user");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
-		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "application/json");
-		OutputStream os = conn.getOutputStream();
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		User user = new User(1, "Ola", "test@test.com", "password");
-		System.out.println(objectMapper.writeValueAsString(user));
+	@PostMapping(path = "updateUser", consumes = { "application/json" })
+	public ResponseEntity<String> updateUser(
+			@RequestBody String userModelJSON) {
+		// TODO
+		return null;
 	}
 
 	@PostMapping("removeUser/user")
-	public void removeUser(@RequestBody User user) throws UserDoesNotExistException {
-		uC.removeUser(user);
+	public ResponseEntity<String> removeUser(@RequestBody String userDTO) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		UserDTO uDTO = null;
+		User userToRemove = null;
+
+		try {
+			uDTO = objectMapper.readValue(userDTO, UserDTO.class);
+
+			// user can only be removed if he was previously logged in, so no
+			// need to check password again
+			userToRemove = new User(uDTO.getId(), uDTO.getName(),
+					uDTO.getFirstName(), uDTO.getLastName(), uDTO.getEmail(),
+					null);
+			uC.removeUser(userToRemove);
+		} catch (JsonParseException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>("Internal Application Error",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (JsonMappingException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>("Internal Application Error",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>("Internal Application Error",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		System.out.println("Successfully removed User");
+		return new ResponseEntity<>("Successfully removed User", HttpStatus.OK);
 	}
 
 	@RequestMapping("isRegistered/{uID}/{cID}")
-	public void isRegistered(@PathVariable("uID") int uID, @PathVariable("cID") int cID) {
+	public void isRegistered(@PathVariable("uID") int uID,
+			@PathVariable("cID") int cID) {
 		uCE.isRegisteredToCommunity(uID, cID);
 	}
 
@@ -113,13 +184,15 @@ public class UserManagementController {
 
 	///////////// UserCommunityEvent
 	@RequestMapping("/userSubbedCommunities/{uID}")
-	public CommunityListWrapper userSubbedCommunities(@PathVariable("uID") int uID) {
+	public CommunityListWrapper userSubbedCommunities(
+			@PathVariable("uID") int uID) {
 		UserCommunityEvent uCE = new UserCommunityEvent();
 		return uCE.userSubCommunities(uID);
 	}
 
 	@RequestMapping("/eventsFromSubbedCommunities/{uID}")
-	public EventListWrapper eventsFromSubbedCommunities(@PathVariable("uID") int uID) {
+	public EventListWrapper eventsFromSubbedCommunities(
+			@PathVariable("uID") int uID) {
 		return uCE.eventsFromSubCommunities(uID);
 	}
 

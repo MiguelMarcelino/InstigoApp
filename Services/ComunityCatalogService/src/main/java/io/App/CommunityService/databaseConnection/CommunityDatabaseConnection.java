@@ -98,7 +98,7 @@ public class CommunityDatabaseConnection {
 			st = con.prepareStatement(INSERT_COMMUNITY_SQL);
 			st.setString(1, community.getName());
 			st.executeUpdate();
-		} catch (SQLIntegrityConstraintViolationException e1) {
+		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new CommunityAlreadyExistsException(community.getName());
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());

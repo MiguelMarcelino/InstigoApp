@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { LoginService } from 'src/app/services/authentication/login.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { AppSettings } from 'src/app/appSettings';
 import { UserModel } from 'src/app/models/user.model';
+import { Router } from '@angular/router';
+import { first } from 'rxjs/operators';
+import { LoginModel } from 'src/app/models/login.model';
 
 @Component({
   selector: 'app-login-page',
@@ -11,60 +14,64 @@ import { UserModel } from 'src/app/models/user.model';
   styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent implements OnInit {
-  
-  // app user
-  user: UserModel;
-  // check if user is logged in
-  isLoggedIn = false;
-  //google Icon
-  googlePhoto = "https://cdn.freebiesupply.com/logos/large/2x/google-icon-logo-png-transparent.png"
-  //login form
-  loginForm: FormGroup;
-  //sign up form
-  signUpForm: FormGroup;
-  //app name
+
   serverName = AppSettings.APP_NAME;
-  //Change between sign up and login
-  signUpValue = false;
+  googlePhoto = "https://cdn.freebiesupply.com/logos/large/2x/google-icon-logo-png-transparent.png"
+  loginForm: FormGroup;
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+  error: string;
 
   constructor(
-    private service: LoginService,
-    private angularFireAuth: AngularFireAuth,
-    private formBuilder: FormBuilder
-  ) { }
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private authenticationService: AuthenticationService
+  ) {
+    // redirect to home if already logged in
+    if (this.authenticationService.currentUserValue) {
+      this.router.navigate(['/homePage']);
+    }
+  }
 
   ngOnInit() {
-    this.user = this.service.getLoggedInUser();
     this.loginForm = this.formBuilder.group({
-      email: new FormControl(''),
-      password: new FormControl(''),
-    });
-    this.signUpForm = this.formBuilder.group({
-      userName: new FormControl(''),
-      email: new FormControl(''),
-      password: new FormControl(''),
+      username: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
 
-  onSubmitSignUp() {
-    let user = {
-      'userName': this.signUpForm.get('userName').value, 
-      'email': this.signUpForm.get('email').value,
-      'password': this.signUpForm.get('password').value,
-    };
-    this.isLoggedIn = this.service.signUp(user);
+  // easy access to form fields
+  get form() {
+    return this.loginForm.controls;
   }
 
   onSubmitLogin() {
-    let user = {
-      'userName': "", 
-      'email': this.signUpForm.get('email').value,
-      'password': this.signUpForm.get('password').value,
-    };
-    this.isLoggedIn = this.service.login(user);
-  }
+    this.submitted = true;
 
-  signUp() {
-    this.signUpValue = !this.signUpValue;
+    // stop here if form is invalid
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.loading = true;
+    this.authenticationService.login(this.form.username.value, this.form.password.value)
+      .pipe(first())
+      .subscribe(
+        (loginData: LoginModel) => {
+          // check if token is still valid
+          if (loginData.user.dateLogin) {
+            this.router.navigate([this.returnUrl]);
+          }
+          else {
+            this.error = loginData.msg;
+            this.loading = false;
+          }
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        }
+      );
   }
 }

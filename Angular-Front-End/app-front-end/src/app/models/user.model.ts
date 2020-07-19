@@ -1,7 +1,9 @@
 import { Identifiable } from './identifiable';
 
 export interface UserModel extends Identifiable{
-    userName: String;
-    email: String;
-    password: String;
+    name: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    dateLogin: Date;
 }

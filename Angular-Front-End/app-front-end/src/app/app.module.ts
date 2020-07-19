@@ -4,16 +4,19 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CommunitiesListComponent } from './components/communities-list/communities-list.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './components/home/home.component';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/shared/material.module';
 import { environment } from '../environments/environment'; 
+import { fakeBackendProvider } from './_helpers';
+import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.component';
+import { EventsUserComponent } from './components/events-user/events-user.component';
+import { JwtInterceptor } from './services/authentication/jwt.interceptor';
+import { ErrorInterceptor } from './services/authentication/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,9 @@ import { environment } from '../environments/environment';
     CommunitiesListComponent,
     HomeComponent,
     LoginPageComponent,
-    HomePageComponent
+    HomePageComponent,
+    SignUpPageComponent,
+    EventsUserComponent
   ],
   imports: [
     BrowserModule,
@@ -32,10 +37,12 @@ import { environment } from '../environments/environment';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(environment.firebaseConnection),
-    AngularFireAuthModule
   ],
-  providers: [],
+  providers: [
+    fakeBackendProvider,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

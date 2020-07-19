@@ -24,6 +24,8 @@ DROP TABLE IF EXISTS Communities CASCADE;
 CREATE TABLE Users (
 	`uID` integer auto_increment, 
 	`uName` varchar(50) NOT NULL,
+	`firstName` varchar(30) NOT NULL,
+	`lastName` varchar(30) NOT NULL,
 	`uEmail` varchar(50) NOT NULL,
 	`uPassword` varchar(20) NOT NULL,
 	PRIMARY KEY (`uID`),
@@ -106,7 +108,6 @@ INSERT INTO Roles Values(2, 'MAINTAINER_ROLE', 1, 2);
 INSERT INTO Roles Values(3, 'DEFAULT_USER_ROLE', 1, 1);
 
 
-
 -- Test Values
 INSERT INTO Roles VALUES (4, 'Hero-Admin', 3, 1);
 UNLOCK TABLES;
@@ -114,7 +115,8 @@ UNLOCK TABLES;
 -- ----------------------Users------------------------
 LOCK TABLES Users WRITE;
 -- Test Values
-INSERT INTO Users VALUES (2,'Manuel','manuel@gmail.com', 'manuelPassword'),(1,'Pedro','pedro@outlook.pt', 'pedroPassword');
+INSERT INTO Users VALUES (2,'Manuel', 'Manuel', 'Goncalves', 'manuel@gmail.com', 'manuelPassword'),
+			 (1,'Pedro', 'Pedro', 'Manuel', 'pedro@outlook.pt', 'pedroPassword');
 UNLOCK TABLES;
 
 -- --------------------Events-------------------------

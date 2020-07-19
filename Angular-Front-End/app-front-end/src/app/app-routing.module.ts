@@ -4,6 +4,9 @@ import { CommunitiesListComponent } from './components/communities-list/communit
 import { HomeComponent } from './components/home/home.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { LoginPageComponent } from './components/login-page/login-page.component';
+import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.component';
+import { EventsUserComponent } from './components/events-user/events-user.component';
+import { AuthGuard } from './services/authentication/auth-guard.service';
 
 
 const routes: Routes = [
@@ -27,6 +30,15 @@ const routes: Routes = [
   {
     path: "login",
     component: LoginPageComponent
+  },
+  {
+    path: "signup",
+    component: SignUpPageComponent
+  },
+  {
+    path: "events",
+    component: EventsUserComponent,
+    canActivate: [AuthGuard]
   },
 ];
 

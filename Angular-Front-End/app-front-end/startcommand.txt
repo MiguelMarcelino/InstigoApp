@@ -1,1 +1,17 @@
-ng serve --proxy-config proxy.conf.json
+ng serve --ssl true --ssl-cert ssl/server.cr --ssl-key ssl/server.key --proxy-config proxy.conf.json 
+
+
+For SSL and HTTPS
+insert in angular.json
+"serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "app-front-end:build"
+            "ssl": true,
+            "sslCert": "ssl/server.crt",
+            "sslKey": "ssl/server.key"
+          },
+          .
+          .
+          .
+}

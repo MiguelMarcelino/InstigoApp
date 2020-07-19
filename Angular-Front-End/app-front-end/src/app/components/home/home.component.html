@@ -28,17 +28,14 @@
 
     <!-- Search -->
     <form class="form-inline ">
-        <div class="md-form my-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-        </div>
         <!-- Login Button -->
-        <button *ngIf="!user" mat-button class="login-button" routerLink="/login">
+        <button *ngIf="!currentUser" mat-button class="login-button" routerLink="/login">
             Login
         </button>
 
         <!-- Avatar Button -->
         <button 
-            *ngIf="user" 
+            *ngIf="currentUser" 
             [matMenuTriggerFor]="avatarMenuDropDown"
             mat-mini-fab class="user-avatar" 
             [ngStyle]="{ 'background-image': 'url(https://material.io/resources/icons/?icon=account_circle&style=baseline)' }">
@@ -47,8 +44,8 @@
         <mat-menu #avatarMenuDropDown="matMenu">
             <mat-card>
                 <mat-card-header>
-                    <mat-card-title>{{user?.userName}}</mat-card-title>
-                    <mat-card-subtitle>{{user?.email}}</mat-card-subtitle>
+                    <mat-card-title>{{currentUser?.name}}</mat-card-title>
+                    <mat-card-subtitle>{{currentUser?.email}}</mat-card-subtitle>
                 </mat-card-header>
             </mat-card>
             <button mat-menu-item (click)="logout()">

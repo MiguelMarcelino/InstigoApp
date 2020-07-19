@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from 'src/app/services/authentication/login.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AppSettings } from 'src/app/appSettings';
 import { UserModel } from 'src/app/models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -11,26 +12,23 @@ import { UserModel } from 'src/app/models/user.model';
 })
 export class HomeComponent implements OnInit {
 
-  // app user
-  user: UserModel;
-  // app title
+  currentUser: UserModel;
   title = AppSettings.APP_NAME;
 
   constructor(
-    private service: LoginService,
-    private angularFireAuth: AngularFireAuth,
-  ) { }
-
-  ngOnInit(): void {
-    // this.service.getLoggedInUser()
-    //   .subscribe (user => {
-    //     this.user = user;
-    //   })
-    this.user = this.service.getLoggedInUser();
+    private authenticationService: AuthenticationService,
+    private router: Router,
+  ) {
+    this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
   }
 
-  logout(): void {
-    this.service.logout();
+  ngOnInit(): void {
+
+  }
+
+  logout() {
+    this.authenticationService.logout();
+    this.router.navigate(['/login']);
   }
 
 }
