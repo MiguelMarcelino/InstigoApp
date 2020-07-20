@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
 import io.App.EventService.EventComponent.Event;
 import io.App.EventService.dto.EventListWrapper;
+import io.App.EventService.exceptions.EventAlreadyExistsException;
+import io.App.EventService.exceptions.InternalAppException;
 
 public class EventDatabaseConnection {
 
@@ -28,6 +31,7 @@ public class EventDatabaseConnection {
 
 	/**
 	 * This method gets a list of all events in the database
+	 * 
 	 * @return - a list of all events in the system
 	 */
 	public EventListWrapper getAllEvents() {
@@ -41,8 +45,9 @@ public class EventDatabaseConnection {
 			stmt = con.prepareStatement(GET_ALL_EVENTS_SQL);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Event event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
-						rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
+				Event event = new Event(rs.getInt(1), rs.getString(2),
+						rs.getDate(3).toString(), rs.getDate(4).toString(),
+						rs.getInt(5), rs.getString(6));
 				eventList.add(event);
 			}
 		} catch (SQLException e) {
@@ -93,8 +98,9 @@ public class EventDatabaseConnection {
 			stmt.setInt(1, id);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Event event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(),
-						rs.getDate(4).toString(), rs.getInt(5), rs.getString(6));
+				Event event = new Event(rs.getInt(1), rs.getString(2),
+						rs.getDate(3).toString(), rs.getDate(4).toString(),
+						rs.getInt(5), rs.getString(6));
 				eventList.add(event);
 			}
 		} catch (SQLException e) {
@@ -131,8 +137,11 @@ public class EventDatabaseConnection {
 	 * This method register a new Event on the System
 	 * 
 	 * @param event - the event to register
+	 * @throws EventAlreadyExistsException - in case the event already exists
+	 * @throws InternalAppException - in case there is an Application Error
 	 */
-	public void registerNewEvent(Event event) {
+	public void registerNewEvent(Event event)
+			throws EventAlreadyExistsException, InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 
@@ -145,8 +154,11 @@ public class EventDatabaseConnection {
 			stmt.setString(5, event.getEnd());
 			stmt.executeUpdate();
 
+		} catch (SQLIntegrityConstraintViolationException e) {
+			throw new EventAlreadyExistsException();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -218,7 +230,8 @@ public class EventDatabaseConnection {
 
 			// get the event
 			rs.next();
-			event = new Event(rs.getInt(1), rs.getString(2), rs.getDate(3).toString(), rs.getDate(4).toString(),
+			event = new Event(rs.getInt(1), rs.getString(2),
+					rs.getDate(3).toString(), rs.getDate(4).toString(),
 					rs.getInt(5), rs.getString(6));
 		} catch (SQLException e) {
 			e.printStackTrace();

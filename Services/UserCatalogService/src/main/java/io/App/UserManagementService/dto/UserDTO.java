@@ -10,7 +10,7 @@ public class UserDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("id")
-	private int id;
+	private String id;
 
 	@JsonProperty("name")
 	private String name;
@@ -36,7 +36,7 @@ public class UserDTO implements Serializable {
 	 * @param id - id of the user
 	 * @param name - name of the user
 	 */
-	public UserDTO(int id, String name, String firstName, String lastName,
+	public UserDTO(String id, String name, String firstName, String lastName,
 			String email, Date dateLogin) {
 		this.id = id;
 		this.name = name;
@@ -46,7 +46,7 @@ public class UserDTO implements Serializable {
 		this.dateLogin = dateLogin;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 

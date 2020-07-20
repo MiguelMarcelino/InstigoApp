@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { AppSettings } from 'src/app/appSettings';
 import { UserModel } from 'src/app/models/user.model';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { LoginModel } from 'src/app/models/login.model';
 
@@ -26,6 +26,7 @@ export class LoginPageComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private authenticationService: AuthenticationService
   ) {
     // redirect to home if already logged in
@@ -39,6 +40,9 @@ export class LoginPageComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    // get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // easy access to form fields
@@ -60,13 +64,13 @@ export class LoginPageComponent implements OnInit {
       .subscribe(
         (loginData: LoginModel) => {
           // check if token is still valid
-          if (loginData.user.dateLogin) {
+          // if (loginData.user.dateLogin) {
             this.router.navigate([this.returnUrl]);
-          }
-          else {
-            this.error = loginData.msg;
-            this.loading = false;
-          }
+          // }
+          // else {
+          //   this.error = loginData.msg;
+          //   this.loading = false;
+          // }
         },
         error => {
           this.error = error;

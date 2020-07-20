@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.App.UserManagementService.databaseConnection.UserCommunityEvent;
 import io.App.UserManagementService.dto.CommunityListWrapper;
-import io.App.UserManagementService.dto.EventListWrapper;
 import io.App.UserManagementService.dto.Pair;
 import io.App.UserManagementService.dto.UserDTO;
 import io.App.UserManagementService.dto.UserListWrapper;
@@ -31,7 +29,6 @@ import io.App.UserManagementService.userComponent.User;
 import io.App.UserManagementService.userComponent.UserCatalog;
 
 @RestController
-@EnableAutoConfiguration
 @RequestMapping("/userCatalogApi")
 public class UserManagementController {
 
@@ -90,8 +87,8 @@ public class UserManagementController {
 			uMD = objectMapper.readValue(userModelJSON, UserLoginModel.class);
 
 			// check User information
-			user = uC.getUserByName(uMD.getuName());
-			if (user.getPassword() != uMD.getPassword()) {
+			user = uC.getUserByName(uMD.getUsername());
+			if (!user.getPassword().equals(uMD.getPassword())) {
 				return new ResponseEntity<>(new Pair<>(
 						"The inserted password doesn't match that users password",
 						null), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -102,6 +99,7 @@ public class UserManagementController {
 					new Pair<>("Internal Application Error", null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (JsonMappingException e) {
+			e.printStackTrace();
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
 					new Pair<>("Internal Application Error", null),
@@ -120,7 +118,7 @@ public class UserManagementController {
 		// if password matches
 		// create new Date which represents moment from which user is logged in
 		Date currDate = new Date();
-		UserDTO uDTO = new UserDTO(user.getId(), user.getName(),
+		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()), user.getName(),
 				user.getFirstName(), user.getLastName(), user.getEmail(),
 				currDate);
 		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
@@ -146,7 +144,7 @@ public class UserManagementController {
 
 			// user can only be removed if he was previously logged in, so no
 			// need to check password again
-			userToRemove = new User(uDTO.getId(), uDTO.getName(),
+			userToRemove = new User(Integer.parseInt(uDTO.getId()), uDTO.getName(),
 					uDTO.getFirstName(), uDTO.getLastName(), uDTO.getEmail(),
 					null);
 			uC.removeUser(userToRemove);
@@ -172,7 +170,7 @@ public class UserManagementController {
 	}
 
 	@RequestMapping("isRegistered/{uID}/{cID}")
-	public void isRegistered(@PathVariable("uID") int uID,
+	public void isRegisteredToCommunity(@PathVariable("uID") int uID,
 			@PathVariable("cID") int cID) {
 		uCE.isRegisteredToCommunity(uID, cID);
 	}
@@ -188,12 +186,6 @@ public class UserManagementController {
 			@PathVariable("uID") int uID) {
 		UserCommunityEvent uCE = new UserCommunityEvent();
 		return uCE.userSubCommunities(uID);
-	}
-
-	@RequestMapping("/eventsFromSubbedCommunities/{uID}")
-	public EventListWrapper eventsFromSubbedCommunities(
-			@PathVariable("uID") int uID) {
-		return uCE.eventsFromSubCommunities(uID);
 	}
 
 }

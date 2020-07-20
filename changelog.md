@@ -3,6 +3,15 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.2] - 2020-07-20
+### Changed
+- Login Page is now working
+- Prepared Event Service backend
+- Updated Database table to receive new User values
+- Events from Comunities are now managed by Event Service instead of User Service
+
+-------------------------------------------------------------------------
+
 ## [0.1.2] - 2020-07-19
 ### Changed
 - Login Page was finished. Started testing with login Backend
@@ -11,7 +20,6 @@ All changes made to this project will be documented in this file
 - Changed User Model. Now has fields firstName and lastName
 - Changed UserDTO to incorporate changes made to the user model
 - Changed Database to incorporate changes made to the user model
-
 
 ### Added
 - Method for user login

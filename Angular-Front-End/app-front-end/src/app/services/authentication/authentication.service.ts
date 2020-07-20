@@ -5,8 +5,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { UserModel } from 'src/app/models/user.model';
 import { LoginModel } from 'src/app/models/login.model';
-// import { AngularFireAuth } from '@angular/fire/auth';
-// import { auth } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +28,7 @@ export class AuthenticationService {
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(
       JSON.parse(localStorage.getItem(AuthenticationService.USER_STORAGE_FIELD_NAME)));
+    console.log(localStorage.getItem(AuthenticationService.USER_STORAGE_FIELD_NAME));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -42,9 +41,10 @@ export class AuthenticationService {
       .pipe(map((loginData: LoginModel) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         // if(loginData.login_start_date) {
-        localStorage.setItem(AuthenticationService.USER_STORAGE_FIELD_NAME, JSON.stringify(username));
-        this.currentUserSubject.next(loginData.user);
+        localStorage.setItem(AuthenticationService.USER_STORAGE_FIELD_NAME, JSON.stringify(loginData.second));
+        this.currentUserSubject.next(loginData.second);
         // }
+        console.log(loginData);
         return loginData;
       }));
   }
