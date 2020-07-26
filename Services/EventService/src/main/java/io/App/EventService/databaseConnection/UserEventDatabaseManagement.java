@@ -8,41 +8,42 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import io.App.EventService.EventComponent.Event;
+import io.App.EventService.dto.EventDTO;
 import io.App.EventService.dto.EventListWrapper;
-
+import io.App.EventService.exceptions.InternalAppException;
 
 public class UserEventDatabaseManagement {
 
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
-	
+
 	private static final String EVENTS_FROM_SUBSCRIBED_COMMUNITIES_SQL = "SELECT * FROM Events AS E WHERE (E.cID = "
 			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE (RUC.cID = E.cID) AND (RUC.uID = ?)));";
-	
+
 	public UserEventDatabaseManagement() {
 		databaseConnection = new DatabaseConnection();
 	}
-		
+
 	/**
 	 * This method returns all events from communities subscribed by uID
 	 * 
 	 * @param uID - the user to get all events
 	 * @return all events from the user (uID) subscribed communities
+	 * @throws InternalAppException 
 	 */
-	public EventListWrapper eventsFromSubCommunities(int uID) {
+	public EventListWrapper eventsFromSubCommunities(int uID) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		EventListWrapper eLW = new EventListWrapper();
-		ArrayList<Event> listEvents = new ArrayList<Event>();
+		ArrayList<EventDTO> listEvents = new ArrayList<>();
 
 		try {
 			stmt = con.prepareStatement(EVENTS_FROM_SUBSCRIBED_COMMUNITIES_SQL);
 			stmt.setInt(1, uID);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				int eID = rs.getInt(1);
+				String eID = String.valueOf(rs.getInt(1));
 				String eName = rs.getString(2);
 
 				// format dates
@@ -50,17 +51,18 @@ public class UserEventDatabaseManagement {
 				String dateStart = df.format(rs.getDate(3));
 				String dateEnd = df.format(rs.getDate(4));
 
-				int cID = rs.getInt(5);
+				String cID = String.valueOf(rs.getInt(5));
 				String cName = rs.getString(6);
 
 				// create Event
-				Event e = new Event(eID, eName, dateStart, dateEnd, cID, cName);
+				EventDTO e = new EventDTO(eID, eName, dateStart, dateEnd, cID, cName);
 
 				// insert Event into List
 				listEvents.add(e);
 			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {

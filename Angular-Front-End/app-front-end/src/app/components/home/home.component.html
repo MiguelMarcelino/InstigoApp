@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <a class="navbar-brand" routerLink="/homePage">{{ title }}</a>
+    <a class="navbar-brand" routerLink="/welcome">{{ title }}</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -11,17 +11,17 @@
             <li class="nav-item active">
                 <a class="nav-link" routerLink="/">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/communities">Communities</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/events">All Events</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/roles">Owned Roles</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" routerLink="/about">Contacts</a>
+                <a class="nav-link" routerLink="/contacts">Contacts</a>
             </li>
         </ul>
     </div>
@@ -38,7 +38,7 @@
             *ngIf="currentUser" 
             [matMenuTriggerFor]="avatarMenuDropDown"
             mat-mini-fab class="user-avatar" 
-            [ngStyle]="{ 'background-image': 'url(https://material.io/resources/icons/?icon=account_circle&style=baseline)' }">
+            [ngStyle]="{ 'background-image': 'url(../../../assets/icons/user.png)', 'background-color': 'rgb(158, 158, 158)' }">
         </button>
         <!-- Avatar Menu -->
         <mat-menu #avatarMenuDropDown="matMenu">

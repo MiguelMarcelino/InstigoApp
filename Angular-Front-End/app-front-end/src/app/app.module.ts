@@ -17,6 +17,8 @@ import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.comp
 import { EventsUserComponent } from './components/events-user/events-user.component';
 import { JwtInterceptor } from './services/authentication/jwt.interceptor';
 import { ErrorInterceptor } from './services/authentication/error.interceptor';
+import { HomePageAfterLoginComponent } from './components/home-page-after-login/home-page-after-login.component';
+import { ContactsComponent } from './components/contacts/contacts.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { ErrorInterceptor } from './services/authentication/error.interceptor';
     LoginPageComponent,
     HomePageComponent,
     SignUpPageComponent,
-    EventsUserComponent
+    EventsUserComponent,
+    HomePageAfterLoginComponent,
+    ContactsComponent
   ],
   imports: [
     BrowserModule,

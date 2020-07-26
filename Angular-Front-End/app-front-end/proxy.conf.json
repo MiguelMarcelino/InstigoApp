@@ -16,5 +16,11 @@
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
+    },
+    "/userEventApi/*": {
+        "target": "http://localhost:8084",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
     }
 }

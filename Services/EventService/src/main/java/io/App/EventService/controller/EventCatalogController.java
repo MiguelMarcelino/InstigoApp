@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -19,12 +20,13 @@ import io.App.EventService.EventComponent.Event;
 import io.App.EventService.EventComponent.EventCatalog;
 import io.App.EventService.dto.EventDTO;
 import io.App.EventService.dto.EventListWrapper;
+import io.App.EventService.dto.Pair;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
 import io.App.EventService.exceptions.EventDoesNotExistException;
 import io.App.EventService.exceptions.InternalAppException;
-import io.App.EventService.exceptions.NoEventsFromCommunityException;
 
 @RestController
+@RequestMapping("/eventApi")
 public class EventCatalogController {
 
 	@Autowired
@@ -38,9 +40,19 @@ public class EventCatalogController {
 	}
 
 	@GetMapping("getEventsFromCommunity/{cID}")
-	public EventListWrapper eventsFromCommunity(@PathVariable("cID") int cID)
-			throws NoEventsFromCommunityException {
-		return this.eC.getEventsFromCommunity(cID);
+	public ResponseEntity<Pair<String, EventListWrapper>> eventsFromCommunity(@PathVariable("cID") int cID) {
+		EventListWrapper eLW = null;
+		try {
+			eLW = this.eC.getEventsFromCommunity(cID);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), eLW),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		System.out.println("Successfull events request");
+		return new ResponseEntity<>(new Pair<>("Successfull events request", eLW),
+				HttpStatus.OK);
 	}
 
 	@PostMapping("registerNewEvent/event")

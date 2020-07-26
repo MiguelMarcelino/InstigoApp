@@ -8,6 +8,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
 import io.App.EventService.EventComponent.Event;
+import io.App.EventService.dto.EventDTO;
 import io.App.EventService.dto.EventListWrapper;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
 import io.App.EventService.exceptions.InternalAppException;
@@ -39,15 +40,15 @@ public class EventDatabaseConnection {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		EventListWrapper eLW = new EventListWrapper();
-		ArrayList<Event> eventList = new ArrayList<Event>();
+		ArrayList<EventDTO> eventList = new ArrayList<>();
 
 		try {
 			stmt = con.prepareStatement(GET_ALL_EVENTS_SQL);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Event event = new Event(rs.getInt(1), rs.getString(2),
+				EventDTO event = new EventDTO(String.valueOf(rs.getInt(1)), rs.getString(2),
 						rs.getDate(3).toString(), rs.getDate(4).toString(),
-						rs.getInt(5), rs.getString(6));
+						String.valueOf(rs.getInt(5)), rs.getString(6));
 				eventList.add(event);
 			}
 		} catch (SQLException e) {
@@ -85,26 +86,28 @@ public class EventDatabaseConnection {
 	 * 
 	 * @param id - the id of the community
 	 * @return events from a community where cID = id
+	 * @throws InternalAppException - in case there is an Application Error
 	 */
-	public EventListWrapper getEventsFromCommunity(int id) {
+	public EventListWrapper getEventsFromCommunity(int id) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		EventListWrapper lW = new EventListWrapper();
-		ArrayList<Event> eventList = new ArrayList<Event>();
+		ArrayList<EventDTO> eventList = new ArrayList<>();
 
 		try {
 			stmt = con.prepareStatement(GET_EVENTS_FROM_COMMUNITY_SQL);
 			stmt.setInt(1, id);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Event event = new Event(rs.getInt(1), rs.getString(2),
+				EventDTO event = new EventDTO(String.valueOf(rs.getInt(1)), rs.getString(2),
 						rs.getDate(3).toString(), rs.getDate(4).toString(),
-						rs.getInt(5), rs.getString(6));
+						String.valueOf(rs.getInt(5)), rs.getString(6));
 				eventList.add(event);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {

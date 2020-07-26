@@ -1,1 +1,10 @@
-<p>events-user works!</p>
+
+<h2>Events from Subscribed Communities</h2>
+<div class="floating-card" *ngFor="let event of eventList">
+    <div class="name-left">
+        <p>{{event.name}}</p>
+    </div>
+    <div class="description-right">
+        <p>{{event.cName}}</p>
+    </div>
+</div>

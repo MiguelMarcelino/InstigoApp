@@ -6,6 +6,9 @@ h2 {
 .floating-card {
     height: 50pt;
     transition: 0.5s ease;
+    padding-top: 16pt;
+    padding-left: 5pt;
+    border-radius: 4pt;
 }
 
 .floating-card:hover {

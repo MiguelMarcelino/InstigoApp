@@ -24,14 +24,6 @@ p{
 
 .page-block{
     margin-top: 50pt;
-    display: inline-block;
-}
-
-.user-type-card {
-    width: 33%;
-    float: inline-start;
-    margin-top: 20pt;
-    padding: 30pt;
 }
 
 .user-type-img {
@@ -40,6 +32,32 @@ p{
     filter: invert(0.9);
 }
 
-.logged-in-user-card{
-    margin-bottom: 30pt;
+.section{
+    margin: auto;
+    display: flex;
+    padding: 20pt;
+    transition: 0.5s ease;
+    border-radius: 4pt;
+    cursor: pointer;
+}
+
+.section:hover {
+    background-color: rgb(88, 88, 88);
+    transform: scale(1.02, 1.02);
+}
+
+.section-text {
+    text-align: justify;
+}
+
+.img-left {
+    width: 50%;
+    float: left;
+}
+
+.text-right{
+    width: 50%;
+    float: right;
+    padding-top: 30pt;
+    
 }

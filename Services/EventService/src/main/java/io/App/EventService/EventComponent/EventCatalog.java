@@ -7,7 +7,6 @@ import io.App.EventService.dto.EventListWrapper;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
 import io.App.EventService.exceptions.EventDoesNotExistException;
 import io.App.EventService.exceptions.InternalAppException;
-import io.App.EventService.exceptions.NoEventsFromCommunityException;
 
 @SpringBootApplication
 public class EventCatalog {
@@ -23,12 +22,8 @@ public class EventCatalog {
 	}
 
 	public EventListWrapper getEventsFromCommunity(int cID)
-			throws NoEventsFromCommunityException {
-		EventListWrapper eLW = this.eDC.getEventsFromCommunity(cID);
-		if (eLW == null) {
-			throw new NoEventsFromCommunityException();
-		}
-		return eLW;
+			throws InternalAppException {
+		return this.eDC.getEventsFromCommunity(cID);
 	}
 
 	public void registerNewEvent(Event event)
@@ -42,5 +37,7 @@ public class EventCatalog {
 		}
 		eDC.deleteEvent(event);
 	}
+	
+	
 
 }

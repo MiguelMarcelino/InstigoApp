@@ -1,0 +1,32 @@
+h2 {
+    font-size: 20pt;
+    color: white;
+}
+
+p {
+    font-size: 15pt;
+    color: white;
+}
+
+.floating-card {
+    height: 50pt;
+    transition: 0.5s ease;
+    padding-top: 16pt;
+    padding-left: 5pt;
+    border-radius: 4pt;
+}
+
+.floating-card:hover {
+    background-color: rgb(88, 88, 88);
+}
+
+
+.name-left {
+    float: left;
+    width: 20%;
+}
+
+.description-right {
+    float: right;
+    width: 70%;
+}

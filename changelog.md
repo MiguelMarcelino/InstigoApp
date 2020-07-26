@@ -3,6 +3,22 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.3] - 2020-07-26
+### Changed
+- Event page finished and working with backend
+- Reviewed Event microservice backend
+- Corrected error Identifiable model
+- Corrected sending of events - now sending EventDTO instead of Event
+
+### Added
+- New interface look
+- New home page
+- New page to welcome user when not logged in
+- New contacts page
+
+
+-------------------------------------------------------------------------
+
 ## [0.1.2] - 2020-07-20
 ### Changed
 - Login Page is now working

@@ -8,3 +8,15 @@
 .user-avatar {
     background-size: cover;
 }
+
+.navbar-brand {
+    transition: 0.5s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.03, 1.03);
+}
+
+.custom-button {
+    background-color: rgb(158, 158, 158);
+}
