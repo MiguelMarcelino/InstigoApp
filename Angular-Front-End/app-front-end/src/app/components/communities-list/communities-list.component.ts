@@ -10,6 +10,7 @@ import { CommunitiesService } from 'src/app/services/controllers/communities-con
 export class CommunitiesListComponent implements OnInit {
 
   communities: CommunityModel[];
+  menuShow: false;
 
   constructor(
     private communitiesService: CommunitiesService
@@ -24,5 +25,9 @@ export class CommunitiesListComponent implements OnInit {
     this.communitiesService.getAll().subscribe((communitiesList) => {
       this.communities = communitiesList.second.list;
     })
+  }
+
+  showMenu():void {
+    this.menuShow = ! this.menuShow;
   }
 }

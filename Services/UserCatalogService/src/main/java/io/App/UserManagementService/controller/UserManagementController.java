@@ -17,8 +17,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.UserManagementService.databaseConnection.UserCommunityEvent;
-import io.App.UserManagementService.dto.CommunityListWrapper;
 import io.App.UserManagementService.dto.Pair;
 import io.App.UserManagementService.dto.UserDTO;
 import io.App.UserManagementService.dto.UserListWrapper;
@@ -34,8 +32,6 @@ public class UserManagementController {
 
 	@Autowired
 	private UserCatalog uC;
-	@Autowired
-	private UserCommunityEvent uCE;
 
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
@@ -73,9 +69,9 @@ public class UserManagementController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		Date currDate = new Date();
-		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()), user.getUserName(),
-				user.getFirstName(), user.getLastName(), user.getEmail(),
-				currDate);
+		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()),
+				user.getUserName(), user.getFirstName(), user.getLastName(),
+				user.getEmail(), currDate);
 		System.out.println("Successfully added new User");
 		return new ResponseEntity<>(
 				new Pair<>("Successfully added new User", uDTO), HttpStatus.OK);
@@ -122,9 +118,9 @@ public class UserManagementController {
 		// if password matches
 		// create new Date which represents moment from which user is logged in
 		Date currDate = new Date();
-		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()), user.getUserName(),
-				user.getFirstName(), user.getLastName(), user.getEmail(),
-				currDate);
+		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()),
+				user.getUserName(), user.getFirstName(), user.getLastName(),
+				user.getEmail(), currDate);
 		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
 				HttpStatus.OK);
 	}
@@ -173,23 +169,9 @@ public class UserManagementController {
 		return new ResponseEntity<>("Successfully removed User", HttpStatus.OK);
 	}
 
-	@RequestMapping("isRegistered/{uID}/{cID}")
-	public void isRegisteredToCommunity(@PathVariable("uID") int uID,
-			@PathVariable("cID") int cID) {
-		uCE.isRegisteredToCommunity(uID, cID);
-	}
-
 	@RequestMapping("getUserInfo/{uID}")
 	public void getUserInfo(@PathVariable("uID") int uID) {
 		uC.getUserInfo(uID);
-	}
-
-	///////////// UserCommunityEvent
-	@RequestMapping("/userSubbedCommunities/{uID}")
-	public CommunityListWrapper userSubbedCommunities(
-			@PathVariable("uID") int uID) {
-		UserCommunityEvent uCE = new UserCommunityEvent();
-		return uCE.userSubCommunities(uID);
 	}
 
 }

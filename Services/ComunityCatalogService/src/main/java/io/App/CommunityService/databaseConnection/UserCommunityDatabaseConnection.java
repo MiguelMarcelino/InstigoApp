@@ -1,28 +1,34 @@
-package io.App.UserManagementService.databaseConnection;
+package io.App.CommunityService.databaseConnection;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.App.CommunityService.communityComponent.Community;
+import io.App.CommunityService.dto.CommunityListWrapper;
+import io.App.CommunityService.exceptions.AlreadySubscribedException;
+import io.App.CommunityService.exceptions.InternalAppException;
 
-import io.App.UserManagementService.dto.CommunityListWrapper;
-import io.App.UserManagementService.userComponent.Community;
-
-@SpringBootApplication
-public class UserCommunityEvent {
+public class UserCommunityDatabaseConnection {
 
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
 	private static final String USER_SUBSCRIBED_COMMUNITIES_SQL = "SELECT * FROM Communities AS C WHERE (C.cID = "
-			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.cID = RUC.cID " + "AND RUC.uID = ?));";
-	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT cID FROM RolesUsersCommunities WHERE cID = ? AND uID = ?;";
+			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.cID = RUC.cID "
+			+ "AND RUC.uID = ?));";
+	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT cID FROM RolesUsersCommunities "
+			+ "WHERE cID = ? AND uID = ?;";
+	private static final String SUBSCRIBE_USER_TO_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities "
+			+ "(uID, cID, rID, dStart, dEnd)" + "VALUES(?, ?, ?, ?, ?);";
 
-	public UserCommunityEvent() {
+	public UserCommunityDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
 	}
 
@@ -46,7 +52,8 @@ public class UserCommunityEvent {
 			while (rs.next()) {
 				int cID = rs.getInt(1);
 				String cName = rs.getString(2);
-				Community c = new Community(cID, cName);
+				String cDescription = rs.getString(3);
+				Community c = new Community(cID, cName, cDescription);
 				lC.add(c);
 			}
 		} catch (SQLException e) {
@@ -79,8 +86,6 @@ public class UserCommunityEvent {
 
 		return cLW;
 	}
-
-	
 
 	/**
 	 * This method verifies if a user has subscribed to a given community
@@ -131,5 +136,57 @@ public class UserCommunityEvent {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Subscribes a user to a given community
+	 * 
+	 * @param uID - the id of the user to subscribe
+	 * @param cID - the community where the user wants to subscribe to
+	 * @throws InternalAppException - in case there is an Application Error
+	 * @throws AlreadySubscribedException
+	 */
+	public void subscribeUserToCommunity(int uID, int cID)
+			throws InternalAppException, AlreadySubscribedException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = con.prepareStatement(SUBSCRIBE_USER_TO_COMMUNITY_SQL);
+			stmt.setInt(1, uID);
+			stmt.setInt(2, cID);
+
+			// Every user gets the default role when they subscribe to a
+			// community
+			stmt.setInt(3, 3);
+
+			// create new Dates. Every user has a default end date of 1 year
+			LocalDate dateStart = LocalDate.now();
+			LocalDate dateEnd = dateStart.plusYears(1);
+			stmt.setDate(4, Date.valueOf(dateStart));
+			stmt.setDate(5, Date.valueOf(dateEnd));
+			stmt.executeUpdate();
+		} catch (SQLIntegrityConstraintViolationException e) {
+			throw new AlreadySubscribedException(uID, cID);
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 }
