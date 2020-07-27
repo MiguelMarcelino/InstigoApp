@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommunityModel } from 'src/app/models/community.model';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { UserModel } from 'src/app/models/user.model';
+import { UserCommunityService } from 'src/app/services/controllers/user-community-controller.service'
 import { CommunitiesService } from 'src/app/services/controllers/communities-controller.service';
 
 @Component({
@@ -9,13 +12,18 @@ import { CommunitiesService } from 'src/app/services/controllers/communities-con
 })
 export class CommunitiesListComponent implements OnInit {
 
+  currentUser: UserModel;
   communities: CommunityModel[];
-  menuShow: false;
+  selectedCommunity: CommunityModel;
 
   constructor(
-    private communitiesService: CommunitiesService
+    private communitiesService: CommunitiesService,
+    private userCommunityService: UserCommunityService,
+    private authenticationService: AuthenticationService,
     ) 
-  { }
+  {
+    this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+  }
 
   ngOnInit(): void {
     this.getCommunityList();
@@ -27,7 +35,7 @@ export class CommunitiesListComponent implements OnInit {
     })
   }
 
-  showMenu():void {
-    this.menuShow = ! this.menuShow;
+  subscribeToCommunity(cID: string): void {
+    this.userCommunityService.subscribeToCommunity(this.currentUser.id, cID).subscribe();
   }
 }

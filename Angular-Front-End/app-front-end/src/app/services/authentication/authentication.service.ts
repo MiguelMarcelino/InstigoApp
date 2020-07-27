@@ -28,7 +28,6 @@ export class AuthenticationService {
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(
       JSON.parse(localStorage.getItem(AuthenticationService.USER_STORAGE_FIELD_NAME)));
-    console.log(localStorage.getItem(AuthenticationService.USER_STORAGE_FIELD_NAME));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -44,7 +43,6 @@ export class AuthenticationService {
         localStorage.setItem(AuthenticationService.USER_STORAGE_FIELD_NAME, JSON.stringify(loginData.second));
         this.currentUserSubject.next(loginData.second);
         // }
-        console.log(loginData);
         return loginData;
       }));
   }
@@ -57,7 +55,6 @@ export class AuthenticationService {
         localStorage.setItem(AuthenticationService.USER_STORAGE_FIELD_NAME, JSON.stringify(loginData.second));
         this.currentUserSubject.next(loginData.second);
         // }
-        console.log(loginData);
         return loginData;
       }));
   }

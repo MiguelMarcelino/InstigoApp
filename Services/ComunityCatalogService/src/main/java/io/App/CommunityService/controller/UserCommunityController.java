@@ -44,9 +44,8 @@ public class UserCommunityController {
 		uCC.isRegToCommunity(uID, cID);
 	}
 
-	@PostMapping(
-			path = "/subscribeToCommunity",
-			consumes = { "application/json" })
+	@PostMapping(path = "/subscribeToCommunity", consumes = {
+			"application/json" })
 	public ResponseEntity<String> subscribeToCommunity(
 			@RequestBody String communitySubscribeJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -72,7 +71,7 @@ public class UserCommunityController {
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
+		System.out.println("Successfully subscribed user to Community");
 		return new ResponseEntity<>("Successfully subscribed user to Community",
 				HttpStatus.OK);
 	}

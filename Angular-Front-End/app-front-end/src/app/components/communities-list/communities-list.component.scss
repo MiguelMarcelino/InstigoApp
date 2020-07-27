@@ -4,12 +4,20 @@ h2 {
 }
 
 .floating-card {
-    height: 50pt;
+    background-color: rgb(65, 65, 65);
     transition: 0.5s ease;
-    padding-top: 16pt;
-    padding-left: 5pt;
-    border-radius: 4pt;
-    cursor: pointer;
+    padding: 15pt;
+    margin-bottom: 10pt;
+    line-height: 23pt;
+
+    mat-panel-title {
+        width: 20%;
+    }
+
+    mat-panel-description {
+        width: 80%;
+    }
+
 }
 
 .floating-card:hover {
@@ -17,16 +25,14 @@ h2 {
 }
 
 p {
+    
+    transition: 0.5s ease;
     font-size: 15pt;
     color: white;
 }
 
-.name-left {
-    float: left;
-    width: 20%;
-}
-
-.description-right {
-    float: right;
-    width: 70%;
+@media only screen and (max-width: 720px) {
+    p {
+        font-size: 13pt;
+    }
 }

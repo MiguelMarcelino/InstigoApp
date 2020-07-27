@@ -10,13 +10,12 @@ export class UserEventControllerService {
     private httpOptions = {
         headers: new HttpHeaders({ "Content-Type": "application/json" })
     }
+    private getEventsByUserId = '/userEventApi/eventsFromSubbedCommunities';
 
     constructor(
         protected http: HttpClient
     ) {
     }
-
-    private getEventsByUserId = '/userEventApi/eventsFromSubbedCommunities';
 
     getEventsFromUser(id: string): Observable<any> {
         let url = `${this.getEventsByUserId}/${id}`

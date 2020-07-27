@@ -9,6 +9,11 @@ All changes made to this project will be documented in this file
 - Corrected mistakes in backend
 - Corrected mistakes in login page component
 - Changed userModel
+- Changed Interface of Community list page
+
+### Added
+- New option to subscribe to communities in community list page
+
 
 -------------------------------------------------------------------------
 

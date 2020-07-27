@@ -1,5 +1,7 @@
 import { Identifiable } from './identifiable';
 
 export interface CommunityModel extends Identifiable{
-    name: String;
+    name: string;
+    description: string;
+    menuShow?: boolean;
 }

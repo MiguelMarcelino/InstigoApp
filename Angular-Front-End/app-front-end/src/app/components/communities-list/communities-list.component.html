@@ -1,15 +1,14 @@
 
 <h2>Communities</h2>
 
-<div class="floating-card" *ngFor="let community of communities" (click)="showMenu()">
-    <div class="name-left">
+<mat-expansion-panel hideToggle class="floating-card" *ngFor="let community of communities" >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
         <p>{{community.name}}</p>
-    </div>
-    <div class="description-right">
+      </mat-panel-title>
+      <mat-panel-description>
         <p>{{community.description}}</p>
-    </div>
-</div>
-
-<div *ngIf="menuShow">
-    menu
-</div>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <button mat-raised-button (click)="subscribeToCommunity(community.id)">Subscribe</button>
+</mat-expansion-panel>
