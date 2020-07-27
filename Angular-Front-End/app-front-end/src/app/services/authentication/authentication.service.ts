@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { UserModel } from 'src/app/models/user.model';
+import { UserSignUpModel } from 'src/app/models/user-sign-up.model';
 import { LoginModel } from 'src/app/models/login.model';
 
 @Injectable({
@@ -49,8 +49,17 @@ export class AuthenticationService {
       }));
   }
 
-  signUp(user: UserModel) {
-
+  signUp(user: UserSignUpModel) {
+    return this.http.post<any>(this.signUpUrl, user)
+      .pipe(map((loginData: LoginModel) => {
+        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        // if(loginData.login_start_date) {
+        localStorage.setItem(AuthenticationService.USER_STORAGE_FIELD_NAME, JSON.stringify(loginData.second));
+        this.currentUserSubject.next(loginData.second);
+        // }
+        console.log(loginData);
+        return loginData;
+      }));
   }
 
   logout() {

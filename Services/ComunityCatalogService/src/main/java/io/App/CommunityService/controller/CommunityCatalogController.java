@@ -30,6 +30,8 @@ public class CommunityCatalogController {
 
 	@Autowired
 	private CommunityCatalog cC;
+	
+	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
 	@GetMapping(path = "/communities")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
@@ -52,22 +54,16 @@ public class CommunityCatalogController {
 		try {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
 			cC.addCommunity(new Community(cDTO.getName()));
-		} catch (JsonParseException e) {
+		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error", HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (JsonMappingException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error", HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (InternalAppException e) {
+			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException | CommunityAlreadyExistsException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error", HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (CommunityAlreadyExistsException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-		}
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} 
 		System.out.println("Successfully added new Community");
 		return new ResponseEntity<>("Successfully added new Community", HttpStatus.OK);
 
@@ -81,15 +77,12 @@ public class CommunityCatalogController {
 		try {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
 			this.cC.removeCommunity(new Community(cDTO.getName()));
-		} catch (JsonParseException e) {
+		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error", HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (JsonMappingException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);

@@ -37,6 +37,8 @@ public class UserManagementController {
 	@Autowired
 	private UserCommunityEvent uCE;
 
+	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
+
 	public UserManagementController() {
 		// Empty constructor
 	}
@@ -47,34 +49,36 @@ public class UserManagementController {
 	}
 
 	@PostMapping(path = "addUser", consumes = { "application/json" })
-	public ResponseEntity<String> addUser(@RequestBody String userJSON)
-			throws UserAlreadyExistsException {
+	public ResponseEntity<Pair<String, UserDTO>> addUser(
+			@RequestBody String userJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		User user = null;
 		try {
 			user = objectMapper.readValue(userJSON, User.class);
 
 			uC.addUser(user);
-		} catch (JsonParseException e) {
+		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error",
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (JsonMappingException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error",
+			return new ResponseEntity<>(
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>("Internal Application Error",
+			return new ResponseEntity<>(
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (InternalAppException e) {
+		} catch (InternalAppException | UserAlreadyExistsException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>(e.getMessage(),
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		Date currDate = new Date();
+		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()), user.getUserName(),
+				user.getFirstName(), user.getLastName(), user.getEmail(),
+				currDate);
 		System.out.println("Successfully added new User");
-		return new ResponseEntity<>("Successfully added new User",
-				HttpStatus.OK);
+		return new ResponseEntity<>(
+				new Pair<>("Successfully added new User", uDTO), HttpStatus.OK);
 	}
 
 	@PostMapping(path = "login", consumes = { "application/json" })
@@ -118,7 +122,7 @@ public class UserManagementController {
 		// if password matches
 		// create new Date which represents moment from which user is logged in
 		Date currDate = new Date();
-		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()), user.getName(),
+		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()), user.getUserName(),
 				user.getFirstName(), user.getLastName(), user.getEmail(),
 				currDate);
 		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
@@ -144,9 +148,9 @@ public class UserManagementController {
 
 			// user can only be removed if he was previously logged in, so no
 			// need to check password again
-			userToRemove = new User(Integer.parseInt(uDTO.getId()), uDTO.getName(),
-					uDTO.getFirstName(), uDTO.getLastName(), uDTO.getEmail(),
-					null);
+			userToRemove = new User(Integer.parseInt(uDTO.getId()),
+					uDTO.getName(), uDTO.getFirstName(), uDTO.getLastName(),
+					uDTO.getEmail(), null);
 			uC.removeUser(userToRemove);
 		} catch (JsonParseException e) {
 			System.err.println(e.getMessage());

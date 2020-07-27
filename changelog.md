@@ -3,6 +3,15 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.3] - 2020-07-27
+### Changed
+- Sign up page now woking
+- Corrected mistakes in backend
+- Corrected mistakes in login page component
+- Changed userModel
+
+-------------------------------------------------------------------------
+
 ## [0.1.3] - 2020-07-26
 ### Changed
 - Event page finished and working with backend
@@ -15,7 +24,6 @@ All changes made to this project will be documented in this file
 - New home page
 - New page to welcome user when not logged in
 - New contacts page
-
 
 -------------------------------------------------------------------------
 

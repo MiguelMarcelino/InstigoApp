@@ -37,7 +37,7 @@ export class LoginPageComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
+      userName: ['', Validators.required],
       password: ['', Validators.required]
     });
 
@@ -59,18 +59,17 @@ export class LoginPageComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(this.form.username.value, this.form.password.value)
+    this.authenticationService.login(this.form.userName.value, this.form.password.value)
       .pipe(first())
       .subscribe(
         (loginData: LoginModel) => {
-          // check if token is still valid
-          // if (loginData.user.dateLogin) {
-            this.router.navigate([this.returnUrl]);
-          // }
-          // else {
-          //   this.error = loginData.msg;
-          //   this.loading = false;
-          // }
+          if (loginData.second !== null) {
+          this.router.navigate([this.returnUrl]);
+          }
+          else {
+            this.error = loginData.first;
+            this.loading = false;
+          }
         },
         error => {
           this.error = error;

@@ -3,7 +3,7 @@ package io.App.UserManagementService.userComponent;
 public class User {
 
 	private int id;
-	private String uName;
+	private String userName;
 	private String firstName;
 	private String lastName;
 	private String email;
@@ -20,9 +20,9 @@ public class User {
 	 * @param name
 	 *            - name of the user
 	 */
-	public User(int id, String name, String firstName, String lastName, String email, String password) {
+	public User(int id, String userName, String firstName, String lastName, String email, String password) {
 		this.id = id;
-		this.uName = name;
+		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -42,8 +42,8 @@ public class User {
 		return id;
 	}
 
-	public String getName() {
-		return uName;
+	public String getUserName() {
+		return userName;
 	}
 
 	public String getEmail() {

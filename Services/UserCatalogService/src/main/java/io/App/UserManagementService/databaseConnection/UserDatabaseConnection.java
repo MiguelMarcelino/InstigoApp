@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -22,7 +23,8 @@ public class UserDatabaseConnection {
 	// SQL Queries
 	private static final String GET_ALL_USERS_SQL = "SELECT * FROM Users";
 	private static final String INSERT_USER_SQL = "INSERT INTO Users (uName, firstName, lastName, uEmail, uPassword) VALUES (?, ?, ?, ?, ?)";
-	private static final String ADD_USER_ROLE_AND_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities VALUES (?, ?, ?, ?, ?)";
+	private static final String ADD_USER_ROLE_AND_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities (uID, cID, rID, dStart, dEnd) "
+			+ "VALUES (?, ?, ?, ?, ?)";
 	private static final String DELETE_USER_FROM_USER_TABLE_SQL = "DELETE FROM Users WHERE uID = ?;";
 	private static final String DELETE_USER_FROM_ROLESUSERSCOMMUNITIES_SQL = "DELETE FROM RolesUsersCommunities WHERE uID = ?;";
 	private static final String SELECT_USER_BY_ID = "SELECT uName FROM Users WHERE uID = ?;";
@@ -98,12 +100,13 @@ public class UserDatabaseConnection {
 		ResultSet rs = null;
 
 		try {
-			st = con.prepareStatement(INSERT_USER_SQL);
-			st.setString(1, user.getName());
+			st = con.prepareStatement(INSERT_USER_SQL,
+					Statement.RETURN_GENERATED_KEYS);
+			st.setString(1, user.getUserName());
 			st.setString(2, user.getFirstName());
-			st.setString(2, user.getLastName());
-			st.setString(2, user.getEmail());
-			st.setString(2, user.getPassword());
+			st.setString(3, user.getLastName());
+			st.setString(4, user.getEmail());
+			st.setString(5, user.getPassword());
 			st.executeUpdate();
 
 			// Get newly generated id
