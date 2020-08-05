@@ -1,6 +1,7 @@
 h2{
     color: white;
     font-size: 20pt;
+    text-align: center;
 }
 
 p {
@@ -8,15 +9,20 @@ p {
     font-size: 15pt;
 }
 
+.form-group{
+    margin-bottom: 25pt;
+}
+
 .page-style {
-    margin: 20pt auto;
-    vertical-align: middle;
+    margin: 0 auto;
     width: 30%;
+    padding-top: 40pt;
 }
 
 .other-accounts {
     margin-top: 30pt;
     margin-bottom: 30pt;
+    text-align: center;
 }
 
 .account-button {
@@ -27,6 +33,22 @@ p {
     
 }
 
+.login-btn{
+    width: 100%;
+}
+
 .control-label {
     color: white;
+}
+
+@media only screen and (max-width: 1000px) {
+    .page-style {
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .page-style {
+        width: 100%;
+    }
 }

@@ -46,7 +46,7 @@ public class EventCatalogController {
 			eLW = this.eC.getEventsFromCommunity(cID);
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>(new Pair<>(e.getMessage(), eLW),
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		

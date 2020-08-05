@@ -13,7 +13,7 @@ import io.App.EventService.dto.EventListWrapper;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
 import io.App.EventService.exceptions.InternalAppException;
 
-public class EventDatabaseConnection {
+public class EventDatabaseManagement {
 
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
@@ -26,7 +26,7 @@ public class EventDatabaseConnection {
 	private static final String DELETE_EVENT_SQL = "DELETE FROM Events WHERE eID =?;";
 	private static final String GET_EVENT_BY_NAME_SQL = "SELECT e FROM Events WHERE eName = ?;";
 
-	public EventDatabaseConnection() {
+	public EventDatabaseManagement() {
 		this.databaseConnection = new DatabaseConnection();
 	}
 

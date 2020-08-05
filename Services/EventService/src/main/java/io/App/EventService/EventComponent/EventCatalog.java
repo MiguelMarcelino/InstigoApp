@@ -2,7 +2,7 @@ package io.App.EventService.EventComponent;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.App.EventService.databaseConnection.EventDatabaseConnection;
+import io.App.EventService.databaseConnection.EventDatabaseManagement;
 import io.App.EventService.dto.EventListWrapper;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
 import io.App.EventService.exceptions.EventDoesNotExistException;
@@ -11,10 +11,10 @@ import io.App.EventService.exceptions.InternalAppException;
 @SpringBootApplication
 public class EventCatalog {
 
-	private EventDatabaseConnection eDC;
+	private EventDatabaseManagement eDC;
 
 	public EventCatalog() {
-		eDC = new EventDatabaseConnection();
+		eDC = new EventDatabaseManagement();
 	}
 
 	public EventListWrapper getAllEvents() {

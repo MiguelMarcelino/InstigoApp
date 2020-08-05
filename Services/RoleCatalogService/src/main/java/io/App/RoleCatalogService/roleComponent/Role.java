@@ -25,7 +25,7 @@ public class Role {
 	public int getCommunityID() {
 		return communityID;
 	}
-	
+
 	public int getAuthLevel() {
 		return authLevel;
 	}

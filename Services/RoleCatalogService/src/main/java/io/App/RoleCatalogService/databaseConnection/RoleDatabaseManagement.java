@@ -4,13 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.App.RoleCatalogService.dto.RoleListWrapper;
+import io.App.RoleCatalogService.exceptions.InternalAppException;
+import io.App.RoleCatalogService.exceptions.RoleAlreadyExistsException;
 import io.App.RoleCatalogService.roleComponent.Role;
 
-public class RoleDatabaseConnection {
+public class RoleDatabaseManagement {
 
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
@@ -22,7 +25,7 @@ public class RoleDatabaseConnection {
 	private static final String DELETE_ROLE_FROM_ROLESUSERSCOMMUNITIES_SQL = "DELETE FROM RolesUsersCommunities WHERE rID = ?;";
 	private static final String GET_ROLE_BY_NAME_SQL = "SELECT * FROM Roles WHERE (rName = ?);";
 
-	public RoleDatabaseConnection() {
+	public RoleDatabaseManagement() {
 		this.databaseConnection = new DatabaseConnection();
 	}
 
@@ -30,8 +33,9 @@ public class RoleDatabaseConnection {
 	 * This method returns the list of Roles on the database
 	 * 
 	 * @return a list of roles
+	 * @throws InternalAppException 
 	 */
-	public RoleListWrapper getRoleDatabaseList() {
+	public RoleListWrapper getRoleDatabaseList() throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -46,7 +50,8 @@ public class RoleDatabaseConnection {
 				roleList.add(role);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -79,8 +84,10 @@ public class RoleDatabaseConnection {
 	 * This method adds a role to the database
 	 * 
 	 * @param role - the role to add
+	 * @throws RoleAlreadyExistsException 
+	 * @throws InternalAppException 
 	 */
-	public void addRoleToDatabase(Role role) {
+	public void addRoleToDatabase(Role role) throws RoleAlreadyExistsException, InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 
@@ -89,8 +96,12 @@ public class RoleDatabaseConnection {
 			st.setInt(2, role.getCommunityID());
 			st.setInt(3, role.getAuthLevel());
 			st.executeUpdate();
+		} catch(SQLIntegrityConstraintViolationException e) {
+			System.err.println(e.getMessage());
+			throw new RoleAlreadyExistsException();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -114,8 +125,9 @@ public class RoleDatabaseConnection {
 	 * This method removes a role from the database
 	 * 
 	 * @param role - The role to remove
+	 * @throws InternalAppException 
 	 */
-	public void removeRoleFromDatabase(Role role) {
+	public void removeRoleFromDatabase(Role role) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st1 = null;
 		PreparedStatement st2 = null;
@@ -130,7 +142,8 @@ public class RoleDatabaseConnection {
 			st2.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {

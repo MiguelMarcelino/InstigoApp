@@ -9,11 +9,25 @@ p {
 }
 
 .floating-card {
-    height: 50pt;
+    background-color: rgb(65, 65, 65);
     transition: 0.5s ease;
-    padding-top: 16pt;
-    padding-left: 5pt;
-    border-radius: 4pt;
+    padding: 15pt;
+    margin-bottom: 10pt;
+    line-height: 23pt;
+    overflow-wrap: break-word;
+
+    mat-panel-title {
+        max-width: 20%;
+        min-width: 100pt;
+        overflow-wrap: break-word;
+        height: 25pt;
+    }
+
+    mat-panel-description {
+        max-width: 80%;
+        height: 25pt;
+    }
+
 }
 
 .floating-card:hover {

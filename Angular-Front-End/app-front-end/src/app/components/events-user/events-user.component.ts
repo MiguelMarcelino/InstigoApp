@@ -32,7 +32,6 @@ export class EventsUserComponent implements OnInit {
   getUserEventList(): void {
     this.userEventService.getEventsFromUser(this.getCurrentUserId()).subscribe((eventsFromUser) => {
       this.eventList = eventsFromUser.second.listEvents;
-      console.log(this.eventList);
     });
   }
 

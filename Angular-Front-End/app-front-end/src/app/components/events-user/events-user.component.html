@@ -1,10 +1,16 @@
 
 <h2>Events from Subscribed Communities</h2>
-<div class="floating-card" *ngFor="let event of eventList">
-    <div class="name-left">
+
+<mat-expansion-panel hideToggle class="floating-card" *ngFor="let event of eventList" >
+    <mat-expansion-panel-header  [collapsedHeight]="'80pt'">
+      <mat-panel-title>
         <p>{{event.name}}</p>
-    </div>
-    <div class="description-right">
+      </mat-panel-title>
+      <mat-panel-description>
         <p>{{event.cName}}</p>
-    </div>
-</div>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <br>
+    <p>Starts at {{event.start}}</p>
+    <p>Ends at {{event.end}}</p>
+</mat-expansion-panel>

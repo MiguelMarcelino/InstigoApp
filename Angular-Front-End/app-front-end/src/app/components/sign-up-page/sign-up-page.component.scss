@@ -1,11 +1,16 @@
 h2{
     color: white;
     font-size: 20pt;
+    text-align: center;
 }
 
 p {
     color: white;
     font-size: 15pt;
+}
+
+.form-group{
+    margin-bottom: 25pt;
 }
 
 .page-style {
@@ -17,6 +22,7 @@ p {
 .other-accounts {
     margin-top: 30pt;
     margin-bottom: 30pt;
+    text-align: center;
 }
 
 .account-button {
@@ -25,4 +31,20 @@ p {
 
 .control-label {
     color: white;
+}
+
+.sign-up-btn{
+    width: 100%;
+}
+
+@media only screen and (max-width: 1000px) {
+    .page-style {
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .page-style {
+        width: 100%;
+    }
 }
