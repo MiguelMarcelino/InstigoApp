@@ -6,6 +6,7 @@ All changes made to this project will be documented in this file
 ## [0.1.3] - 2020-08-05
 ### Added
 - Role backend was completed
+- New page for user profile
 
 ### Changed
 - Fixed bugs in the interface
