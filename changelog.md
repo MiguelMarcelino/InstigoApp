@@ -3,6 +3,16 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.3] - 2020-08-05
+### Added
+- Role backend was completed
+
+### Changed
+- Fixed bugs in the interface
+- New interface for events page
+
+-------------------------------------------------------------------------
+
 ## [0.1.3] - 2020-07-27
 ### Changed
 - Sign up page now woking
@@ -13,7 +23,6 @@ All changes made to this project will be documented in this file
 
 ### Added
 - New option to subscribe to communities in community list page
-
 
 -------------------------------------------------------------------------
 
