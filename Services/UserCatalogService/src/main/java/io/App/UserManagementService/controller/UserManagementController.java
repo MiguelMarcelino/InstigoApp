@@ -86,20 +86,15 @@ public class UserManagementController {
 		try {
 			uMD = objectMapper.readValue(userModelJSON, UserLoginModel.class);
 
-			// check User information
+			// check User information (going to change after implementation of
+			// security features)
 			user = uC.getUserByName(uMD.getUsername());
 			if (!user.getPassword().equals(uMD.getPassword())) {
 				return new ResponseEntity<>(new Pair<>(
 						"The inserted password doesn't match that users password",
 						null), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		} catch (JsonParseException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(
-					new Pair<>("Internal Application Error", null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
+		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
 					new Pair<>("Internal Application Error", null),

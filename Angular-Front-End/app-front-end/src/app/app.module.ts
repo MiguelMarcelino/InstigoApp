@@ -19,6 +19,7 @@ import { JwtInterceptor } from './services/authentication/jwt.interceptor';
 import { ErrorInterceptor } from './services/authentication/error.interceptor';
 import { HomePageAfterLoginComponent } from './components/home-page-after-login/home-page-after-login.component';
 import { ContactsComponent } from './components/contacts/contacts.component';
+import { UserProfilePageComponent } from './components/user-profile-page/user-profile-page.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ContactsComponent } from './components/contacts/contacts.component';
     SignUpPageComponent,
     EventsUserComponent,
     HomePageAfterLoginComponent,
-    ContactsComponent
+    ContactsComponent,
+    UserProfilePageComponent
   ],
   imports: [
     BrowserModule,

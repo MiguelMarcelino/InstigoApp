@@ -12,7 +12,7 @@ public class UserDTO implements Serializable {
 	@JsonProperty("id")
 	private String id;
 
-	@JsonProperty("name")
+	@JsonProperty("userName")
 	private String userName;
 
 	@JsonProperty("firstName")

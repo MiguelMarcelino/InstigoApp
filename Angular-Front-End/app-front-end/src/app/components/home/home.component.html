@@ -17,9 +17,6 @@
             <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/events">All Events</a>
             </li>
-            <li class="nav-item" *ngIf="currentUser">
-                <a class="nav-link" routerLink="/roles">Owned Roles</a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link" routerLink="/contacts">Contacts</a>
             </li>
@@ -47,6 +44,10 @@
             <button mat-menu-item (click)="logout()">
                 <mat-icon>exit_to_app</mat-icon>
                 <span>Sign out</span>
+            </button>
+            <button mat-menu-item routerLink="/userProfile">
+                <mat-icon>person</mat-icon>
+                <span>User Profile</span>
             </button>
         </mat-menu>
     </div>

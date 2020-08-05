@@ -21,7 +21,7 @@ public class UserDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String GET_ALL_USERS_SQL = "SELECT * FROM Users";
+	private static final String GET_ALL_USERS_SQL = "SELECT (uID, uName, firstName, lastName, uEmail) FROM Users";
 	private static final String INSERT_USER_SQL = "INSERT INTO Users (uName, firstName, lastName, uEmail, uPassword) VALUES (?, ?, ?, ?, ?)";
 	private static final String ADD_USER_ROLE_AND_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities (uID, cID, rID, dStart, dEnd) "
 			+ "VALUES (?, ?, ?, ?, ?)";

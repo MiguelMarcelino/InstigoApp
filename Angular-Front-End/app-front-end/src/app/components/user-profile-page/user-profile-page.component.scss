@@ -1,0 +1,59 @@
+.page-style {
+    color: white;
+    text-align: justify;
+}
+
+p {
+    font-size: 15pt;
+}
+
+.user-info-wrapper{
+    width: 100%;
+}
+
+.img-left {
+    float: left;
+    width: 20%;
+}
+
+.content-right {
+    float: right;
+    width: 80%;
+}
+
+.user-profile-img {
+    max-width: 15vw;
+    max-height: 15vw;
+}
+
+.info-left{
+    float: left;
+    width: 25%;
+    text-align: left;
+}
+
+.info-right {
+    float: right;
+    width: 75%;
+    text-align: center;
+}
+
+@media only screen and (max-width: 600px){
+
+    .img-left {
+        text-align: center;
+        margin-bottom: 20pt;
+        width: 100%;
+    }
+
+    .content-right {
+        text-align: center;
+        width: 100%;
+    }
+
+    .user-profile-img {
+        max-width: 25vw;
+        max-height: 25vw;
+    }
+    
+}

@@ -9,6 +9,7 @@ import { EventsUserComponent } from './components/events-user/events-user.compon
 import { AuthGuard } from './services/authentication/auth-guard.service';
 import { HomePageAfterLoginComponent } from './components/home-page-after-login/home-page-after-login.component';
 import { ContactsComponent } from './components/contacts/contacts.component';
+import { UserProfilePageComponent } from './components/user-profile-page/user-profile-page.component';
 
 
 const routes: Routes = [
@@ -51,6 +52,11 @@ const routes: Routes = [
   {
     path: "contacts",
     component: ContactsComponent
+  },
+  {
+    path: "userProfile",
+    component: UserProfilePageComponent,
+    canActivate: [AuthGuard]
   }
 ];
 
