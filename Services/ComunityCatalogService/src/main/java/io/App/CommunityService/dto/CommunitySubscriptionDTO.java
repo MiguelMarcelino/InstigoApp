@@ -2,18 +2,18 @@ package io.App.CommunityService.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CommunitySubscribeDTO {
+public class CommunitySubscriptionDTO {
 
 	@JsonProperty("uID")
 	private String uID;
 	@JsonProperty("cID")
 	private String cID;
 
-	public CommunitySubscribeDTO() {
+	public CommunitySubscriptionDTO() {
 		// For REST only
 	}
 
-	public CommunitySubscribeDTO(String uID, String cID) {
+	public CommunitySubscriptionDTO(String uID, String cID) {
 		this.uID = uID;
 		this.cID = cID;
 	}

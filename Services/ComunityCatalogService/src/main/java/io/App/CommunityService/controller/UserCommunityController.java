@@ -18,7 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.App.CommunityService.communityComponent.UserCommunityCatalog;
 import io.App.CommunityService.dto.CommunityListWrapper;
-import io.App.CommunityService.dto.CommunitySubscribeDTO;
+import io.App.CommunityService.dto.CommunitySubscriptionDTO;
+import io.App.CommunityService.dto.Pair;
 import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
@@ -31,11 +32,24 @@ public class UserCommunityController {
 
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
-	// For later
+
 	@GetMapping("/userSubbedCommunities/{uID}")
-	public CommunityListWrapper userSubbedCommunities(
-			@PathVariable("uID") int uID) {
-		return uCC.userSubbscribedCommunities(uID);
+	public ResponseEntity<Pair<String, CommunityListWrapper>> userSubbedCommunities(
+			@PathVariable("uID") String uID) {
+		CommunityListWrapper cLW = null;
+
+		try {
+			cLW = uCC.userSubbscribedCommunities(Integer.parseInt(uID));
+		} catch (NumberFormatException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		System.out.println("Successfully got Community list");
+		return new ResponseEntity<>(new Pair<>("Successfully got Community list", cLW), HttpStatus.OK);
 	}
 
 	@GetMapping("isRegistered/{uID}/{cID}")
@@ -49,11 +63,11 @@ public class UserCommunityController {
 	public ResponseEntity<String> subscribeToCommunity(
 			@RequestBody String communitySubscribeJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		CommunitySubscribeDTO cDTO = null;
+		CommunitySubscriptionDTO cDTO = null;
 
 		try {
 			cDTO = objectMapper.readValue(communitySubscribeJSON,
-					CommunitySubscribeDTO.class);
+					CommunitySubscriptionDTO.class);
 
 			uCC.subscribeToCommunity(Integer.parseInt(cDTO.getuID()),
 					Integer.parseInt(cDTO.getcID()));
@@ -75,4 +89,38 @@ public class UserCommunityController {
 		return new ResponseEntity<>("Successfully subscribed user to Community",
 				HttpStatus.OK);
 	}
+
+	@PostMapping(path = "/unsubscribeFromCommunity", consumes = {
+			"application/json" })
+	public ResponseEntity<String> unsubscribeFromCommunity(
+			@RequestBody String communityUnsubscribeJSON) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		CommunitySubscriptionDTO cSDTO = null;
+
+		try {
+			cSDTO = objectMapper.readValue(communityUnsubscribeJSON,
+					CommunitySubscriptionDTO.class);
+
+			uCC.unsubscribeFromCommunity(Integer.parseInt(cSDTO.getuID()),
+					Integer.parseInt(cSDTO.getcID()));
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (JsonParseException | JsonMappingException
+				| NumberFormatException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		System.out.println("Successfully subscribed user to Community");
+		return new ResponseEntity<>("Successfully subscribed user to Community",
+				HttpStatus.OK);
+	}
+
 }

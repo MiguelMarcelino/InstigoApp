@@ -1,7 +1,8 @@
 
 <h2>Communities</h2>
 
-<mat-expansion-panel hideToggle class="floating-card" *ngFor="let community of communities" >
+<mat-expansion-panel hideToggle class="floating-card" *ngFor="let community of communities" 
+  [ngClass]="{'subscribed-community': community.isSubscribed}">
     <mat-expansion-panel-header [collapsedHeight]="'80pt'" [expandedHeight]="'100pt'">
       <mat-panel-title>
         <p>{{community.name}}</p>
@@ -10,5 +11,11 @@
         <p>{{community.description}}</p>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <button mat-raised-button (click)="subscribeToCommunity(community.id)">Subscribe</button>
+
+    <div *ngIf="community.isSubscribed">
+      <button mat-raised-button (click)="unsubscribeFromCommunity(community)">Unsubscribe</button>
+    </div>
+    <div *ngIf="!community.isSubscribed">
+      <button mat-raised-button (click)="subscribeToCommunity(community)">Subscribe</button>
+    </div>
 </mat-expansion-panel>

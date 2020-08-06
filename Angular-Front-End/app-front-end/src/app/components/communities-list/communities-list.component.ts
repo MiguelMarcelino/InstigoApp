@@ -14,7 +14,7 @@ export class CommunitiesListComponent implements OnInit {
 
   currentUser: UserModel;
   communities: CommunityModel[];
-  selectedCommunity: CommunityModel;
+  subscribbedCommunities: Map<string, CommunityModel>;
 
   constructor(
     private communitiesService: CommunitiesService,
@@ -26,16 +26,49 @@ export class CommunitiesListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getCommunityList();
+    this.getFinalCommunityList();
   }
 
-  getCommunityList(): void {
-    this.communitiesService.getAll().subscribe((communitiesList) => {
-      this.communities = communitiesList.second.list;
-    })
+  getAllCommunities() {
+    return this.communitiesService.getAll().toPromise();
   }
 
-  subscribeToCommunity(cID: string): void {
-    this.userCommunityService.subscribeToCommunity(this.currentUser.id, cID).subscribe();
+  getSubscribbedCommunities() {
+    return this.userCommunityService.userSubbedCommunities(this.currentUser.id).toPromise();
+  }
+
+  async getFinalCommunityList() {
+    const communityList = await this.getAllCommunities();
+    this.communities = communityList.second.list;
+    
+    this.subscribbedCommunities = new Map();
+    const subbedCommunities = await this.getSubscribbedCommunities();
+    subbedCommunities.second.list.forEach(x => this.subscribbedCommunities.set(x.id, x));
+
+    if(this.communities && this.subscribbedCommunities) {
+      this.communities.forEach(x => {
+        if(this.subscribbedCommunities.get(x.id)) {
+          x.isSubscribed = true;
+        } else {
+          x.isSubscribed = false;
+        }
+      });
+    }
+  }
+
+  subscribeToCommunity(community: CommunityModel): void {
+    this.userCommunityService.subscribeToCommunity(this.currentUser.id, community.id).subscribe();
+    this.subscribbedCommunities.set(community.id, community);
+    community.isSubscribed = true;
+  }
+
+  unsubscribeFromCommunity(community: CommunityModel): void {
+    this.userCommunityService.unsubscribeFromCommunity(this.currentUser.id, community.id).subscribe();
+    this.subscribbedCommunities.delete(community.id);
+    community.isSubscribed = false;
+  }
+
+  applyStyle(element) {
+
   }
 }

@@ -1,47 +1,59 @@
 <div class="page-style">
     <div class="user-info-wrapper">
-
+        <div class="img-left">
+            <img class="user-profile-img mat-elevation-z8" src="../../../assets/icons/user-profile.png">
+            <button class="custom-bnt mat-raised-button">Edit</button>
+        </div>
+        <div class="content-right">
+            <!-- Username -->
+            <div class="info-wrapper">
+                <a class="info-left">Username</a>
+                <a class="info-right">{{currentUser.userName}}</a>
+            </div>
+            <hr>
+            <!-- First Name -->
+            <div class="info-wrapper">
+                <a class="info-left">First Name</a>
+                <a class="info-right">{{currentUser.firstName}}</a>
+            </div>
+            <hr>
+            <!-- Last Name -->
+            <div class="info-wrapper">
+                <a class="info-left">Last Name</a>
+                <a class="info-right">{{currentUser.lastName}}</a>
+            </div>
+            <hr>
+            <!-- Email -->
+            <div class="info-wrapper">
+                <a class="info-left">Email</a>
+                <a class="info-right">{{currentUser.email}}</a>
+            </div>
+        </div>
     </div>
-    <div class="img-left">
-        <img class="user-profile-img" src="../../../assets/icons/user-profile.png">
-    </div>
-    <div class="content-right">
-        <!-- Username -->
-        <div>
-            <div class="info-left">
-                <p>Username</p>
-            </div>
-            <div class="info-right">
-                <p>{{currentUser.userName}}</p>
-            </div>
-        </div>
 
-        <!-- First Name -->
-        <div>
-            <div class="info-left">
-                <p>First Name</p>
-            </div>
-            <div class="info-right">
-                <p>{{currentUser.firstName}}</p>
-            </div>
+    <div class="row" *ngIf="error">
+        <div class="col-12 alert alert-danger">
+          {{ error?.message }}
         </div>
-        <!-- Last Name -->
-        <div>
-            <div class="info-left">
-                <p>Last Name</p>
-            </div>
-            <div class="info-right">
-                <p>{{currentUser.lastName}}</p>
-            </div>
+    </div>
+
+    <div class="subscribed-communities-wrapper">
+        <h2>Subscribed Communities</h2>
+        <div *ngIf="checkCommunities">
+            <mat-expansion-panel hideToggle class="floating-card" *ngFor="let community of communities" >
+                <mat-expansion-panel-header [collapsedHeight]="'80pt'" [expandedHeight]="'100pt'">
+                  <mat-panel-title>
+                    <p>{{community.name}}</p>
+                  </mat-panel-title>
+                  <mat-panel-description collapsedHeight="'20pt'">
+                    <p>{{community.description}}</p>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <button mat-raised-button (click)="unsubscribeFromCommunity(community.id)">Unsubscribe</button>
+            </mat-expansion-panel>
         </div>
-        <!-- Email -->
-        <div>
-            <div class="info-left">
-                <p>Email</p>
-            </div>
-            <div class="info-right">
-                <p>{{currentUser.email}}</p>
-            </div>
+        <div *ngIf="!checkCommunities">
+            <p>You haven't subscribed to any communities yet!</p>
         </div>
     </div>
 </div>

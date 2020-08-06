@@ -27,6 +27,8 @@ public class UserCommunityDatabaseConnection {
 			+ "WHERE cID = ? AND uID = ?;";
 	private static final String SUBSCRIBE_USER_TO_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities "
 			+ "(uID, cID, rID, dStart, dEnd)" + "VALUES(?, ?, ?, ?, ?);";
+	private static final String UNSUBSCRIBE_USER_FROM_COMMUNITY_SQL = "DELETE FROM RolesUsersCommunities WHERE "
+			+ "(uID = ?) AND (cID = ?);";
 
 	public UserCommunityDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -37,8 +39,9 @@ public class UserCommunityDatabaseConnection {
 	 * 
 	 * @param uID - the user to get the communities
 	 * @return the communities subscribed by a user with id = uID
+	 * @throws InternalAppException 
 	 */
-	public CommunityListWrapper userSubCommunities(int uID) {
+	public CommunityListWrapper userSubCommunities(int uID) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -57,7 +60,8 @@ public class UserCommunityDatabaseConnection {
 				lC.add(c);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.print(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -188,5 +192,37 @@ public class UserCommunityDatabaseConnection {
 			}
 		}
 
+	}
+
+	public void unsubscribeFromCommunity(int uID, int cID) throws InternalAppException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = con.prepareStatement(UNSUBSCRIBE_USER_FROM_COMMUNITY_SQL);
+			stmt.setInt(1, uID);
+			stmt.setInt(2, cID);
+
+			// create new Dates. Every user has a default end date of 1 year
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

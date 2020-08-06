@@ -16,7 +16,7 @@ public class UserCommunityCatalog {
 		this.uCDC = new UserCommunityDatabaseConnection();
 	}
 
-	public CommunityListWrapper userSubbscribedCommunities(int uID) {
+	public CommunityListWrapper userSubbscribedCommunities(int uID) throws InternalAppException {
 		return uCDC.userSubCommunities(uID);
 	}
 
@@ -27,5 +27,9 @@ public class UserCommunityCatalog {
 	public void subscribeToCommunity(int uID, int cID)
 			throws InternalAppException, AlreadySubscribedException {
 		uCDC.subscribeUserToCommunity(uID, cID);
+	}
+
+	public void unsubscribeFromCommunity(int uID, int cID) throws InternalAppException {
+		uCDC.unsubscribeFromCommunity(uID, cID);
 	}
 }
