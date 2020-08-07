@@ -43,7 +43,8 @@ public class CommunityCatalogController {
 			return new ResponseEntity<>(new Pair<>("Internal Application Error", null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(new Pair<>("Successfull request", cLW), HttpStatus.OK);
+		System.out.println("Successfull communities request");
+		return new ResponseEntity<>(new Pair<>("Successfull communities request", cLW), HttpStatus.OK);
 	}
 
 	@PostMapping(path = "/community/create", consumes = { "application/json" })

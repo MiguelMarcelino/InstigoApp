@@ -1,0 +1,13 @@
+{
+    "userCatalogApiAddUser": "http://localhost:8081/userCatalogApi/addUser",
+    "userCatalogApiLogin": "http://localhost:8081/userCatalogApi/login",
+    "userFeedbackSendFeedback": "http://localhost:8081/userFeedbackApi/receiveFeedback",
+
+    "communitiesCatalogApi": "http://localhost:8082/communityCatalogApi/communities",
+    "communityCatalogApi": "http://localhost:8082/communityCatalogApi/community",
+    "userCommunityApiSubscribe": "http://localhost:8082/userCommunityApi/subscribeToCommunity",
+    "userCommunityApiUnsubscribe": "http://localhost:8082/userCommunityApi/unsubscribeFromCommunity",
+    "userCommunityApiSubscribedCommunities": "http://localhost:8082/userCommunityApi/userSubbedCommunities",
+
+    "userEventApiAllEvents": "http://localhost:8084/userEventApi/eventsFromSubbedCommunities"
+}

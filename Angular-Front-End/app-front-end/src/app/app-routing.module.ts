@@ -50,8 +50,9 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: "contacts",
-    component: ContactsComponent
+    path: "feedback",
+    component: ContactsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: "userProfile",

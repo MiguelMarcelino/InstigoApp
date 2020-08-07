@@ -68,8 +68,9 @@ public class UserCatalog {
 	 * @return - the user with the given name
 	 * @throws InternalAppException - in case there is an internal error with
 	 * the Application
+	 * @throws UserDoesNotExistException 
 	 */
-	public User getUserByName(String uName) throws InternalAppException {
+	public User getUserByName(String uName) throws InternalAppException, UserDoesNotExistException {
 		return uDC.getUserByName(uName);
 	}
 

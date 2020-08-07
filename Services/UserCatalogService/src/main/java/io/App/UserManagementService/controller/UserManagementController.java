@@ -23,6 +23,7 @@ import io.App.UserManagementService.dto.UserListWrapper;
 import io.App.UserManagementService.dto.UserLoginModel;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
+import io.App.UserManagementService.exceptions.UserDoesNotExistException;
 import io.App.UserManagementService.userComponent.User;
 import io.App.UserManagementService.userComponent.UserCatalog;
 
@@ -53,7 +54,7 @@ public class UserManagementController {
 			user = objectMapper.readValue(userJSON, User.class);
 
 			uC.addUser(user);
-		} catch (JsonParseException | JsonMappingException e) {
+		} catch (JsonParseException | JsonMappingException | InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
 					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
@@ -63,10 +64,10 @@ public class UserManagementController {
 			return new ResponseEntity<>(
 					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (InternalAppException | UserAlreadyExistsException e) {
+		} catch (UserAlreadyExistsException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
+					HttpStatus.OK);
 		}
 		Date currDate = new Date();
 		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()),
@@ -89,25 +90,26 @@ public class UserManagementController {
 			// check User information (going to change after implementation of
 			// security features)
 			user = uC.getUserByName(uMD.getUsername());
+
 			if (!user.getPassword().equals(uMD.getPassword())) {
 				return new ResponseEntity<>(new Pair<>(
 						"The inserted password doesn't match that users password",
-						null), HttpStatus.INTERNAL_SERVER_ERROR);
+						null), HttpStatus.CONFLICT);
 			}
-		} catch (JsonParseException | JsonMappingException e) {
+		} catch (JsonParseException | JsonMappingException | InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
-					new Pair<>("Internal Application Error", null),
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
-					new Pair<>("Internal Application Error", null),
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (InternalAppException e) {
+		} catch (UserDoesNotExistException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
+					HttpStatus.OK);
 		}
 
 		// if password matches

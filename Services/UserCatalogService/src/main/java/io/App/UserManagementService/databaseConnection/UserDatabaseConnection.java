@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import io.App.UserManagementService.dto.UserListWrapper;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
+import io.App.UserManagementService.exceptions.UserDoesNotExistException;
 import io.App.UserManagementService.userComponent.User;
 
 public class UserDatabaseConnection {
@@ -56,7 +57,7 @@ public class UserDatabaseConnection {
 				userList.add(user);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace();	//TODO Review
 		} finally {
 			if (con != null) {
 				try {
@@ -248,7 +249,7 @@ public class UserDatabaseConnection {
 			uEmail = rs.getString(5);
 			uPassword = rs.getString(6);
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new InternalAppException();
 		} finally {
@@ -284,8 +285,9 @@ public class UserDatabaseConnection {
 	 * @param name
 	 * @return
 	 * @throws InternalAppException
+	 * @throws UserDoesNotExistException 
 	 */
-	public User getUserByName(String name) throws InternalAppException {
+	public User getUserByName(String name) throws InternalAppException, UserDoesNotExistException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
@@ -297,11 +299,14 @@ public class UserDatabaseConnection {
 			rs = st.executeQuery();
 
 			// get user
-			rs.next();
-			u = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
-					rs.getString(4), rs.getString(5), rs.getString(6));
+			if(rs.next()) {				
+				u = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
+						rs.getString(4), rs.getString(5), rs.getString(6));
+			} else {
+				throw new UserDoesNotExistException();
+			}
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new InternalAppException();
 		} finally {

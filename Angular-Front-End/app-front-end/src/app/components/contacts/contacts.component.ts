@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { UserModel } from 'src/app/models/user.model';
+import { FeedbackService } from 'src/app/services/controllers/feedback-controller.service';
 
 @Component({
   selector: 'contacts',
@@ -8,23 +11,35 @@ import { FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 })
 export class ContactsComponent implements OnInit {
 
-  contactForm: FormGroup;
+  feedbackForm: FormGroup;
+  currentUser: UserModel;
+  message: string;
+  error: string;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authService: AuthenticationService,
+    private feedbackService: FeedbackService
   ) { }
 
   ngOnInit(): void {
-    this.contactForm = this.formBuilder.group({
-      first_name: new FormControl(''),
-      email: new FormControl(''),
+    this.feedbackForm = this.formBuilder.group({
       feedback: new FormControl(''),
-    })
+    });
+    this.authService.currentUser.subscribe(user => this.currentUser = user)
   }
 
-  // TODO
   onSubmit() {
-    //send feedback 
+    const feedback = this.feedbackForm.get('feedback').value;
+    const username = this.currentUser.userName;
+    console.log(username);
+    this.feedbackService.sendFeedback(username, feedback).subscribe((message: string) => {
+      this.message = message;
+    });
+    // ,
+    // error => {
+    //   this.error = error;
+    // });
   }
 
 }

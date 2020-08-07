@@ -49,6 +49,9 @@ https://medium.com/the-resonant-web/spring-boot-2-0-project-structure-and-best-p
 Changelog
 https://keepachangelog.com/en/1.0.0/
 
+Enable CORS
+https://spring.io/guides/gs/rest-service-cors/
+
 ------------TODO------------
 Dependency Injection
 https://www.youtube.com/watch?v=Eqi-hYX50MI

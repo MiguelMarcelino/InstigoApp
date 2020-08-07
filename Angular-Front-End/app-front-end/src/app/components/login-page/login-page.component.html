@@ -2,6 +2,11 @@
 <div class="page-style">
     <h2>Login to {{serverName}}</h2>
 
+    <div class="row" *ngIf="error">
+        <div class="col-12 alert alert-danger">
+          {{ error }}
+        </div>
+    </div>
     <!-- Login -->
     <div class="contact-form">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" method="post">    

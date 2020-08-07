@@ -78,7 +78,6 @@ export class SignUpPageComponent implements OnInit {
             this.error = loginData.first;
             this.loading = false;
           }
-          console.log(loginData.first);
         },
         error => {
           this.error = error;

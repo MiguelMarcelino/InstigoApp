@@ -9,10 +9,6 @@ import { Injectable } from '@angular/core';
 })
 export abstract class TemplateControllerService<T extends Identifiable> {
 
-    private httpOptions = {
-        headers: new HttpHeaders({ "Content-Type": "application/json" })
-    }
-
     constructor(
         protected http: HttpClient
     ) {

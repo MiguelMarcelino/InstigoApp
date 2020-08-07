@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +20,7 @@ import { ErrorInterceptor } from './services/authentication/error.interceptor';
 import { HomePageAfterLoginComponent } from './components/home-page-after-login/home-page-after-login.component';
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { UserProfilePageComponent } from './components/user-profile-page/user-profile-page.component';
+import { AppRoutesService } from './services/router/app-routes.service';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,17 @@ import { UserProfilePageComponent } from './components/user-profile-page/user-pr
     fakeBackendProvider,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [AppRoutesService],
+      useFactory: (appRoutesService: AppRoutesService) => {
+        return () => {
+          // Make sure to return a promise!
+          return appRoutesService.loadAppConfig();
+        };
+      }
+    },
   ],
   bootstrap: [AppComponent]
 })

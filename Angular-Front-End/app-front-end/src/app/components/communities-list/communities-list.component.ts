@@ -57,7 +57,9 @@ export class CommunitiesListComponent implements OnInit {
   }
 
   subscribeToCommunity(community: CommunityModel): void {
-    this.userCommunityService.subscribeToCommunity(this.currentUser.id, community.id).subscribe();
+    this.userCommunityService.subscribeToCommunity(this.currentUser.id, community.id).subscribe( x => {
+      console.log(x);
+    });
     this.subscribbedCommunities.set(community.id, community);
     community.isSubscribed = true;
   }

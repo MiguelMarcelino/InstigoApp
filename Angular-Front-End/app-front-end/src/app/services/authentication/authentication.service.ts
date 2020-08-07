@@ -5,14 +5,13 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { UserSignUpModel } from 'src/app/models/user-sign-up.model';
 import { LoginModel } from 'src/app/models/login.model';
+import { AppRoutesService } from '../router/app-routes.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  private signUpUrl = '/userCatalogApi/addUser';
-  private loginUrl = '/userCatalogApi/login';
   private static USER_STORAGE_FIELD_NAME = "currentUser";
 
   private currentUserSubject: BehaviorSubject<any>;
@@ -24,7 +23,8 @@ export class AuthenticationService {
 
   constructor(
     // private angularFireAuth: AngularFireAuth,
-    protected http: HttpClient
+    protected http: HttpClient,
+    protected appRoutes: AppRoutesService
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(
       JSON.parse(localStorage.getItem(AuthenticationService.USER_STORAGE_FIELD_NAME)));
@@ -36,7 +36,7 @@ export class AuthenticationService {
   }
 
   login(username: String, password: String) {
-    return this.http.post<any>(this.loginUrl, { username, password })
+    return this.http.post<any>(this.appRoutes.apiUserCatalogLogin, { username, password })
       .pipe(map((loginData: LoginModel) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         // if(loginData.login_start_date) {
@@ -48,7 +48,7 @@ export class AuthenticationService {
   }
 
   signUp(user: UserSignUpModel) {
-    return this.http.post<any>(this.signUpUrl, user)
+    return this.http.post<any>(this.appRoutes.apiUserCatalogAddUser, user)
       .pipe(map((loginData: LoginModel) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         // if(loginData.login_start_date) {

@@ -1,27 +1,31 @@
-<h1>Feel Free to contact us!</h1>
+<h1>Feel Free to leave us some Feedback!</h1>
+
+<div class="row-fluid">
+    <h2>
+        It is important for us to always improve our App. So don't hesitate to leave some feedback to let
+        us know on what we can improve.
+    </h2>
+</div>
+
 <div class="row-fluid contact-form">
-    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" method="post">
-        <div class="form-group">
-            <!-- First Name -->
-            <label for="first_name" class="control-label">First Name</label>
-            <input type="text" class="form-control" id="first_name" formControlName="first_name" placeholder="Manuel">
+    <div class="row" *ngIf="message">
+        <div class="col-12 alert alert-success">
+          {{ message }}
         </div>
-
-        <div class="form-group">
-            <!-- Email: -->
-            <label for="email" class="control-label">Email:</label>
-            <input type="email" class="form-control" id="email" formControlName="email" placeholder="manuel@gmail.com">
+    </div>
+    <div class="row" *ngIf="error">
+        <div class="col-12 alert alert-danger">
+          {{ error }}
         </div>
-
+    </div>
+    <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" method="post">
         <div class="form-group">
             <!-- Feedback -->
-            <label for="feedback" class="control-label">Feedback</label>
-            <input class="form-control" id="feedback" formControlName="feedback" placeholder="Write down your feedback">
+            <textarea class="form-control" id="feedback" formControlName="feedback" placeholder="Write down your feedback"></textarea>
         </div>
-
         <div class="form-group">
             <!-- Send feedback -->
-            <button type="submit" class="btn btn-primary">Send Feedback</button>
+            <button mat-raised-button type="submit">Send Feedback</button>
         </div>
     </form>
 </div>

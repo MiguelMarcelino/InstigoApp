@@ -76,6 +76,13 @@ CREATE TABLE RolesUsersCommunities (
 	FOREIGN KEY (rID) REFERENCES Roles(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE Feedback (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`username` varchar(50) NOT NULL,
+	`feedback` varchar(4000) NOT NULL,
+	PRIMARY KEY (`id`)
+);
+
 -- ------------------------------------------------------
 -- -------------------Insert Values----------------------
 -- ------------------------------------------------------

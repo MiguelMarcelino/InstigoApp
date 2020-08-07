@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TemplateControllerService } from './template-controller.service';
 import { CommunityModel } from 'src/app/models/community.model';
+import { AppRoutesService } from '../router/app-routes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,21 +10,19 @@ import { CommunityModel } from 'src/app/models/community.model';
 export class CommunitiesService extends TemplateControllerService<CommunityModel>{
 
   constructor(
-    protected http: HttpClient
+    protected http: HttpClient,
+    private appRoutes: AppRoutesService
   ) {
     super(http);
   }
 
-  private communitiesUrl = '/communityCatalogApi/communities';
-  private getCommunityById = '/communityCatalogApi/community/';
-
   // Abstract class methods
   public getApiUrlAll() {
-    return this.communitiesUrl;
+    return this.appRoutes.apiCommunitiesEndPoint;
   }
 
   public getApiUrlObject() {
-    return this.getCommunityById;
+    return this.appRoutes.apiCommunityEndPoint;
   }
 
 }

@@ -1,24 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AppRoutesService } from '../router/app-routes.service';
 
 @Injectable({
     providedIn: "root"
 })
 export class UserEventControllerService {
 
-    private httpOptions = {
-        headers: new HttpHeaders({ "Content-Type": "application/json" })
-    }
-    private getEventsByUserId = '/userEventApi/eventsFromSubbedCommunities';
-
     constructor(
-        protected http: HttpClient
+        protected http: HttpClient,
+        private appRoutes: AppRoutesService
     ) {
     }
 
     getEventsFromUser(id: string): Observable<any> {
-        let url = `${this.getEventsByUserId}/${id}`
+        let url = `${this.appRoutes.apiUserEventsEndPoint}/${id}`
         return this.http.get(url);
     }
 

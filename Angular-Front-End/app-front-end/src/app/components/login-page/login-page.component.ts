@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { AppSettings } from 'src/app/appSettings';
-import { UserModel } from 'src/app/models/user.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { LoginModel } from 'src/app/models/login.model';
@@ -64,7 +62,7 @@ export class LoginPageComponent implements OnInit {
       .subscribe(
         (loginData: LoginModel) => {
           if (loginData.second !== null) {
-          this.router.navigate([this.returnUrl]);
+            this.router.navigate([this.returnUrl]);
           }
           else {
             this.error = loginData.first;
