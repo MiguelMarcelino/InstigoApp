@@ -52,6 +52,19 @@ https://keepachangelog.com/en/1.0.0/
 Enable CORS
 https://spring.io/guides/gs/rest-service-cors/
 
+Role based authentication
+https://jasonwatmore.com/post/2018/11/22/angular-7-role-based-authorization-tutorial-with-example
+
+Add SSL to Angular
+http://www.howto-expert.com/how-to-get-https-setting-up-ssl-on-your-website/
+https://support.google.com/webmasters/answer/6073543?hl=en
+https://www.youtube.com/watch?v=GPcznB74GPs
+https://letsencrypt.org/
+https://cpanel.net/
+
+Alcides
+https://wiki.alcidesfonseca.com/
+
 ------------TODO------------
 Dependency Injection
 https://www.youtube.com/watch?v=Eqi-hYX50MI
