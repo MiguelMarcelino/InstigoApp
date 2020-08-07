@@ -3,10 +3,22 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.3] - 2020-08-07
+### Added
+- New Feedback backend
+- New Feedback Service Frontend
+- Login error Mesages in Frontend
+- Signup error messages in Frontend
+
+### Changed
+- Feedback frontend interface
+- Backend API calls changed
+
+-------------------------------------------------------------------------
+
 ## [0.1.3] - 2020-08-06
 ### Added
 - Subscribe and Unsubscribe features now fully work
-- 
 
 ### Changed
 - Interface is now fixed
