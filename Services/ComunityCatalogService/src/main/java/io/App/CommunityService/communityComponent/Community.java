@@ -11,10 +11,12 @@ public class Community {
 		this.name = name;
 		this.description = description;
 	}
-
-	public Community(String name) {
+	
+	public Community(String name, String description) {
 		this.name = name;
+		this.description = description;
 	}
+
 
 	public Community() {
 		// For REST only

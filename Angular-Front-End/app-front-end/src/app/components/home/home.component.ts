@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AppSettings } from 'src/app/appSettings';
 import { UserModel } from 'src/app/models/user.model';
 import { Router } from '@angular/router';
+import { Role } from 'src/app/models/role.model';
 
 @Component({
   selector: 'app-home',
@@ -30,4 +31,7 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  hasPermission(): boolean {
+    return (this.currentUser.role === Role.Editor || this.currentUser.role === Role.Admin) ? true : false;
+  }
 }

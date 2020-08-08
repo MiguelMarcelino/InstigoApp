@@ -21,6 +21,8 @@ import { HomePageAfterLoginComponent } from './components/home-page-after-login/
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { UserProfilePageComponent } from './components/user-profile-page/user-profile-page.component';
 import { AppRoutesService } from './services/router/app-routes.service';
+import { CreateCommunityComponent } from './components/editors/create-community/create-community.component';
+import { CreateEventsComponent } from './components/editors/create-events/create-events.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { AppRoutesService } from './services/router/app-routes.service';
     EventsUserComponent,
     HomePageAfterLoginComponent,
     ContactsComponent,
-    UserProfilePageComponent
+    UserProfilePageComponent,
+    CreateCommunityComponent,
+    CreateEventsComponent
   ],
   imports: [
     BrowserModule,

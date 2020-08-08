@@ -1,19 +1,17 @@
 package io.App.UserManagementService.databaseConnection;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import io.App.UserManagementService.dto.UserListWrapper;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
+import io.App.UserManagementService.userComponent.Role;
 import io.App.UserManagementService.userComponent.User;
 
 public class UserDatabaseConnection {
@@ -22,14 +20,12 @@ public class UserDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String GET_ALL_USERS_SQL = "SELECT (uID, uName, firstName, lastName, uEmail) FROM Users";
-	private static final String INSERT_USER_SQL = "INSERT INTO Users (uName, firstName, lastName, uEmail, uPassword) VALUES (?, ?, ?, ?, ?)";
-	private static final String ADD_USER_ROLE_AND_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities (uID, cID, rID, dStart, dEnd) "
-			+ "VALUES (?, ?, ?, ?, ?)";
+	private static final String GET_ALL_USERS_SQL = "SELECT (uID, uName, firstName, lastName, role, uEmail) FROM Users";
+	private static final String INSERT_USER_SQL = "INSERT INTO Users (uName, firstName, lastName, role, uEmail, uPassword) VALUES (?, ?, ?, ?, ?)";
 	private static final String DELETE_USER_FROM_USER_TABLE_SQL = "DELETE FROM Users WHERE uID = ?;";
 	private static final String DELETE_USER_FROM_ROLESUSERSCOMMUNITIES_SQL = "DELETE FROM RolesUsersCommunities WHERE uID = ?;";
-	private static final String SELECT_USER_BY_ID = "SELECT uName FROM Users WHERE uID = ?;";
-	private static final String SELECT_USER_BY_NAME = "SELECT * FROM Users WHERE uName = ?;";
+	private static final String SELECT_USER_BY_ID_SQL = "SELECT uName FROM Users WHERE uID = ?;";
+	private static final String SELECT_USER_BY_NAME_SQL = "SELECT * FROM Users WHERE uName = ?;";
 
 	public UserDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -57,7 +53,7 @@ public class UserDatabaseConnection {
 				userList.add(user);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();	//TODO Review
+			e.printStackTrace(); // TODO Review
 		} finally {
 			if (con != null) {
 				try {
@@ -101,36 +97,15 @@ public class UserDatabaseConnection {
 		ResultSet rs = null;
 
 		try {
-			st = con.prepareStatement(INSERT_USER_SQL,
-					Statement.RETURN_GENERATED_KEYS);
+			st = con.prepareStatement(INSERT_USER_SQL);
 			st.setString(1, user.getUserName());
 			st.setString(2, user.getFirstName());
 			st.setString(3, user.getLastName());
-			st.setString(4, user.getEmail());
-			st.setString(5, user.getPassword());
+			st.setString(4, Role.USER.name());
+			st.setString(5, user.getEmail());
+			st.setString(6, user.getPassword());
 			st.executeUpdate();
 
-			// Get newly generated id
-			rs = st.getGeneratedKeys();
-			rs.next();
-			int newUserID = rs.getInt(1);
-
-			// Insert user into "ALL_USER_COMMUNITY" (cID=1) community with
-			// "DEFAULT_ROLE"
-			// (rID=1)
-			// default role time will be 1 year. After that it will have to be
-			// renewed
-			int cID = 1;
-			int rID = 1;
-			LocalDate dateStart = LocalDate.now();
-			LocalDate dateEnd = dateStart.plusYears(1);
-			st2 = con.prepareStatement(ADD_USER_ROLE_AND_COMMUNITY_SQL);
-			st2.setInt(1, newUserID);
-			st2.setInt(2, cID);
-			st2.setInt(3, rID);
-			st2.setDate(4, Date.valueOf(dateStart));
-			st2.setDate(5, Date.valueOf(dateEnd));
-			st2.executeUpdate();
 		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new UserAlreadyExistsException();
 		} catch (SQLException e) {
@@ -224,30 +199,20 @@ public class UserDatabaseConnection {
 	 * @return a user with all parameters from database
 	 * @throws InternalAppException
 	 */
-	public User getUserInfo(int uID) throws InternalAppException {
+	public User getUserById(int uID) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		User u = null;
-		String uName = null;
-		String uFirstName = null;
-		String uLastName = null;
-		String uEmail = null;
-		String uPassword = null;
-
 		try {
 			// ver se o Utilizador esta associado a uma dada communidade
-			st = con.prepareStatement(SELECT_USER_BY_ID);
+			st = con.prepareStatement(SELECT_USER_BY_ID_SQL);
 			st.setInt(1, uID);
 			rs = st.executeQuery();
 
-			// get next value
 			rs.next();
-			uName = rs.getString(2);
-			uFirstName = rs.getString(3);
-			uLastName = rs.getString(4);
-			uEmail = rs.getString(5);
-			uPassword = rs.getString(6);
+			u = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
+					rs.getString(4), rs.getString(5), rs.getString(6));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -276,7 +241,6 @@ public class UserDatabaseConnection {
 			}
 		}
 
-		u = new User(uID, uName, uFirstName, uLastName, uEmail, uPassword);
 		return u;
 	}
 
@@ -285,23 +249,25 @@ public class UserDatabaseConnection {
 	 * @param name
 	 * @return
 	 * @throws InternalAppException
-	 * @throws UserDoesNotExistException 
+	 * @throws UserDoesNotExistException
 	 */
-	public User getUserByName(String name) throws InternalAppException, UserDoesNotExistException {
+	public User getUserByName(String name)
+			throws InternalAppException, UserDoesNotExistException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		User u = null;
 
 		try {
-			st = con.prepareStatement(SELECT_USER_BY_NAME);
+			st = con.prepareStatement(SELECT_USER_BY_NAME_SQL);
 			st.setString(1, name);
 			rs = st.executeQuery();
 
 			// get user
-			if(rs.next()) {				
+			if (rs.next()) {
 				u = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
-						rs.getString(4), rs.getString(5), rs.getString(6));
+						rs.getString(4), rs.getString(5), rs.getString(6),
+						rs.getString(7));
 			} else {
 				throw new UserDoesNotExistException();
 			}

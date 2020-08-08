@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS Events CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Roles CASCADE;
 DROP TABLE IF EXISTS Communities CASCADE;
+DROP TABLE IF EXISTS Feedback CASCADE;
 
 -- ------------------------------------------------------
 -- --------------------Create Tables---------------------
@@ -26,6 +27,7 @@ CREATE TABLE Users (
 	`uName` varchar(50) NOT NULL,
 	`firstName` varchar(30) NOT NULL,
 	`lastName` varchar(30) NOT NULL,
+	`role` varchar(30) NOT NULL,
 	`uEmail` varchar(50) NOT NULL,
 	`uPassword` varchar(20) NOT NULL,
 	PRIMARY KEY (`uID`),
@@ -42,12 +44,10 @@ CREATE TABLE Communities (
 
 CREATE TABLE Roles (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`rName` varchar(20) NOT NULL,
+	`rName` varchar(30) NOT NULL,
 	`authLevel` int(1) NOT NULL,
-	`cID` int(11) NOT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `rName` (`rName`),
-	FOREIGN KEY (cID) REFERENCES Communities(cID) ON DELETE CASCADE ON UPDATE CASCADE
+	UNIQUE KEY `rName` (`rName`)
 );
 
 CREATE TABLE Events (
@@ -66,14 +66,13 @@ CREATE TABLE RolesUsersCommunities (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`uID` int(11) NOT NULL,
 	`cID` int(11) NOT NULL,
-	`rID` int(11) NOT NULL,
+	`roleName` varchar(30) NOT NULL,
 	`dStart` date NOT NULL,
 	`dEnd` date NOT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `ruc` (`uID`,`cID`,`rID`),
+	UNIQUE KEY `ruc` (`uID`,`cID`),
 	FOREIGN KEY (uID) REFERENCES Users(uID) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (cID) REFERENCES Communities(cID) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (rID) REFERENCES Roles(id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (cID) REFERENCES Communities(cID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Feedback (
@@ -89,10 +88,6 @@ CREATE TABLE Feedback (
 
 -- --------------------Communities-----------------------
 LOCK TABLES Communities WRITE;
-INSERT INTO Communities VALUES(1, 'ADMIN_COMMUNITY', 'All Admins belong to this community');
-INSERT INTO Communities VALUES(2, 'MAINTAINER_COMMUNITY', 'All Maintainers belong to this community');
-INSERT INTO Communities VALUES(3, 'ALL_USER_COMMUNITY', 'All Users belong to this community');
-
 -- Test Values
 INSERT INTO Communities VALUES (4,'ASC', 'This is meant for all the students that  are participating in the
 	course of ASC'),
@@ -110,20 +105,20 @@ UNLOCK TABLES;
 -- are given a role on the ALL_USER_COMMUNITY, which they belong to.
 -- Roles go from authLevel 1 to 3, 1 being the authLevel with the least privileges
 Lock Tables Roles WRITE;
-INSERT INTO Roles Values(1, 'ADMIN_ROLE', 1, 3);
-INSERT INTO Roles Values(2, 'MAINTAINER_ROLE', 1, 2);
-INSERT INTO Roles Values(3, 'DEFAULT_USER_ROLE', 1, 1);
-
+INSERT INTO Roles Values(1, 'COMMUNITY_ADMIN_ROLE', 3);
+INSERT INTO Roles Values(2, 'COMMUNITY_EDITOR_ROLE', 2);
+INSERT INTO Roles Values(3, 'COMMUNITY_USER_ROLE', 1);
 
 -- Test Values
-INSERT INTO Roles VALUES (4, 'Hero-Admin', 3, 1);
 UNLOCK TABLES;
 
 -- ----------------------Users------------------------
 LOCK TABLES Users WRITE;
 -- Test Values
-INSERT INTO Users VALUES (2,'Manuel', 'Manuel', 'Goncalves', 'manuel@gmail.com', 'manuelPassword'),
-			 (1,'Pedro', 'Pedro', 'Manuel', 'pedro@outlook.pt', 'pedroPassword');
+INSERT INTO Users VALUES (1,'Admin', 'Admin', 'User', 'ADMIN', 'admin@fculapp.com', 'adminPassword'),
+			 (2,'TestEditor', 'TestEditor', 'Man', 'EDITOR', 'tester@fculapp.com', 'testPassword'),
+			 (3,'Manuel', 'Manuel', 'Goncalves', 'USER', 'manuel@fculapp.com', 'manuelPassword'),
+			 (4,'Pedro', 'Pedro', 'Manuel', 'USER', 'pedro@fculapp.com', 'pedroPassword');
 UNLOCK TABLES;
 
 -- --------------------Events-------------------------
@@ -136,7 +131,7 @@ UNLOCK TABLES;
 -- --------------RolesUsersCommunities----------------
 LOCK TABLES RolesUsersCommunities WRITE;
 -- Test Values
-INSERT INTO RolesUsersCommunities VALUES (1,1,4,3,'2020-01-04','2021-01-04'),
-					 (2,2,5,3,'2020-01-04','2021-01-04');
+INSERT INTO RolesUsersCommunities VALUES (1,3,4,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04'),
+					 (2,4,5,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04');
 UNLOCK TABLES;
 

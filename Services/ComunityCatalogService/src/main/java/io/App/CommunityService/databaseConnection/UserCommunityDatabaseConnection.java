@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import io.App.CommunityService.communityComponent.Community;
+import io.App.CommunityService.communityComponent.Role;
 import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
@@ -26,7 +27,7 @@ public class UserCommunityDatabaseConnection {
 	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT cID FROM RolesUsersCommunities "
 			+ "WHERE cID = ? AND uID = ?;";
 	private static final String SUBSCRIBE_USER_TO_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities "
-			+ "(uID, cID, rID, dStart, dEnd)" + "VALUES(?, ?, ?, ?, ?);";
+			+ "(uID, cID, roleName, dStart, dEnd)" + "VALUES(?, ?, ?, ?, ?);";
 	private static final String UNSUBSCRIBE_USER_FROM_COMMUNITY_SQL = "DELETE FROM RolesUsersCommunities WHERE "
 			+ "(uID = ?) AND (cID = ?);";
 
@@ -162,7 +163,7 @@ public class UserCommunityDatabaseConnection {
 
 			// Every user gets the default role when they subscribe to a
 			// community
-			stmt.setInt(3, 3);
+			stmt.setString(3, Role.USER.name());
 
 			// create new Dates. Every user has a default end date of 1 year
 			LocalDate dateStart = LocalDate.now();
@@ -203,7 +204,6 @@ public class UserCommunityDatabaseConnection {
 			stmt.setInt(1, uID);
 			stmt.setInt(2, cID);
 
-			// create new Dates. Every user has a default end date of 1 year
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());

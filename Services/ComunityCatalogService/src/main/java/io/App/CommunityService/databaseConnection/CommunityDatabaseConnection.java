@@ -20,7 +20,7 @@ public class CommunityDatabaseConnection {
 
 	// SQL Queries
 	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT * FROM Communities WHERE cID > 3";
-	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO Communities (cName) VALUES (?)";
+	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO Communities (cName, description) VALUES (?, ?)";
 	private static final String DELETE_COMMUNITY_SQL = "DELETE FROM Communities WHERE cName = ?";
 	// private static final String DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL =
 	// "DELETE FROM RolesUsersCommunities WHERE cID2 = ?;";
@@ -97,6 +97,7 @@ public class CommunityDatabaseConnection {
 		try {
 			st = con.prepareStatement(INSERT_COMMUNITY_SQL);
 			st.setString(1, community.getName());
+			st.setString(2, community.getDescription());
 			st.executeUpdate();
 		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new CommunityAlreadyExistsException(community.getName());

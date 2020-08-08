@@ -29,9 +29,10 @@ public class UserEventDatabaseManagement {
 	 * 
 	 * @param uID - the user to get all events
 	 * @return all events from the user (uID) subscribed communities
-	 * @throws InternalAppException 
+	 * @throws InternalAppException
 	 */
-	public EventListWrapper eventsFromSubCommunities(int uID) throws InternalAppException {
+	public EventListWrapper eventsFromSubCommunities(int uID)
+			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -55,7 +56,8 @@ public class UserEventDatabaseManagement {
 				String cName = rs.getString(6);
 
 				// create Event
-				EventDTO e = new EventDTO(eID, eName, dateStart, dateEnd, cID, cName);
+				EventDTO e = new EventDTO(eID, eName, dateStart, dateEnd, cID,
+						cName);
 
 				// insert Event into List
 				listEvents.add(e);
@@ -87,7 +89,6 @@ public class UserEventDatabaseManagement {
 			}
 		}
 
-		// set List
 		eLW.setList(listEvents);
 
 		return eLW;

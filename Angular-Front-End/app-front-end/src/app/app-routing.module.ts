@@ -10,6 +10,9 @@ import { AuthGuard } from './services/authentication/auth-guard.service';
 import { HomePageAfterLoginComponent } from './components/home-page-after-login/home-page-after-login.component';
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { UserProfilePageComponent } from './components/user-profile-page/user-profile-page.component';
+import { CreateEventsComponent } from './components/editors/create-events/create-events.component';
+import { Role } from './models/role.model';
+import { CreateCommunityComponent } from './components/editors/create-community/create-community.component';
 
 
 const routes: Routes = [
@@ -58,6 +61,18 @@ const routes: Routes = [
     path: "userProfile",
     component: UserProfilePageComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: "createEvent",
+    component: CreateEventsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [Role.Editor, Role.Admin]}
+  },
+  {
+    path: "createCommunity",
+    component: CreateCommunityComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [Role.Editor, Role.Admin]}
   }
 ];
 

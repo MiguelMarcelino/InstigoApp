@@ -6,6 +6,7 @@ public class User {
 	private String userName;
 	private String firstName;
 	private String lastName;
+	private String roleName;
 	private String email;
 	private String password;
 
@@ -20,13 +21,23 @@ public class User {
 	 * @param name
 	 *            - name of the user
 	 */
-	public User(int id, String userName, String firstName, String lastName, String email, String password) {
+	public User(int id, String userName, String firstName, String lastName, String roleName, String email, String password) {
 		this.id = id;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.roleName = roleName;
 		this.email = email;
 		this.password = password;
+	}
+	
+	public User(int id, String userName, String firstName, String lastName, String roleName, String email) {
+		this.id = id;
+		this.userName = userName;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.roleName = roleName;
+		this.email = email;
 	}
 
 	/**
@@ -45,14 +56,6 @@ public class User {
 	public String getUserName() {
 		return userName;
 	}
-
-	public String getEmail() {
-		return this.email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
 	
 	public String getFirstName() {
 		return firstName;
@@ -62,4 +65,15 @@ public class User {
 		return lastName;
 	}
 
+	public String getRoleName() {
+		return roleName;
+	}
+	
+	public String getEmail() {
+		return this.email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
 }

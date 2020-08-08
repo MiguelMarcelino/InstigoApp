@@ -3,6 +3,20 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.3] - 2020-08-08
+### Added
+- Added new role-based login
+- Added page to create Communities
+- Started creating page to create events
+
+### Changed
+- AuthGuard now takes roles into account
+- App routing now takes roles into account
+- Adapted backend for role-based login
+- Changed database models to allow for role-based login
+
+-------------------------------------------------------------------------
+
 ## [0.1.3] - 2020-08-07
 ### Added
 - New Feedback backend

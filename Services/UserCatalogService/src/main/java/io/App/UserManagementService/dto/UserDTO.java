@@ -23,6 +23,9 @@ public class UserDTO implements Serializable {
 
 	@JsonProperty("email")
 	private String email;
+	
+	@JsonProperty("role")
+	private String role;
 
 	@JsonProperty("dateLogin")
 	private Date dateLogin;
@@ -37,13 +40,24 @@ public class UserDTO implements Serializable {
 	 * @param name - name of the user
 	 */
 	public UserDTO(String id, String userName, String firstName,
-			String lastName, String email, Date dateLogin) {
+			String lastName, String role, String email, Date dateLogin) {
 		this.id = id;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.role = role;
 		this.dateLogin = dateLogin;
+	}
+	
+	public UserDTO(String id, String userName, String firstName,
+			String lastName, String role, String email) {
+		this.id = id;
+		this.userName = userName;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.role = role;
 	}
 
 	public String getId() {
@@ -64,6 +78,10 @@ public class UserDTO implements Serializable {
 
 	public String getLastName() {
 		return lastName;
+	}
+	
+	public String getRole() {
+		return role;
 	}
 
 	public Date getDateLogin() {

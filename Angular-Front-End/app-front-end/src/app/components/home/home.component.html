@@ -14,8 +14,14 @@
             <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/communities">Communities</a>
             </li>
+            <li class="nav-item" *ngIf="currentUser && hasPermission()">
+                <a class="nav-link" routerLink="/createCommunity">Create Community</a>
+            </li>
             <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/events">All Events</a>
+            </li>
+            <li class="nav-item" *ngIf="currentUser && hasPermission()">
+                <a class="nav-link" routerLink="/createEvent">Create Event</a>
             </li>
             <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/feedback">Feedback</a>
@@ -41,13 +47,13 @@
                     <mat-card-subtitle>{{currentUser?.email}}</mat-card-subtitle>
                 </mat-card-header>
             </mat-card>
-            <button mat-menu-item (click)="logout()">
-                <mat-icon>exit_to_app</mat-icon>
-                <span>Sign out</span>
-            </button>
             <button mat-menu-item routerLink="/userProfile">
                 <mat-icon>person</mat-icon>
                 <span>User Profile</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+                <mat-icon>exit_to_app</mat-icon>
+                <span>Sign out</span>
             </button>
         </mat-menu>
     </div>

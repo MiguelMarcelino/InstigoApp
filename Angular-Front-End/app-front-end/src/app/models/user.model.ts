@@ -5,5 +5,6 @@ export interface UserModel extends Identifiable{
     firstName: string;
     lastName: string;
     email: string;
+    role: string;
     dateLogin: Date;
 }

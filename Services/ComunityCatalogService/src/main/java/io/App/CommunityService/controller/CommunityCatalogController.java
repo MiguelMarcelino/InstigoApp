@@ -54,7 +54,7 @@ public class CommunityCatalogController {
 
 		try {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
-			cC.addCommunity(new Community(cDTO.getName()));
+			cC.addCommunity(new Community(cDTO.getName(), cDTO.getDescription()));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -65,6 +65,7 @@ public class CommunityCatalogController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} 
+
 		System.out.println("Successfully added new Community");
 		return new ResponseEntity<>("Successfully added new Community", HttpStatus.OK);
 
@@ -77,7 +78,7 @@ public class CommunityCatalogController {
 
 		try {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
-			this.cC.removeCommunity(new Community(cDTO.getName()));
+			this.cC.removeCommunity(new Community(cDTO.getName(), cDTO.getDescription()));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);

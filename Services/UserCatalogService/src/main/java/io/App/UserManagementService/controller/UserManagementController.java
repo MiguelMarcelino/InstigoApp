@@ -54,7 +54,8 @@ public class UserManagementController {
 			user = objectMapper.readValue(userJSON, User.class);
 
 			uC.addUser(user);
-		} catch (JsonParseException | JsonMappingException | InternalAppException e) {
+		} catch (JsonParseException | JsonMappingException
+				| InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
 					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
@@ -72,7 +73,7 @@ public class UserManagementController {
 		Date currDate = new Date();
 		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()),
 				user.getUserName(), user.getFirstName(), user.getLastName(),
-				user.getEmail(), currDate);
+				user.getRoleName(), user.getEmail(), currDate);
 		System.out.println("Successfully added new User");
 		return new ResponseEntity<>(
 				new Pair<>("Successfully added new User", uDTO), HttpStatus.OK);
@@ -96,7 +97,8 @@ public class UserManagementController {
 						"The inserted password doesn't match that users password",
 						null), HttpStatus.CONFLICT);
 			}
-		} catch (JsonParseException | JsonMappingException | InternalAppException e) {
+		} catch (JsonParseException | JsonMappingException
+				| InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
 					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
@@ -117,7 +119,7 @@ public class UserManagementController {
 		Date currDate = new Date();
 		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()),
 				user.getUserName(), user.getFirstName(), user.getLastName(),
-				user.getEmail(), currDate);
+				user.getRoleName(), user.getEmail(), currDate);
 		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
 				HttpStatus.OK);
 	}
@@ -143,7 +145,7 @@ public class UserManagementController {
 			// need to check password again
 			userToRemove = new User(Integer.parseInt(uDTO.getId()),
 					uDTO.getName(), uDTO.getFirstName(), uDTO.getLastName(),
-					uDTO.getEmail(), null);
+					uDTO.getRole(), uDTO.getEmail(), null);
 			uC.removeUser(userToRemove);
 		} catch (JsonParseException e) {
 			System.err.println(e.getMessage());
