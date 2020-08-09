@@ -47,10 +47,25 @@ export class AppRoutesService {
         return this.appRoutes.userCommunityApiSubscribedCommunities;
     }
 
+    get apiUserCreatedCommunitiesEndPoint(): string{
+        this.isLoaded();
+        return this.appRoutes.userCommunityApiCreatedCommunities;
+    }
+
     // Events
     get apiUserEventsEndPoint(): string {
         this.isLoaded();
         return this.appRoutes.userEventApiAllEvents;
+    }
+
+    get apiEventsEndPoint(): string {
+        this.isLoaded();
+        return this.appRoutes.eventsCatalogApi;
+    }
+
+    get apiEventEndPoint(): string {
+        this.isLoaded();
+        return this.appRoutes.eventCatalogApi;
     }
 
     // User

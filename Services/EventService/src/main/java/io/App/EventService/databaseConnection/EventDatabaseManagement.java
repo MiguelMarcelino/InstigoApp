@@ -48,7 +48,7 @@ public class EventDatabaseManagement {
 			while (rs.next()) {
 				EventDTO event = new EventDTO(String.valueOf(rs.getInt(1)), rs.getString(2),
 						rs.getDate(3).toString(), rs.getDate(4).toString(),
-						String.valueOf(rs.getInt(5)), rs.getString(6));
+						String.valueOf(rs.getInt(5)), rs.getString(6), rs.getString(7));
 				eventList.add(event);
 			}
 		} catch (SQLException e) {
@@ -102,7 +102,7 @@ public class EventDatabaseManagement {
 			while (rs.next()) {
 				EventDTO event = new EventDTO(String.valueOf(rs.getInt(1)), rs.getString(2),
 						rs.getDate(3).toString(), rs.getDate(4).toString(),
-						String.valueOf(rs.getInt(5)), rs.getString(6));
+						String.valueOf(rs.getInt(5)), rs.getString(6), rs.getString(7));
 				eventList.add(event);
 			}
 		} catch (SQLException e) {
@@ -235,7 +235,7 @@ public class EventDatabaseManagement {
 			rs.next();
 			event = new Event(rs.getInt(1), rs.getString(2),
 					rs.getDate(3).toString(), rs.getDate(4).toString(),
-					rs.getInt(5), rs.getString(6));
+					rs.getInt(5), rs.getString(6), rs.getString(7));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

@@ -24,6 +24,7 @@ public class UserCommunityDatabaseConnection {
 	private static final String USER_SUBSCRIBED_COMMUNITIES_SQL = "SELECT * FROM Communities AS C WHERE (C.cID = "
 			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.cID = RUC.cID "
 			+ "AND RUC.uID = ?));";
+	private static final String USER_CREATED_COMMUNITIES_SQL = "SELECT * FROM Communities WHERE (ownerUserName = ?)";
 	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT cID FROM RolesUsersCommunities "
 			+ "WHERE cID = ? AND uID = ?;";
 	private static final String SUBSCRIBE_USER_TO_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities "
@@ -54,10 +55,54 @@ public class UserCommunityDatabaseConnection {
 			stmt.setInt(1, uID);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				int cID = rs.getInt(1);
-				String cName = rs.getString(2);
-				String cDescription = rs.getString(3);
-				Community c = new Community(cID, cName, cDescription);
+				Community c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				lC.add(c);
+			}
+		} catch (SQLException e) {
+			System.err.print(e.getMessage());
+			throw new InternalAppException();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		cLW.setList(lC);
+
+		return cLW;
+	}
+	
+	public CommunityListWrapper userCreatedCommunities(String ownerUserName) throws InternalAppException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		CommunityListWrapper cLW = new CommunityListWrapper();
+		ArrayList<Community> lC = new ArrayList<Community>();
+
+		try {
+			stmt = con.prepareStatement(USER_CREATED_COMMUNITIES_SQL);
+			stmt.setString(1, ownerUserName);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				Community c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 				lC.add(c);
 			}
 		} catch (SQLException e) {
@@ -225,4 +270,7 @@ public class UserCommunityDatabaseConnection {
 			}
 		}
 	}
+
+	
+
 }

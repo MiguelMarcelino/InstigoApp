@@ -8,15 +8,17 @@ public class Event {
 	private String end;
 	private int cID;
 	private String cName;
+	private String ownerUserName;
 
 	public Event(int id, String name, String start, String end, int cID,
-			String cName) {
+			String cName, String ownerUserName) {
 		this.id = id;
 		this.name = name;
 		this.start = start;
 		this.end = end;
 		this.cID = cID;
 		this.cName = cName;
+		this.ownerUserName = ownerUserName;
 	}
 
 	public Event() {
@@ -45,6 +47,10 @@ public class Event {
 
 	public String getcName() {
 		return cName;
+	}
+
+	public String getOwnerUserName() {
+		return ownerUserName;
 	}
 
 }

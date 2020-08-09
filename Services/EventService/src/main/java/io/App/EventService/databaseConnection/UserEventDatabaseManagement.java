@@ -54,10 +54,11 @@ public class UserEventDatabaseManagement {
 
 				String cID = String.valueOf(rs.getInt(5));
 				String cName = rs.getString(6);
+				String ownerUserName = rs.getString(7);
 
 				// create Event
 				EventDTO e = new EventDTO(eID, eName, dateStart, dateEnd, cID,
-						cName);
+						cName, ownerUserName);
 
 				// insert Event into List
 				listEvents.add(e);

@@ -51,6 +51,25 @@ public class UserCommunityController {
 		System.out.println("Successfully got Community list");
 		return new ResponseEntity<>(new Pair<>("Successfully got Community list", cLW), HttpStatus.OK);
 	}
+	
+	@GetMapping("/userCreatedCommunities/{ownerUserName}")
+	public ResponseEntity<Pair<String, CommunityListWrapper>> userCreatedCommunities(
+			@PathVariable("ownerUserName") String ownerUserName) {
+		CommunityListWrapper cLW = null;
+
+		try {
+			cLW = uCC.userCreatedCommunities(ownerUserName);
+		} catch (NumberFormatException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		System.out.println("Successfully got user created Community list");
+		return new ResponseEntity<>(new Pair<>("Successfully got Community list", cLW), HttpStatus.OK);
+	}
 
 	@GetMapping("isRegistered/{uID}/{cID}")
 	public void isRegisteredToCommunity(@PathVariable("uID") int uID,

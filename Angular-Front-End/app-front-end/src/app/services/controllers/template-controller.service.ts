@@ -9,6 +9,13 @@ import { Injectable } from '@angular/core';
 })
 export abstract class TemplateControllerService<T extends Identifiable> {
 
+    private httpOptions = {
+        headers: new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        })
+    };
+
     constructor(
         protected http: HttpClient
     ) {
@@ -18,20 +25,20 @@ export abstract class TemplateControllerService<T extends Identifiable> {
     protected abstract getApiUrlObject();
 
     getAll(): Observable<any> {
-        return this.http.get(this.getApiUrlAll());
+        return this.http.get(this.getApiUrlAll(), this.httpOptions);
     }
 
     getObject(id: string): Observable<any> {
         let url = `${this.getApiUrlObject()}/${id}`;
-        return this.http.get(url);
+        return this.http.get(url, this.httpOptions);
     }
 
     addObject(object: T): Observable<any> {
-        return this.http.post(`${this.getApiUrlObject()}/create`, object);
+        return this.http.post(`${this.getApiUrlObject()}/create`, object, this.httpOptions);
     }
 
     deleteObject(id: string): Observable<any> {
         let url = `${this.getApiUrlObject()}/${id}/delete`;
-        return this.http.post(url, { "id": id });
+        return this.http.post(url, { "id": id }, this.httpOptions);
     }
 }

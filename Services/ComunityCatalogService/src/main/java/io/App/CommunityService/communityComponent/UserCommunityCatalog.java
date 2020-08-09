@@ -19,6 +19,10 @@ public class UserCommunityCatalog {
 	public CommunityListWrapper userSubbscribedCommunities(int uID) throws InternalAppException {
 		return uCDC.userSubCommunities(uID);
 	}
+	
+	public CommunityListWrapper userCreatedCommunities(String ownerUserName) throws InternalAppException {
+		return uCDC.userCreatedCommunities(ownerUserName);
+	}
 
 	public void isRegToCommunity(int uID, int cID) {
 
@@ -31,5 +35,6 @@ public class UserCommunityCatalog {
 
 	public void unsubscribeFromCommunity(int uID, int cID) throws InternalAppException {
 		uCDC.unsubscribeFromCommunity(uID, cID);
-	}
+	}	
+	
 }

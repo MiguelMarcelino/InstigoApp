@@ -26,18 +26,22 @@ public class EventDTO implements Serializable {
 	@JsonProperty("cName")
 	private String cName;
 
+	@JsonProperty("ownerUserName")
+	private String ownerUserName;
+
 	public EventDTO() {
 		// For REST only
 	}
 
 	public EventDTO(String id, String name, String start, String end,
-			String cID, String cName) {
+			String cID, String cName, String ownerUserName) {
 		this.id = id;
 		this.name = name;
 		this.start = start;
 		this.end = end;
 		this.cID = cID;
 		this.cName = cName;
+		this.ownerUserName = ownerUserName;
 	}
 
 	public String getId() {
@@ -62,6 +66,10 @@ public class EventDTO implements Serializable {
 
 	public String getcName() {
 		return cName;
+	}
+
+	public String getOwnerUserName() {
+		return this.ownerUserName;
 	}
 
 }

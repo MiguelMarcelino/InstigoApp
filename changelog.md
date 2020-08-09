@@ -5,6 +5,18 @@ All changes made to this project will be documented in this file
 
 ## [0.1.3] - 2020-08-08
 ### Added
+- Backend method to get communities that the logged in user has created
+
+### Changed
+- Create Event page frontend finished (still needs testing)
+- Changed Database tables "Communities" and "Events" that now contain information
+about the user that has created them
+- Changed backend to receive and account for creator of communities and events
+
+-------------------------------------------------------------------------
+
+## [0.1.3] - 2020-08-08
+### Added
 - Added new role-based login
 - Added page to create Communities
 - Started creating page to create events

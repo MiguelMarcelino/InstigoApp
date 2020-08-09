@@ -18,12 +18,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.App.EventService.EventComponent.Event;
 import io.App.EventService.EventComponent.EventCatalog;
+import io.App.EventService.EventComponent.Role;
+import io.App.EventService.EventComponent.UserCredentialCheck;
 import io.App.EventService.dto.EventDTO;
 import io.App.EventService.dto.EventListWrapper;
 import io.App.EventService.dto.Pair;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
 import io.App.EventService.exceptions.EventDoesNotExistException;
 import io.App.EventService.exceptions.InternalAppException;
+import io.App.EventService.exceptions.UserDoesNotExistException;
 
 @RestController
 @RequestMapping("/eventApi")
@@ -31,16 +34,19 @@ public class EventCatalogController {
 
 	@Autowired
 	private EventCatalog eC;
+	@Autowired
+	private UserCredentialCheck uCC;
 
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
-	@GetMapping("/eventCatalogList")
+	@GetMapping("/events")
 	public EventListWrapper eventList() {
 		return this.eC.getAllEvents();
 	}
 
 	@GetMapping("getEventsFromCommunity/{cID}")
-	public ResponseEntity<Pair<String, EventListWrapper>> eventsFromCommunity(@PathVariable("cID") int cID) {
+	public ResponseEntity<Pair<String, EventListWrapper>> eventsFromCommunity(
+			@PathVariable("cID") int cID) {
 		EventListWrapper eLW = null;
 		try {
 			eLW = this.eC.getEventsFromCommunity(cID);
@@ -49,13 +55,13 @@ public class EventCatalogController {
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		System.out.println("Successfull events request");
-		return new ResponseEntity<>(new Pair<>("Successfull events request", eLW),
-				HttpStatus.OK);
+		return new ResponseEntity<>(
+				new Pair<>("Successfull events request", eLW), HttpStatus.OK);
 	}
 
-	@PostMapping("registerNewEvent/event")
+	@PostMapping("event/create")
 	public ResponseEntity<String> registerNewEvent(
 			@RequestBody String eventJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -63,12 +69,18 @@ public class EventCatalogController {
 
 		try {
 			eDTO = objectMapper.readValue(eventJSON, EventDTO.class);
-			this.eC.registerNewEvent(new Event(Integer.parseInt(eDTO.getId()),
-					eDTO.getName(), eDTO.getStart(), eDTO.getEnd(),
-					Integer.parseInt(eDTO.getcID()), eDTO.getcName()));
+
+			if ((this.uCC.getUserRole(eDTO.getOwnerUserName()) == Role.EDITOR)
+					|| (this.uCC.getUserRole(
+							eDTO.getOwnerUserName()) == Role.ADMIN)) {
+				this.eC.registerNewEvent(
+						new Event(Integer.parseInt(eDTO.getId()),
+								eDTO.getName(), eDTO.getStart(), eDTO.getEnd(),
+								Integer.parseInt(eDTO.getcID()),
+								eDTO.getcName(), eDTO.getOwnerUserName()));
+			}
 		} catch (JsonParseException | JsonMappingException
-				| NumberFormatException | EventAlreadyExistsException
-				| InternalAppException e) {
+				| NumberFormatException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,6 +88,10 @@ public class EventCatalogController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (UserDoesNotExistException | EventAlreadyExistsException
+				| InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
 		}
 
 		System.out.println("Successfully registered new Event");
@@ -83,7 +99,7 @@ public class EventCatalogController {
 				HttpStatus.OK);
 	}
 
-	@PostMapping("deleteEvent/event")
+	@PostMapping("event/delete")
 	public ResponseEntity<String> deleteEvent(@RequestBody String eventJSON)
 			throws EventDoesNotExistException {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -93,7 +109,8 @@ public class EventCatalogController {
 			eDTO = objectMapper.readValue(eventJSON, EventDTO.class);
 			this.eC.deleteEvent(new Event(Integer.parseInt(eDTO.getId()),
 					eDTO.getName(), eDTO.getStart(), eDTO.getEnd(),
-					Integer.parseInt(eDTO.getcID()), eDTO.getcName()));
+					Integer.parseInt(eDTO.getcID()), eDTO.getcName(),
+					eDTO.getOwnerUserName()));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,

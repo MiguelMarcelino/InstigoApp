@@ -19,10 +19,11 @@ public class CommunityDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT * FROM Communities WHERE cID > 3";
-	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO Communities (cName, description) VALUES (?, ?)";
+	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT * FROM Communities";
+	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO Communities (cName, description, ownerUserName) VALUES (?, ?, ?)";
 	private static final String DELETE_COMMUNITY_SQL = "DELETE FROM Communities WHERE cName = ?";
-	// private static final String DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL =
+	// private static final String
+	// DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL =
 	// "DELETE FROM RolesUsersCommunities WHERE cID2 = ?;";
 	private static final String GET_COMMUNITY_BY_ID = "SELECT * FROM Communities WHERE cID = ?";
 	private static final String GET_COMMUNITY_BY_NAME = "SELECT * FROM Communities WHERE cName = ?";;
@@ -36,7 +37,8 @@ public class CommunityDatabaseConnection {
 	 * 
 	 * @return a list of all communities found on the database
 	 */
-	public CommunityListWrapper getCommunityDatabaseList() throws InternalAppException {
+	public CommunityListWrapper getCommunityDatabaseList()
+			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -47,7 +49,8 @@ public class CommunityDatabaseConnection {
 			stmt = con.prepareStatement(GET_ALL_COMMUNITIES_SQL);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Community community = new Community(rs.getInt(1), rs.getString(2), rs.getString(3));
+				Community community = new Community(rs.getInt(1),
+						rs.getString(2), rs.getString(3), rs.getString(4));
 				communityList.add(community);
 			}
 		} catch (SQLException e) {
@@ -85,8 +88,7 @@ public class CommunityDatabaseConnection {
 	/**
 	 * This method adds a community to the Communities Database
 	 * 
-	 * @param community
-	 *            - the community to add
+	 * @param community - the community to add
 	 * @throws CommunityAlreadyExistsException
 	 */
 	public void addCommunityToDatabase(Community community)
@@ -98,6 +100,7 @@ public class CommunityDatabaseConnection {
 			st = con.prepareStatement(INSERT_COMMUNITY_SQL);
 			st.setString(1, community.getName());
 			st.setString(2, community.getDescription());
+			st.setString(3, community.getOwnerUserName());
 			st.executeUpdate();
 		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new CommunityAlreadyExistsException(community.getName());
@@ -126,11 +129,11 @@ public class CommunityDatabaseConnection {
 	/**
 	 * This method remove a community from the Communities Database
 	 * 
-	 * @param community
-	 *            - the community to remove
+	 * @param community - the community to remove
 	 * @throws CommunityDoesNotExistException
 	 */
-	public void removeCommunityFromDatabase(Community community) throws InternalAppException {
+	public void removeCommunityFromDatabase(Community community)
+			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st1 = null;
 		PreparedStatement st2 = null;
@@ -140,9 +143,11 @@ public class CommunityDatabaseConnection {
 			st1.setString(1, community.getName());
 			st1.executeUpdate();
 
-			// There is no need to delete the community on RolesUsersCommunities table
+			// There is no need to delete the community on RolesUsersCommunities
+			// table
 			// since it has ON_DELETE_CASCADE
-			// st2 = con.prepareStatement(DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL);
+			// st2 =
+			// con.prepareStatement(DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL);
 			// st2.setInt(1, community.getId());
 			// st2.executeUpdate();
 		} catch (SQLException e) {
@@ -179,8 +184,7 @@ public class CommunityDatabaseConnection {
 	/**
 	 * This method returns a community name given a community id
 	 * 
-	 * @param id
-	 *            - the id of the community to get the name
+	 * @param id - the id of the community to get the name
 	 * @return the name of the given community id
 	 * @throws CommunityDoesNotExistException
 	 */
@@ -195,7 +199,8 @@ public class CommunityDatabaseConnection {
 			stmt.setInt(1, id);
 			rs = stmt.executeQuery();
 			rs.next();
-			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3));
+			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3),
+					rs.getString(4));
 		} catch (SQLException e) {
 			// TODO Review this
 			System.err.println(e.getMessage());
@@ -229,7 +234,8 @@ public class CommunityDatabaseConnection {
 
 	}
 
-	public Community getCommunityByName(String cName) throws InternalAppException {
+	public Community getCommunityByName(String cName)
+			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -240,7 +246,8 @@ public class CommunityDatabaseConnection {
 			stmt.setString(1, cName);
 			rs = stmt.executeQuery();
 			rs.next();
-			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3));
+			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3),
+					rs.getString(4));
 		} catch (SQLException e) {
 			// TODO Review this
 			System.err.println(e.getMessage());

@@ -5,16 +5,19 @@ public class Community {
 	private int id;
 	private String name;
 	private String description;
+	private String ownerUserName;
 
-	public Community(int id, String name, String description) {
+	public Community(int id, String name, String description, String ownerUserName) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
+		this.ownerUserName = ownerUserName;
 	}
 	
-	public Community(String name, String description) {
+	public Community(String name, String description, String ownerUserName) {
 		this.name = name;
 		this.description = description;
+		this.ownerUserName = ownerUserName;
 	}
 
 
@@ -34,6 +37,10 @@ public class Community {
 	public String getDescription() {
 		return description;
 	}
+	
+	public String getOwnerUserName() {
+		return ownerUserName;
+	}
 
 	public void setId(int id) {
 		this.id = id;
@@ -45,5 +52,9 @@ public class Community {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public void setOwnerId(String ownerUserName) {
+		this.ownerUserName = ownerUserName;
 	}
 }

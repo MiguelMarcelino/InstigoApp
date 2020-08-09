@@ -8,6 +8,9 @@
     "userCommunityApiSubscribe": "http://localhost:8082/userCommunityApi/subscribeToCommunity",
     "userCommunityApiUnsubscribe": "http://localhost:8082/userCommunityApi/unsubscribeFromCommunity",
     "userCommunityApiSubscribedCommunities": "http://localhost:8082/userCommunityApi/userSubbedCommunities",
+    "userCommunityApiCreatedCommunities": "http://localhost:8082/userCommunityApi/userCreatedCommunities",
 
-    "userEventApiAllEvents": "http://localhost:8084/userEventApi/eventsFromSubbedCommunities"
+    "userEventApiAllEvents": "http://localhost:8084/userEventApi/eventsFromSubbedCommunities",
+    "eventsCatalogApi": "http://localhost:8084/eventApi/events",
+    "eventCatalogApi": "http://localhost:8084/eventApi/event"
 }

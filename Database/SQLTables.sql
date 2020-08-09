@@ -13,9 +13,9 @@ USE RolesUtilCommunities;
 -- ------------------------------------------------------
 DROP TABLE IF EXISTS RolesUsersCommunities CASCADE;
 DROP TABLE IF EXISTS Events CASCADE;
+DROP TABLE IF EXISTS Communities CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Roles CASCADE;
-DROP TABLE IF EXISTS Communities CASCADE;
 DROP TABLE IF EXISTS Feedback CASCADE;
 
 -- ------------------------------------------------------
@@ -38,8 +38,10 @@ CREATE TABLE Communities (
 	`cID` integer auto_increment, 
 	`cName` varchar(20) NOT NULL,
 	`description` varchar(500) NOT NULL,
+	`ownerUserName` varchar(50) NOT NULL,
 	PRIMARY KEY (`cID`),
-	UNIQUE KEY `cName` (`cName`)
+	UNIQUE KEY `cName` (`cName`),
+	FOREIGN KEY (ownerUserName) REFERENCES Users(uName) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Roles (
@@ -57,9 +59,11 @@ CREATE TABLE Events (
 	`end` date NOT NULL,
 	`cID` int(11) NOT NULL,
 	`cName` varchar(20) NOT NULL,
+	`ownerUserName` varchar(50) NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `eName` (`eName`),
-	FOREIGN KEY (cID) REFERENCES Communities(cID) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (cID) REFERENCES Communities(cID) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (ownerUserName) REFERENCES Users(uName) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE RolesUsersCommunities (
@@ -86,17 +90,26 @@ CREATE TABLE Feedback (
 -- -------------------Insert Values----------------------
 -- ------------------------------------------------------
 
+-- ----------------------Users------------------------
+LOCK TABLES Users WRITE;
+-- Test Values
+INSERT INTO Users VALUES (1,'Admin', 'Admin', 'User', 'ADMIN', 'admin@fculapp.com', 'adminPassword'),
+			 (2,'TestEditor', 'TestEditor', 'Man', 'EDITOR', 'tester@fculapp.com', 'testPassword'),
+			 (3,'Manuel', 'Manuel', 'Goncalves', 'USER', 'manuel@fculapp.com', 'manuelPassword'),
+			 (4,'Pedro', 'Pedro', 'Manuel', 'USER', 'pedro@fculapp.com', 'pedroPassword');
+UNLOCK TABLES;
+
 -- --------------------Communities-----------------------
 LOCK TABLES Communities WRITE;
 -- Test Values
-INSERT INTO Communities VALUES (4,'ASC', 'This is meant for all the students that  are participating in the
-	course of ASC'),
-	(5,'LASIGE', 'Computer Science and Engineering research unit at the Department of Informatics, 
-	Faculty of Sciences, University of Lisboa.'),
-	(6,'SD', 'This is meant for all the students that  are participating in the
-	course of SD'),
-	(7,'SO', 'This is meant for all the students that  are participating in the
-	course of SO');
+INSERT INTO Communities VALUES (1,'ASC', 'This is meant for all the students that  are participating in the
+	course of ASC', 'TestEditor'),
+	(2,'LASIGE', 'Computer Science and Engineering research unit at the Department of Informatics, 
+	Faculty of Sciences, University of Lisboa.', 'TestEditor'),
+	(3,'SD', 'This is meant for all the students that  are participating in the
+	course of SD', 'TestEditor'),
+	(4,'SO', 'This is meant for all the students that  are participating in the
+	course of SO', 'TestEditor');
 UNLOCK TABLES;
 
 
@@ -112,26 +125,17 @@ INSERT INTO Roles Values(3, 'COMMUNITY_USER_ROLE', 1);
 -- Test Values
 UNLOCK TABLES;
 
--- ----------------------Users------------------------
-LOCK TABLES Users WRITE;
--- Test Values
-INSERT INTO Users VALUES (1,'Admin', 'Admin', 'User', 'ADMIN', 'admin@fculapp.com', 'adminPassword'),
-			 (2,'TestEditor', 'TestEditor', 'Man', 'EDITOR', 'tester@fculapp.com', 'testPassword'),
-			 (3,'Manuel', 'Manuel', 'Goncalves', 'USER', 'manuel@fculapp.com', 'manuelPassword'),
-			 (4,'Pedro', 'Pedro', 'Manuel', 'USER', 'pedro@fculapp.com', 'pedroPassword');
-UNLOCK TABLES;
-
 -- --------------------Events-------------------------
 LOCK TABLES Events WRITE;
 -- Test Values
-INSERT INTO Events VALUES (1,'Reunião','2020-02-24','2020-02-25',4,'ASC'),
-			  (2,'Almoço_no_LASIGE','2020-03-14','2020-03-14',5,'LASIGE');
+INSERT INTO Events VALUES (1,'Reunião','2020-02-24','2020-02-25',3,'ASC','TestEditor'),
+			  (2,'Almoço_no_LASIGE','2020-03-14','2020-03-14',4,'LASIGE','TestEditor');
 UNLOCK TABLES;
 
 -- --------------RolesUsersCommunities----------------
 LOCK TABLES RolesUsersCommunities WRITE;
 -- Test Values
-INSERT INTO RolesUsersCommunities VALUES (1,3,4,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04'),
-					 (2,4,5,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04');
+INSERT INTO RolesUsersCommunities VALUES (1,3,3,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04'),
+					 (2,4,4,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04');
 UNLOCK TABLES;
 

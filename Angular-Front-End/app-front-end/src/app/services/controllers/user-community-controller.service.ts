@@ -24,6 +24,10 @@ export class UserCommunityService {
     public userSubbedCommunities(uID: string): any {
         return this.http.get(`${this.appRoutes.apiUserSubscribedCommunitiesEndPoint}/${uID}`);
     }
+
+    public userCreatedCommunities(ownerUserName: string): any {
+        return this.http.get(`${this.appRoutes.apiUserCreatedCommunitiesEndPoint}/${ownerUserName}`);
+    }
 }
 
 
