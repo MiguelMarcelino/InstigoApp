@@ -1,16 +1,39 @@
 
-<h2>Events from Subscribed Communities</h2>
+<div class="page-style">
+  <div class="event-list-wrapper">
+    <h2>Events from Subscribed Communities</h2>
+    <div *ngIf="!eventsCheck" class="not-found"> 
+      <app-not-found-page >There are no communities</app-not-found-page>
+      <br>
+      <p>No events found</p>
+    </div>
+    
+    <mat-expansion-panel hideToggle class="floating-card" *ngFor="let event of eventList" >
+        <mat-expansion-panel-header  [collapsedHeight]="'80pt'">
+          <mat-panel-title>
+            <p>{{event.name}}</p>
+          </mat-panel-title>
+          <mat-panel-description>
+            <p>{{event.cName}}</p>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <br>
+        <p>Starts at {{event.start}}</p>
+        <p>Ends at {{event.end}}</p>
+        <div class="delete-btn">
+          <button 
+            mat-raised-button 
+            color="warn" 
+            *ngIf="isEventCreatorOrAdmin(event)" 
+            (click)="deleteEvent(event)">
+              Delete Event
+          </button>
+        </div>
+    </mat-expansion-panel>
+  </div>
 
-<mat-expansion-panel hideToggle class="floating-card" *ngFor="let event of eventList" >
-    <mat-expansion-panel-header  [collapsedHeight]="'80pt'">
-      <mat-panel-title>
-        <p>{{event.name}}</p>
-      </mat-panel-title>
-      <mat-panel-description>
-        <p>{{event.cName}}</p>
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <br>
-    <p>Starts at {{event.start}}</p>
-    <p>Ends at {{event.end}}</p>
-</mat-expansion-panel>
+  <div class="event-list-wrapper">
+    <h2>Events from Created Communities</h2>
+  </div>
+
+</div>

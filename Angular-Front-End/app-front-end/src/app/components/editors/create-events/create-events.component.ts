@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CommunitiesService } from 'src/app/services/controllers/communities-controller.service';
 import { CommunityModel } from 'src/app/models/community.model';
 import { EventService } from 'src/app/services/controllers/events-controller.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { UserModel } from 'src/app/models/user.model';
+import { first } from 'rxjs/operators';
 import { UserCommunityService } from 'src/app/services/controllers/user-community-controller.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class CreateEventsComponent implements OnInit {
       eventName: ['', Validators.required],
       start: ['', Validators.required],
       end: ['', Validators.required],
-      community: ['', Validators.required], // make dropdown to sellect communities
+      community: ['', Validators.required],
     });
     this.communityService.userCreatedCommunities(this.currentUser.userName).subscribe((communities) => {
       this.communities = communities.second.list;
@@ -61,16 +61,17 @@ export class CreateEventsComponent implements OnInit {
     }
 
     this.loading = true;
-    
+
     const event = {
       'name': this.createEventFrom.get('eventName').value, 
       'start': this.createEventFrom.get('start').value,
       'end': this.createEventFrom.get('end').value,
       'cID': this.createEventFrom.get('community').value.id,
-      'cName': this.createEventFrom.get('community').value.cName,
-      'ownerUserName': this.currentUser.userName}
-    this.eventService.addObject(event).subscribe((response)=> {
+      'cName': this.createEventFrom.get('community').value.name,
+      'ownerUserName': this.currentUser.userName};
+    this.eventService.addObject(event).pipe(first()).subscribe((response)=> {
       this.response = response;
+      this.loading = false;
     },
     (error) => {
       this.error = error;

@@ -23,6 +23,8 @@ import { UserProfilePageComponent } from './components/user-profile-page/user-pr
 import { AppRoutesService } from './services/router/app-routes.service';
 import { CreateCommunityComponent } from './components/editors/create-community/create-community.component';
 import { CreateEventsComponent } from './components/editors/create-events/create-events.component';
+import { MatInputModule } from '@angular/material/input';
+import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { CreateEventsComponent } from './components/editors/create-events/create
     ContactsComponent,
     UserProfilePageComponent,
     CreateCommunityComponent,
-    CreateEventsComponent
+    CreateEventsComponent,
+    NotFoundPageComponent
   ],
   imports: [
     BrowserModule,
@@ -45,6 +48,7 @@ import { CreateEventsComponent } from './components/editors/create-events/create
     HttpClientModule,
     BrowserAnimationsModule,
     MaterialModule,
+    MatInputModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,

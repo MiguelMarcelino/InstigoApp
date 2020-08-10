@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.App.EventService.databaseConnection.EventDatabaseManagement;
 import io.App.EventService.dto.EventListWrapper;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
-import io.App.EventService.exceptions.EventDoesNotExistException;
 import io.App.EventService.exceptions.InternalAppException;
 
 @SpringBootApplication
@@ -31,11 +30,8 @@ public class EventCatalog {
 		this.eDC.registerNewEvent(event);
 	}
 
-	public void deleteEvent(Event event) throws EventDoesNotExistException {
-		if (this.eDC.getEventByName(event.getName()) == null) {
-			throw new EventDoesNotExistException();
-		}
-		eDC.deleteEvent(event);
+	public void deleteEvent(Event event) throws InternalAppException {
+		this.eDC.deleteEvent(event);
 	}
 	
 	

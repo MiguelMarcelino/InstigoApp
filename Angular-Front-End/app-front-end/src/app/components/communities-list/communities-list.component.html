@@ -1,21 +1,39 @@
 
-<h2>Communities</h2>
-
-<mat-expansion-panel hideToggle class="floating-card" *ngFor="let community of communities" 
-  [ngClass]="{'subscribed-community': community.isSubscribed}">
-    <mat-expansion-panel-header [collapsedHeight]="'80pt'" [expandedHeight]="'100pt'">
-      <mat-panel-title>
-        <p>{{community.name}}</p>
-      </mat-panel-title>
-      <mat-panel-description collapsedHeight="'20pt'">
-        <p>{{community.description}}</p>
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-
-    <div *ngIf="community.isSubscribed">
-      <button mat-raised-button (click)="unsubscribeFromCommunity(community)">Unsubscribe</button>
-    </div>
-    <div *ngIf="!community.isSubscribed">
-      <button mat-raised-button (click)="subscribeToCommunity(community)">Subscribe</button>
-    </div>
-</mat-expansion-panel>
+<div class="page-style">
+  <h2>Communities</h2>
+  <div *ngIf="!communitiesCheck" class="not-found"> 
+    <app-not-found-page >There are no communities</app-not-found-page>
+    <br>
+    <p>No communities found</p>
+  </div>
+  
+  <mat-expansion-panel hideToggle class="floating-card" *ngFor="let community of communities" 
+    [ngClass]="{'subscribed-community': community.isSubscribed}">
+      <mat-expansion-panel-header [collapsedHeight]="'80pt'" [expandedHeight]="'100pt'">
+        <mat-panel-title>
+          <p>{{community.name}}</p>
+        </mat-panel-title>
+        <mat-panel-description collapsedHeight="'20pt'">
+          <p>{{community.description}}</p>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+  
+      <div>
+        <div *ngIf="community.isSubscribed">
+          <button mat-raised-button (click)="unsubscribeFromCommunity(community)">Unsubscribe</button>
+        </div>
+        <div *ngIf="!community.isSubscribed">
+          <button mat-raised-button (click)="subscribeToCommunity(community)">Subscribe</button>
+        </div>
+        <div class="delete-btn">
+          <button 
+            mat-raised-button 
+            color="warn" 
+            *ngIf="isCommunityOwnerOrAdmin(community)" 
+            (click)="deleteCommunity(community)">
+              Delete Community
+          </button>
+        </div>
+      </div>
+  </mat-expansion-panel>
+</div>

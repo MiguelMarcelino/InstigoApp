@@ -20,6 +20,16 @@ public class Event {
 		this.cName = cName;
 		this.ownerUserName = ownerUserName;
 	}
+	
+	public Event(String name, String start, String end, int cID,
+			String cName, String ownerUserName) {
+		this.name = name;
+		this.start = start;
+		this.end = end;
+		this.cID = cID;
+		this.cName = cName;
+		this.ownerUserName = ownerUserName;
+	}
 
 	public Event() {
 		// For REST Only

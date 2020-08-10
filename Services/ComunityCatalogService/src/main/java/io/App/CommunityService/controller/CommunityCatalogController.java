@@ -70,6 +70,10 @@ public class CommunityCatalogController {
 					|| (userRole.equals(Role.ADMIN))) {
 				cC.addCommunity(new Community(cDTO.getName(),
 						cDTO.getDescription(), cDTO.getOwnerUserName()));
+			} else {
+				System.err.println("No role provided");
+				return new ResponseEntity<>("No role provided",
+						HttpStatus.OK);
 			}
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
@@ -99,7 +103,7 @@ public class CommunityCatalogController {
 
 		try {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
-			this.cC.removeCommunity(new Community(cDTO.getName(),
+			this.cC.removeCommunity(new Community(Integer.parseInt(cDTO.getcID()), cDTO.getName(),
 					cDTO.getDescription(), cDTO.getOwnerUserName()));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
@@ -130,7 +134,7 @@ public class CommunityCatalogController {
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
 					HttpStatus.CONFLICT);
 		}
-		CommunityDTO cDTO = new CommunityDTO(c.getId(), c.getName(),
+		CommunityDTO cDTO = new CommunityDTO(String.valueOf(c.getId()), c.getName(),
 				c.getDescription(), c.getOwnerUserName());
 		return new ResponseEntity<>(new Pair<>("Successfull request", cDTO),
 				HttpStatus.OK);

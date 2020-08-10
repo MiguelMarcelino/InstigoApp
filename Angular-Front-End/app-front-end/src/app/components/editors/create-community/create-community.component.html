@@ -1,4 +1,5 @@
 <div class="page-style">
+    <h2>Create a new Community</h2>
     <div class="row" *ngIf="error">
         <div class="col-12 alert alert-danger">
           {{ error }}
@@ -12,28 +13,22 @@
 
     <div class="create-community-form">
         <form [formGroup]="createCommunityForm" (ngSubmit)="onSubmit()" method="post">    
-            <div class="form-group">
-                <!-- Community Name: -->
-                <input type="text" class="form-control" id="communityName" formControlName="communityName" placeholder="Name your Community">
-                <div *ngIf="submitted && form.communityName.errors" class="invalid-feedback">
-                    <div *ngIf="form.communityName.errors.required">Community name is required</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <!-- Community Description  -->
-                <textarea type="text" class="form-control" id="communityDescription" formControlName="communityDescription" 
-                    placeholder="Describe the community you want to create"></textarea>
-                <div *ngIf="submitted && form.communityDescription.errors" class="invalid-feedback">
-                    <div *ngIf="form.communityDescription.errors.required">Description is required</div>
-                </div>
-            </div>
-            <div class="form-group" >
-                <!-- Create Community Button -->
-                <button type="submit" [disabled]="loading" class="btn btn-primary login-btn">
-                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Create Community
-                </button>
-            </div>
+            <!-- Community Name: -->
+            <mat-form-field appearance="fill" class="input-field">
+                <mat-label class="custom-label">Name your new Community</mat-label>
+                <input matInput formControlName="communityName">
+            </mat-form-field>
+            <!-- Community Description -->
+            <mat-form-field appearance="fill" class="input-field">
+                <mat-label class="custom-label">Describe the community you want to create</mat-label>
+                <textarea matInput type="text" id="communityDescription" formControlName="communityDescription"></textarea>
+            </mat-form-field>
+            <!-- Create Community Button -->
+            <button type="submit" [disabled]="loading" class="btn btn-primary login-btn">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Create Community
+            </button>
+
         </form>
     </div>
 </div>

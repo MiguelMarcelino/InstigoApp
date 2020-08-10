@@ -14,19 +14,31 @@
             <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/communities">Communities</a>
             </li>
-            <li class="nav-item" *ngIf="currentUser && hasPermission()">
-                <a class="nav-link" routerLink="/createCommunity">Create Community</a>
-            </li>
             <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/events">All Events</a>
-            </li>
-            <li class="nav-item" *ngIf="currentUser && hasPermission()">
-                <a class="nav-link" routerLink="/createEvent">Create Event</a>
             </li>
             <li class="nav-item" *ngIf="currentUser">
                 <a class="nav-link" routerLink="/feedback">Feedback</a>
             </li>
+            <li class="nav-item dropdown" *ngIf="currentUser && hasPermission()">
+                <a 
+                    class="nav-link dropdown-toggle" 
+                    href="#" id="navbarDropdown" 
+                    role="button" 
+                    data-toggle="dropdown" 
+                    aria-haspopup="true" 
+                    aria-expanded="false">
+                        Create
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" routerLink="/createCommunity">Create Community</a>
+                  <a class="dropdown-item" routerLink="/createEvent">Create Event</a>
+                  <!-- <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a> -->
+                </div>
+              </li>
         </ul>
+
 
         <button *ngIf="!currentUser" mat-button class="login-button" routerLink="/login">
             Login

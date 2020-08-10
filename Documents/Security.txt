@@ -1,0 +1,12 @@
+Enable CORS
+https://spring.io/guides/gs/rest-service-cors/
+
+Add SSL to Angular
+http://www.howto-expert.com/how-to-get-https-setting-up-ssl-on-your-website/
+https://support.google.com/webmasters/answer/6073543?hl=en
+https://www.youtube.com/watch?v=GPcznB74GPs
+https://letsencrypt.org/
+https://cpanel.net/
+
+Secure token Authentication (for User Role)
+https://dzone.com/articles/add-secure-token-authentication-to-your-java-app

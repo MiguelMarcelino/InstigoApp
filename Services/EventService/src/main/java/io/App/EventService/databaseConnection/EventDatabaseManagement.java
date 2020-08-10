@@ -1,10 +1,14 @@
 package io.App.EventService.databaseConnection;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 
 import io.App.EventService.EventComponent.Event;
@@ -21,10 +25,10 @@ public class EventDatabaseManagement {
 	// SQL Queries
 	private static final String GET_ALL_EVENTS_SQL = "SELECT * FROM Events";
 	private static final String GET_EVENTS_FROM_COMMUNITY_SQL = "SELECT * FROM Events WHERE (cID = ?)";
-	private static final String REGISTER_NEW_EVENT_SQL = "INSERT INTO Events (eName, cID, cName, start, end) VALUES (?, ?, ?"
-			+ "STR_TO_DATE(?, '%d-%c-%Y,%H:%i'), STR_TO_DATE(?, '%d-%c-%Y,%H:%i'))";
-	private static final String DELETE_EVENT_SQL = "DELETE FROM Events WHERE eID =?;";
-	private static final String GET_EVENT_BY_NAME_SQL = "SELECT e FROM Events WHERE eName = ?;";
+	private static final String REGISTER_NEW_EVENT_SQL = "INSERT INTO Events (eName, cID, cName, start, end, ownerUserName) "
+			+ "VALUES (?, ?, ?, STR_TO_DATE(?, '%Y-%c-%d'), STR_TO_DATE(?, '%Y-%c-%d'), ?)";
+	private static final String DELETE_EVENT_SQL = "DELETE FROM Events WHERE (id = ?);";
+	private static final String GET_EVENT_BY_NAME_SQL = "SELECT eName FROM Events WHERE eName = ?;";
 
 	public EventDatabaseManagement() {
 		this.databaseConnection = new DatabaseConnection();
@@ -153,8 +157,15 @@ public class EventDatabaseManagement {
 			stmt.setString(1, event.getName());
 			stmt.setInt(2, event.getcID());
 			stmt.setString(3, event.getcName());
-			stmt.setString(4, event.getStart());
-			stmt.setString(5, event.getEnd());
+
+			DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+			LocalDate start = LocalDate.parse(event.getStart(), formatter);
+			LocalDate end = LocalDate.parse(event.getEnd(), formatter);
+
+			stmt.setDate(4, Date.valueOf(start));
+			stmt.setDate(5, Date.valueOf(end));
+			stmt.setString(6, event.getOwnerUserName());
 			stmt.executeUpdate();
 
 		} catch (SQLIntegrityConstraintViolationException e) {
@@ -185,8 +196,9 @@ public class EventDatabaseManagement {
 	 * This method deletes and event from the database
 	 * 
 	 * @param event - the event to delete
+	 * @throws InternalAppException - in case there is an App exception
 	 */
-	public void deleteEvent(Event event) {
+	public void deleteEvent(Event event) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 
@@ -195,7 +207,8 @@ public class EventDatabaseManagement {
 			stmt.setInt(1, event.getId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {

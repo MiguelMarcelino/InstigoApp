@@ -8,3 +8,10 @@
     // width: 90%;
     padding: 15pt;
 }
+
+@media only screen and (max-width: "600px") {
+    .main-content {
+        margin: 0 auto;
+        text-align: center;
+    }
+}

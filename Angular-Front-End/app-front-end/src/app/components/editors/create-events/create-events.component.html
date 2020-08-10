@@ -1,4 +1,5 @@
 <div class="page-style">
+    <h2>Create an Event</h2>
     <div class="row" *ngIf="error">
         <div class="col-12 alert alert-danger">
           {{ error }}
@@ -12,49 +13,42 @@
 
     <div class="create-community-form">
         <form [formGroup]="createEventFrom" (ngSubmit)="onSubmit()" method="post">    
-            <div class="form-group">
-                <!-- Event Name: -->
-                <input type="text" class="form-control" id="eventName" formControlName="eventName" placeholder="Name your new Event">
-                <div *ngIf="submitted && form.eventName.errors" class="invalid-feedback">
-                    <div *ngIf="form.eventName.errors.required">Event name is required</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <!-- Event Start: -->
-                <input class="form-control" [matDatepicker]="start" formControlName="start" placeholder="When does your new Event start">
+            <!--  -->
+            <mat-form-field appearance="fill" class="input-field">
+                <mat-label class="custom-label">Name your new Event</mat-label>
+                <input matInput formControlName="eventName">
+            </mat-form-field>
+            <br>
+            <!--  -->
+            <mat-form-field appearance="fill" class="input-field">
+                <mat-label class="custom-label">When does your new Event start</mat-label>
+                <input matInput [matDatepicker]="start" formControlName="start">
                 <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
                 <mat-datepicker #start></mat-datepicker>
-                <div *ngIf="submitted && form.start.errors" class="invalid-feedback">
-                    <div *ngIf="form.start.errors.required">Start is required</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <!-- Event End: -->
-                <input class="form-control" [matDatepicker]="end" formControlName="end" placeholder="When does your new Event end">
+            </mat-form-field>
+            <br>
+            <!--  -->
+            <mat-form-field appearance="fill" class="input-field">
+                <mat-label class="custom-label">When does your new Event end</mat-label>
+                <input matInput [matDatepicker]="end" formControlName="end">
                 <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
                 <mat-datepicker #end></mat-datepicker>
-                <div *ngIf="submitted && form.end.errors" class="invalid-feedback">
-                    <div *ngIf="form.end.errors.required">End is required</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <!-- Community: -->
-                <select class="form-control" id="community" formControlName="community">
-                    <option selected hidden *ngIf="checkCommunities()">Choose the community to add the event to</option>
-                    <option selected *ngIf="!checkCommunities()">You have created no communities yet</option>
-                    <option *ngFor="let community of communities" [value]="community">{{community.name}}</option>
-                </select>
-                <div *ngIf="submitted && form.community.errors" class="invalid-feedback">
-                    <div *ngIf="form.community.errors.required">Community is required</div>
-                </div>
-            </div>
-            <div class="form-group" >
-                <!-- Create Community Button -->
-                <button type="submit" [disabled]="loading" class="btn btn-primary login-btn">
-                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Create Event
-                </button>
-            </div>
+            </mat-form-field>
+            <br>
+            <!--  -->
+            <mat-form-field appearance="fill" class="input-field">
+                <mat-label class="custom-label" *ngIf="checkCommunities()">Choose the community to add the event to</mat-label>
+                <mat-label class="custom-label" *ngIf="!checkCommunities()">You have created no communities yet</mat-label>
+                <mat-select formControlName="community">
+                  <mat-option *ngFor="let community of communities" [value]="community" >{{community.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <br>
+            <!--  -->
+            <button type="submit" [disabled]="loading" class="btn btn-primary login-btn">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Create Event
+            </button>
         </form>
     </div>
 </div>

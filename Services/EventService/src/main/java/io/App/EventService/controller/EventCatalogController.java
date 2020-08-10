@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,6 @@ import io.App.EventService.dto.EventDTO;
 import io.App.EventService.dto.EventListWrapper;
 import io.App.EventService.dto.Pair;
 import io.App.EventService.exceptions.EventAlreadyExistsException;
-import io.App.EventService.exceptions.EventDoesNotExistException;
 import io.App.EventService.exceptions.InternalAppException;
 import io.App.EventService.exceptions.UserDoesNotExistException;
 
@@ -61,7 +61,8 @@ public class EventCatalogController {
 				new Pair<>("Successfull events request", eLW), HttpStatus.OK);
 	}
 
-	@PostMapping("event/create")
+	@PostMapping(path = "event/create", consumes = {
+			"application/json" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> registerNewEvent(
 			@RequestBody String eventJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -69,14 +70,11 @@ public class EventCatalogController {
 
 		try {
 			eDTO = objectMapper.readValue(eventJSON, EventDTO.class);
-
-			if ((this.uCC.getUserRole(eDTO.getOwnerUserName()) == Role.EDITOR)
-					|| (this.uCC.getUserRole(
-							eDTO.getOwnerUserName()) == Role.ADMIN)) {
+			Role userRole = this.uCC.getUserRole(eDTO.getOwnerUserName());
+			if (userRole.equals(Role.EDITOR) || userRole.equals(Role.ADMIN)) {
 				this.eC.registerNewEvent(
-						new Event(Integer.parseInt(eDTO.getId()),
-								eDTO.getName(), eDTO.getStart(), eDTO.getEnd(),
-								Integer.parseInt(eDTO.getcID()),
+						new Event(eDTO.getName(), eDTO.getStart(),
+								eDTO.getEnd(), Integer.parseInt(eDTO.getcID()),
 								eDTO.getcName(), eDTO.getOwnerUserName()));
 			}
 		} catch (JsonParseException | JsonMappingException
@@ -96,12 +94,11 @@ public class EventCatalogController {
 
 		System.out.println("Successfully registered new Event");
 		return new ResponseEntity<>("Successfully registered new Event",
-				HttpStatus.OK);
+				HttpStatus.CREATED);
 	}
 
 	@PostMapping("event/delete")
-	public ResponseEntity<String> deleteEvent(@RequestBody String eventJSON)
-			throws EventDoesNotExistException {
+	public ResponseEntity<String> deleteEvent(@RequestBody String eventJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		EventDTO eDTO = null;
 
@@ -111,7 +108,8 @@ public class EventCatalogController {
 					eDTO.getName(), eDTO.getStart(), eDTO.getEnd(),
 					Integer.parseInt(eDTO.getcID()), eDTO.getcName(),
 					eDTO.getOwnerUserName()));
-		} catch (JsonParseException | JsonMappingException e) {
+		} catch (JsonParseException | JsonMappingException
+				| NumberFormatException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
@@ -119,6 +117,9 @@ public class EventCatalogController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
 		}
 
 		System.out.println("Successfully deleted the Event");

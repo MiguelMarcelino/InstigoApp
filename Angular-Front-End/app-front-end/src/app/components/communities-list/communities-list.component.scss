@@ -24,6 +24,12 @@ h2 {
 
 }
 
+.not-found{
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
 .subscribed-community {
     transition: 0.5s ease;
     border: 2pt solid rgb(139, 139, 139);
@@ -40,12 +46,16 @@ p {
     color: white;
 }
 
+.delete-btn{
+    margin-top: 10pt;
+}
+
+
 @media only screen and (max-width: 720px) {
     p {
         font-size: 13pt;
     }
 
-    // .floating-card {
-    //     height: 80pt;
-    // }
 }
+
+

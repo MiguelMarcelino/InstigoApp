@@ -1,3 +1,7 @@
+.page-style{
+    width: 100%;
+}
+
 h2 {
     font-size: 20pt;
     color: white;
@@ -30,6 +34,12 @@ p {
 
 }
 
+.not-found{
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
 .floating-card:hover {
     background-color: rgb(88, 88, 88);
 }
@@ -43,4 +53,12 @@ p {
 .description-right {
     float: right;
     width: 70%;
+}
+
+.event-list-wrapper {
+    margin-top: 50pt;
+}
+
+.event-list-wrapper:first-child {
+    margin-top: 0pt;
 }
