@@ -3,7 +3,26 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
-## [0.1.3] - 2020-08-08
+-------------------------------------------------------------------------
+
+## [0.1.4] - 2020-08-10
+### Added
+- Delete Community feature
+- Delete Event feature
+- Component for when there is no content found
+
+### Changed
+- Role based creation and deletion finished
+- Changed interface for creating events and communities
+- Fixed bugs on creating event service
+
+### Review
+- Backend receiving hasSubscribed in CommunityDTO
+- Safety checks for User Role and User data authenticity
+
+-------------------------------------------------------------------------
+
+## [0.1.4] - 2020-08-09
 ### Added
 - Backend method to get communities that the logged in user has created
 
@@ -15,7 +34,7 @@ about the user that has created them
 
 -------------------------------------------------------------------------
 
-## [0.1.3] - 2020-08-08
+## [0.1.4] - 2020-08-08
 ### Added
 - Added new role-based login
 - Added page to create Communities
