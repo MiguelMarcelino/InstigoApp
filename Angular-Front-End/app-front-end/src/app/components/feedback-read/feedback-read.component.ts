@@ -30,8 +30,8 @@ export class FeedbackReadComponent implements OnInit {
 
   getAllFeedback(): void {
     this.feedbackService.getAllFeedback(this.currentUser.id).subscribe( (allFeedbacks:any) => {
-      this.feedbacks = allFeedbacks.second.listFeedbacks;
-      console.log(allFeedbacks);
+      const tempFeedbacks: FeedbackModel[] = allFeedbacks.second.listFeedbacks;
+      this.feedbacks = tempFeedbacks.reverse();
       if(!this.feedbacks || this.feedbacks.length === 0) {
         this.checkFeedbacks = false;
       }

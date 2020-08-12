@@ -25,10 +25,11 @@ export class FeedbackService extends TemplateControllerService<FeedbackModel> {
         throw new Error("Method not implemented.");
     }
   
-    public sendFeedback(username: string, feedback: string) {
-        return this.http.post(this.appRoutes.apiUserFeedbackSend, {'username': username, 'feedback': feedback});
+    public sendFeedback(username: string, timeSent: string, feedback: string) {
+        return this.http.post(this.appRoutes.apiUserFeedbackSend, {'username': username, 'datePublished': timeSent,'feedback': feedback});
     }
 
+    // Needs to send the uID
     public getAllFeedback(uID: string) {
         return this.http.get(`${this.appRoutes.apiUserFeedbacks}/${uID}`);
     }

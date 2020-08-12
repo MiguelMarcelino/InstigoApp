@@ -38,9 +38,11 @@ public class UserFeedbackController {
 		FeedbackDataDTO feedbackDataDTO = null;
 
 		try {
-			feedbackDataDTO = objectMapper.readValue(feedbackJSON, FeedbackDataDTO.class);
+			feedbackDataDTO = objectMapper.readValue(feedbackJSON,
+					FeedbackDataDTO.class);
 
 			this.fC.storeFeedback(feedbackDataDTO.getUserName(),
+					feedbackDataDTO.getDatePublished(),
 					feedbackDataDTO.getFeedback());
 		} catch (JsonParseException | JsonMappingException
 				| InternalAppException e) {
@@ -57,7 +59,7 @@ public class UserFeedbackController {
 		return new ResponseEntity<>("Successfully added new Feedback",
 				HttpStatus.OK);
 	}
-	
+
 	@GetMapping(path = "userFeedbacks/{uID}")
 	public ResponseEntity<Pair<String, FeedbackListWrapper>> getAllFeedback(
 			@PathVariable("uID") String uID) {
@@ -72,7 +74,8 @@ public class UserFeedbackController {
 		}
 
 		System.out.println("Successfully added new Feedback");
-		return new ResponseEntity<>(new Pair<>("Successfully added new Feedback", fLW),
+		return new ResponseEntity<>(
+				new Pair<>("Successfully added new Feedback", fLW),
 				HttpStatus.OK);
 	}
 }

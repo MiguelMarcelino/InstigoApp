@@ -11,14 +11,13 @@ import { LoginPageComponent } from './components/login-page/login-page.component
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/shared/material.module';
-import { environment } from '../environments/environment'; 
 import { fakeBackendProvider } from './_helpers';
 import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.component';
 import { EventsUserComponent } from './components/events-user/events-user.component';
 import { JwtInterceptor } from './services/authentication/jwt.interceptor';
 import { ErrorInterceptor } from './services/authentication/error.interceptor';
 import { HomePageAfterLoginComponent } from './components/home-page-after-login/home-page-after-login.component';
-import { ContactsComponent } from './components/contacts/contacts.component';
+import { FeedbackComponent } from './components/feedback/feedback.component';
 import { UserProfilePageComponent } from './components/user-profile-page/user-profile-page.component';
 import { AppRoutesService } from './services/router/app-routes.service';
 import { CreateCommunityComponent } from './components/editors/create-community/create-community.component';
@@ -37,7 +36,7 @@ import { FeedbackReadComponent } from './components/feedback-read/feedback-read.
     SignUpPageComponent,
     EventsUserComponent,
     HomePageAfterLoginComponent,
-    ContactsComponent,
+    FeedbackComponent,
     UserProfilePageComponent,
     CreateCommunityComponent,
     CreateEventsComponent,

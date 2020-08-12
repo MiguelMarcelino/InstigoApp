@@ -36,6 +36,10 @@ export class EventsUserComponent implements OnInit {
     });
   }
 
+  getListCreatedEvents(): void {
+    
+  }
+
   isEventCreatorOrAdmin(event: EventModel) {
     return ((this.currentUser.userName === event.ownerUserName) || (this.currentUser.role === Role.Admin))
   }

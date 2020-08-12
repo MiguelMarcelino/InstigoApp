@@ -8,7 +8,7 @@ import { SignUpPageComponent } from './components/sign-up-page/sign-up-page.comp
 import { EventsUserComponent } from './components/events-user/events-user.component';
 import { AuthGuard } from './services/authentication/auth-guard.service';
 import { HomePageAfterLoginComponent } from './components/home-page-after-login/home-page-after-login.component';
-import { ContactsComponent } from './components/contacts/contacts.component';
+import { FeedbackComponent } from './components/feedback/feedback.component';
 import { UserProfilePageComponent } from './components/user-profile-page/user-profile-page.component';
 import { CreateEventsComponent } from './components/editors/create-events/create-events.component';
 import { Role } from './models/role.model';
@@ -55,7 +55,7 @@ const routes: Routes = [
   },
   {
     path: "feedback",
-    component: ContactsComponent,
+    component: FeedbackComponent,
     canActivate: [AuthGuard]
   },
   {

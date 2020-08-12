@@ -5,11 +5,11 @@ import { UserModel } from 'src/app/models/user.model';
 import { FeedbackService } from 'src/app/services/controllers/feedback-controller.service';
 
 @Component({
-  selector: 'contacts',
-  templateUrl: './contacts.component.html',
-  styleUrls: ['./contacts.component.scss']
+  selector: 'feedback',
+  templateUrl: './feedback.component.html',
+  styleUrls: ['./feedback.component.scss']
 })
-export class ContactsComponent implements OnInit {
+export class FeedbackComponent implements OnInit {
 
   feedbackForm: FormGroup;
   currentUser: UserModel;
@@ -32,8 +32,9 @@ export class ContactsComponent implements OnInit {
   onSubmit() {
     const feedback = this.feedbackForm.get('feedback').value;
     const username = this.currentUser.userName;
+    const timeSent = new Date();
     console.log(username);
-    this.feedbackService.sendFeedback(username, feedback).subscribe((message: string) => {
+    this.feedbackService.sendFeedback(username, timeSent.toISOString(), feedback).subscribe((message: string) => {
       this.message = message;
     });
     // ,

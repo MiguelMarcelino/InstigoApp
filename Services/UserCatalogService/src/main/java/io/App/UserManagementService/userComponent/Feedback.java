@@ -4,16 +4,18 @@ public class Feedback {
 
 	private int id;
 	private String username;
+	private String datePublished;
 	private String feedback;
 	
 	public Feedback() {
 		// For REST only
 	}
 	
-	public Feedback(int id, String username, String feedback) {
+	public Feedback(int id, String username, String datePublished, String feedback) {
 		this.id = id;
-		this.feedback = feedback;
 		this.username = username;
+		this.datePublished = datePublished;
+		this.feedback = feedback;
 	}
 	
 	public int getId() {
@@ -22,6 +24,10 @@ public class Feedback {
 
 	public String getUsername() {
 		return username;
+	}
+	
+	public String getDatePublished() {
+		return datePublished;
 	}
 
 	public String getFeedback() {

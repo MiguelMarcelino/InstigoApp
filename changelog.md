@@ -5,6 +5,17 @@ All changes made to this project will be documented in this file
 
 -------------------------------------------------------------------------
 
+## [0.1.4] - 2020-08-12
+### Added
+- New page for user to read feedbacks
+
+### Changed
+- Method for retrieving community lists from backend
+- Date of feedback publication was added
+- Feedback menu changes for Admin Role
+
+-------------------------------------------------------------------------
+
 ## [0.1.4] - 2020-08-10
 ### Added
 - Delete Community feature

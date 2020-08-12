@@ -16,9 +16,9 @@ public class FeedbackCatalog {
 		this.fDC = new FeedbackDatabaseConnection();
 	}
 
-	public void storeFeedback(String username, String feedback)
+	public void storeFeedback(String username, String datePublished, String feedback)
 			throws InternalAppException {
-		this.fDC.storeFeedbackData(username, feedback);
+		this.fDC.storeFeedbackData(username, datePublished, feedback);
 	}
 
 	public List<Feedback> getAllFeedback() throws InternalAppException {

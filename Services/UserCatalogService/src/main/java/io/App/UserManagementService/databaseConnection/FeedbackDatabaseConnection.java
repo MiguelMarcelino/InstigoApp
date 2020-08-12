@@ -1,9 +1,13 @@
 package io.App.UserManagementService.databaseConnection;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +20,14 @@ public class FeedbackDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String STORE_FEEDBACK_SQL = "INSERT INTO Feedback (username, feedback) VALUES (?, ?)";
+	private static final String STORE_FEEDBACK_SQL = "INSERT INTO Feedback (username, datePublished, feedback) VALUES (?, ?, ?)";
 	private static final String GET_FEEDBACK_SQL = "SELECT * FROM Feedback";
 
 	public FeedbackDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
 	}
 
-	public void storeFeedbackData(String username, String feedback)
+	public void storeFeedbackData(String username, String datePublished, String feedback)
 			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
@@ -31,7 +35,13 @@ public class FeedbackDatabaseConnection {
 		try {
 			st = con.prepareStatement(STORE_FEEDBACK_SQL);
 			st.setString(1, username);
-			st.setString(2, feedback);
+
+			DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+			LocalDate dateOfPublication = LocalDate.parse(datePublished, formatter);
+
+			st.setDate(2, Date.valueOf(dateOfPublication));
+			st.setString(3, feedback);
 			st.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -66,7 +76,7 @@ public class FeedbackDatabaseConnection {
 			rs = st.executeQuery();
 
 			while(rs.next()) {
-				fLW.add(new Feedback(rs.getInt(1) ,rs.getString(2), rs.getString(3)));
+				fLW.add(new Feedback(rs.getInt(1) ,rs.getString(2), rs.getString(3), rs.getString(4)));
 			}
 			
 		} catch (SQLException e) {

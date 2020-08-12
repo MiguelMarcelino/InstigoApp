@@ -1,5 +1,6 @@
 
 <div class="page-style">
+  <h2>Latest feedback</h2>
   <div *ngIf="!checkFeedbacks" class="not-found">
     <app-not-found-page></app-not-found-page>
     <br>
@@ -13,7 +14,7 @@
           <p>{{feedback.username}}</p>
         </mat-panel-title>
         <mat-panel-description collapsedHeight="'20pt'">
-          <p>Click to check feedback</p>
+          <p>Published on {{feedback.datePublished}}</p>
         </mat-panel-description>
       </mat-expansion-panel-header>
       <br>
