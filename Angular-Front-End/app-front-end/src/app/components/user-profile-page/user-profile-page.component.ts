@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { UserModel } from 'src/app/models/user.model';
-import { UserCommunityService } from 'src/app/services/controllers/user-community-controller.service';
+import { CommunitiesService } from 'src/app/services/controllers/communities-controller.service';
 
 @Component({
   selector: 'app-user-profile-page',
@@ -17,13 +17,13 @@ export class UserProfilePageComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private userCommunityService: UserCommunityService,
+    private communityService: CommunitiesService,
   ) { 
     this.authenticationService.currentUser.subscribe(user => this.currentUser = user);
   }
 
   ngOnInit(): void {
-    this.userCommunityService.userSubbedCommunities(this.currentUser.id).subscribe((communityList: any) => {
+    this.communityService.userSubbedCommunities(this.currentUser.id).subscribe((communityList: any) => {
       this.communities = communityList.second.list;
       if(!communityList.second.list || communityList?.second.list.length === 0) {
         this.checkCommunities = false;
@@ -32,7 +32,7 @@ export class UserProfilePageComponent implements OnInit {
   }
 
   unsubscribeFromCommunity(id: string): void {
-    this.userCommunityService.unsubscribeFromCommunity(this.currentUser.id, id).subscribe();
+    this.communityService.unsubscribeFromCommunity(this.currentUser.id, id).subscribe();
 
     this.communities.splice(this.communities.indexOf(id), 1);
 

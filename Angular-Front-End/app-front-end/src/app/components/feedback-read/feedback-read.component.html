@@ -1,0 +1,23 @@
+
+<div class="page-style">
+  <div *ngIf="!checkFeedbacks" class="not-found">
+    <app-not-found-page></app-not-found-page>
+    <br>
+    <p>There are no feedbacks</p>
+  </div>
+  
+  <div>
+    <mat-expansion-panel hideToggle class="floating-card" *ngFor="let feedback of feedbacks">
+      <mat-expansion-panel-header [collapsedHeight]="'80pt'" [expandedHeight]="'100pt'">
+        <mat-panel-title>
+          <p>{{feedback.username}}</p>
+        </mat-panel-title>
+        <mat-panel-description collapsedHeight="'20pt'">
+          <p>Click to check feedback</p>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <br>
+      <p>{{feedback.feedback}}</p>
+    </mat-expansion-panel>
+  </div>
+</div>

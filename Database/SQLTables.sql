@@ -128,7 +128,7 @@ UNLOCK TABLES;
 -- --------------------Events-------------------------
 LOCK TABLES Events WRITE;
 -- Test Values
-INSERT INTO Events VALUES (1,'Reunião','2020-02-24','2020-02-25',3,'ASC','TestEditor'),
+INSERT INTO Events VALUES (1,'Reunião','2020-02-24','2020-02-25',3,'SD','TestEditor'),
 			  (2,'Almoço_no_LASIGE','2020-03-14','2020-03-14',4,'LASIGE','TestEditor');
 UNLOCK TABLES;
 

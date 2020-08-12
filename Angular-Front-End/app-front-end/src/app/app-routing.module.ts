@@ -13,6 +13,7 @@ import { UserProfilePageComponent } from './components/user-profile-page/user-pr
 import { CreateEventsComponent } from './components/editors/create-events/create-events.component';
 import { Role } from './models/role.model';
 import { CreateCommunityComponent } from './components/editors/create-community/create-community.component';
+import { FeedbackReadComponent } from './components/feedback-read/feedback-read.component';
 
 
 const routes: Routes = [
@@ -73,6 +74,12 @@ const routes: Routes = [
     component: CreateCommunityComponent,
     canActivate: [AuthGuard],
     data: { roles: [Role.Editor, Role.Admin]}
+  },
+  {
+    path: "readFeedback",
+    component: FeedbackReadComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [Role.Admin]}
   }
 ];
 

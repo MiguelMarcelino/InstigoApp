@@ -1,6 +1,7 @@
 import { Identifiable } from './identifiable';
 
 export interface FeedbackModel extends Identifiable {
-    userName: string;
+    id: string;
+    username: string;
     feedback: string;
 }

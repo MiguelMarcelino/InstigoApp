@@ -34,4 +34,8 @@ export class HomeComponent implements OnInit {
   hasPermission(): boolean {
     return (this.currentUser.role === Role.Editor || this.currentUser.role === Role.Admin) ? true : false;
   }
+
+  isAdmin() {
+    return (this.currentUser.role === Role.Admin);
+  }
 }

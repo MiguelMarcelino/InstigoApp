@@ -23,4 +23,5 @@ public class EventListWrapper {
     public void setList(ArrayList<Event> someList) {
         this.list = someList;
     }
+
 }

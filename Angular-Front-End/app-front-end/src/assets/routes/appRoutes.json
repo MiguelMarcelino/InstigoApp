@@ -2,6 +2,7 @@
     "userCatalogApiAddUser": "http://localhost:8081/userCatalogApi/addUser",
     "userCatalogApiLogin": "http://localhost:8081/userCatalogApi/login",
     "userFeedbackSendFeedback": "http://localhost:8081/userFeedbackApi/receiveFeedback",
+    "userFeedbacksApi": "http://localhost:8081/userFeedbackApi/userFeedbacks",
 
     "communitiesCatalogApi": "http://localhost:8082/communityCatalogApi/communities",
     "communityCatalogApi": "http://localhost:8082/communityCatalogApi/community",

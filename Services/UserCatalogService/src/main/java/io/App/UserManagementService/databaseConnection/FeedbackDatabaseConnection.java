@@ -2,9 +2,13 @@ package io.App.UserManagementService.databaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.App.UserManagementService.exceptions.InternalAppException;
+import io.App.UserManagementService.userComponent.Feedback;
 
 public class FeedbackDatabaseConnection {
 
@@ -13,6 +17,7 @@ public class FeedbackDatabaseConnection {
 
 	// SQL Queries
 	private static final String STORE_FEEDBACK_SQL = "INSERT INTO Feedback (username, feedback) VALUES (?, ?)";
+	private static final String GET_FEEDBACK_SQL = "SELECT * FROM Feedback";
 
 	public FeedbackDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -48,5 +53,49 @@ public class FeedbackDatabaseConnection {
 			}
 		}
 
+	}
+
+	public List<Feedback> getAllfeedback() throws InternalAppException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		List<Feedback> fLW = new ArrayList<>();
+
+		try {
+			st = con.prepareStatement(GET_FEEDBACK_SQL);
+			rs = st.executeQuery();
+
+			while(rs.next()) {
+				fLW.add(new Feedback(rs.getInt(1) ,rs.getString(2), rs.getString(3)));
+			}
+			
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (st != null) {
+				try {
+					st.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return fLW;
 	}
 }

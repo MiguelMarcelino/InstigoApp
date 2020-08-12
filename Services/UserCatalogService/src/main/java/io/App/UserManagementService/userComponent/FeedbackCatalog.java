@@ -1,5 +1,7 @@
 package io.App.UserManagementService.userComponent;
 
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.App.UserManagementService.databaseConnection.FeedbackDatabaseConnection;
@@ -17,6 +19,10 @@ public class FeedbackCatalog {
 	public void storeFeedback(String username, String feedback)
 			throws InternalAppException {
 		this.fDC.storeFeedbackData(username, feedback);
+	}
+
+	public List<Feedback> getAllFeedback() throws InternalAppException {
+		return this.fDC.getAllfeedback();
 	}
 
 }

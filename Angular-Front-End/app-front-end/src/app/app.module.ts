@@ -25,6 +25,7 @@ import { CreateCommunityComponent } from './components/editors/create-community/
 import { CreateEventsComponent } from './components/editors/create-events/create-events.component';
 import { MatInputModule } from '@angular/material/input';
 import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
+import { FeedbackReadComponent } from './components/feedback-read/feedback-read.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { NotFoundPageComponent } from './components/not-found-page/not-found-pag
     UserProfilePageComponent,
     CreateCommunityComponent,
     CreateEventsComponent,
-    NotFoundPageComponent
+    NotFoundPageComponent,
+    FeedbackReadComponent
   ],
   imports: [
     BrowserModule,

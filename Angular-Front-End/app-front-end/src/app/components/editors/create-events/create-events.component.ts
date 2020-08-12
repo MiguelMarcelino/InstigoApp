@@ -6,7 +6,7 @@ import { EventService } from 'src/app/services/controllers/events-controller.ser
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { UserModel } from 'src/app/models/user.model';
 import { first } from 'rxjs/operators';
-import { UserCommunityService } from 'src/app/services/controllers/user-community-controller.service';
+import { CommunitiesService } from 'src/app/services/controllers/communities-controller.service';
 
 @Component({
   selector: 'app-create-events',
@@ -25,7 +25,7 @@ export class CreateEventsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private communityService: UserCommunityService,
+    private communityService: CommunitiesService,
     private eventService: EventService,
     private authenticationService: AuthenticationService
   ) { 

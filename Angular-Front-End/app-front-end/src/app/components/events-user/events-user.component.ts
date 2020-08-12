@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { EventModel } from 'src/app/models/event.model';
-import { UserEventControllerService } from 'src/app/services/controllers/user-event-controller.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { UserModel } from 'src/app/models/user.model';
 import { Role } from 'src/app/models/role.model';
@@ -19,7 +18,6 @@ export class EventsUserComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private userEventService: UserEventControllerService,
     private eventService: EventService
   ) { 
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
@@ -29,12 +27,8 @@ export class EventsUserComponent implements OnInit {
     this.getUserEventList();
   }
 
-  getCurrentUserId(): string {
-    return this.currentUser.id;
-  }
-
   getUserEventList(): void {
-    this.userEventService.getEventsFromUser(this.getCurrentUserId()).subscribe((eventsFromUser) => {
+    this.eventService.getEventsFromUser(this.currentUser.id).subscribe((eventsFromUser) => {
       this.eventList = eventsFromUser.second.listEvents;
       if(this.eventList.length === 0) {
         this.eventsCheck = false;

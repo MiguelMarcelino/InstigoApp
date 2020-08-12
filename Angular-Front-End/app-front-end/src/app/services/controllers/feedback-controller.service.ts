@@ -16,9 +16,8 @@ export class FeedbackService extends TemplateControllerService<FeedbackModel> {
         super(http);
     }
 
-    // For later
     protected getApiUrlAll() {
-        throw new Error("Method not implemented.");
+        return this.appRoutes.apiUserFeedbacks;
     }
 
     // For later
@@ -29,4 +28,9 @@ export class FeedbackService extends TemplateControllerService<FeedbackModel> {
     public sendFeedback(username: string, feedback: string) {
         return this.http.post(this.appRoutes.apiUserFeedbackSend, {'username': username, 'feedback': feedback});
     }
+
+    public getAllFeedback(uID: string) {
+        return this.http.get(`${this.appRoutes.apiUserFeedbacks}/${uID}`);
+    }
+
 }

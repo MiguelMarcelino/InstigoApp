@@ -42,7 +42,7 @@ export class CommunitiesService extends TemplateControllerService<CommunityModel
   }
 
   public userCreatedCommunities(ownerUserName: string): any {
-    return this.http.get(`${this.appRoutes.apiCommunityMainInfo}/${ownerUserName}`);
+    return this.http.get(`${this.appRoutes.apiUserCreatedCommunitiesEndPoint}/${ownerUserName}`);
   }
 
 }

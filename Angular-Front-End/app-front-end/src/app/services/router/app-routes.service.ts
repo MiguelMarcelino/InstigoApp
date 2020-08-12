@@ -89,6 +89,11 @@ export class AppRoutesService {
         return this.appRoutes.userFeedbackSendFeedback;
     }
 
+    get apiUserFeedbacks(): string {
+        this.isLoaded();
+        return this.appRoutes.userFeedbacksApi;
+    }
+
     // Check if routes file was loaded
     private isLoaded() {
         if (!this.appRoutes) {

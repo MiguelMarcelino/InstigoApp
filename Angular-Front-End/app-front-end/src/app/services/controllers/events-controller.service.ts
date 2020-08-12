@@ -3,6 +3,7 @@ import { EventModel } from 'src/app/models/event.model';
 import { HttpClient } from '@angular/common/http';
 import { AppRoutesService } from '../router/app-routes.service';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,13 @@ export class EventService extends TemplateControllerService<EventModel> {
     protected getApiUrlAll() {
         return this.appRoutes.apiEventsEndPoint;
     }
+
     protected getApiUrlObject() {
         return this.appRoutes.apiEventEndPoint;
     }
+
+    public getEventsFromUser(id: string): Observable<any> {
+      let url = `${this.appRoutes.apiUserEventsEndPoint}/${id}`
+      return this.http.get(url);
+  }
 }

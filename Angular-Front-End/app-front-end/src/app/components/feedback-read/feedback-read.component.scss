@@ -1,0 +1,72 @@
+.page-style{
+    width: 100%;
+    color: white;
+}
+
+.not-found{
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+h2 {
+    font-size: 20pt;
+    color: white;
+}
+
+.floating-card {
+    background-color: rgb(65, 65, 65);
+    transition: 0.5s ease;
+    padding: 15pt;
+    margin-bottom: 10pt;
+    line-height: 23pt;
+
+    mat-panel-title {
+        max-width: 20%;
+        width: 100pt;
+        overflow-wrap: break-word;
+        height: 25pt;
+    }
+
+    mat-panel-description {
+        width: 80%;
+        height: 25pt;
+    }
+
+}
+
+.not-found{
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.subscribed-community {
+    transition: 0.5s ease;
+    border: 2pt solid rgb(139, 139, 139);
+    box-shadow: 2pt;
+}
+
+.floating-card:hover {
+    background-color: rgb(88, 88, 88);
+}
+
+p {
+    transition: 0.5s ease;
+    font-size: 15pt;
+    color: white;
+}
+
+.delete-btn{
+    margin-top: 10pt;
+}
+
+
+@media only screen and (max-width: 720px) {
+    p {
+        font-size: 13pt;
+    }
+
+}
+
+
