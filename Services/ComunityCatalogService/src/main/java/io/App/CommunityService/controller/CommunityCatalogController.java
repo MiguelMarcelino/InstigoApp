@@ -42,7 +42,7 @@ public class CommunityCatalogController {
 	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
 		CommunityListWrapper cLW = null;
 		try {
-			cLW = this.cC.getCommunityList();
+			cLW = new CommunityListWrapper(cC.getCommunityList());
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(

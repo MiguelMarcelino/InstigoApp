@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.App.CommunityService.communityComponent.Community;
-import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.exceptions.CommunityAlreadyExistsException;
 import io.App.CommunityService.exceptions.CommunityDoesNotExistException;
 import io.App.CommunityService.exceptions.InternalAppException;
@@ -37,13 +37,12 @@ public class CommunityDatabaseConnection {
 	 * 
 	 * @return a list of all communities found on the database
 	 */
-	public CommunityListWrapper getCommunityDatabaseList()
+	public List<Community> getCommunityDatabaseList()
 			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		ArrayList<Community> communityList = new ArrayList<Community>();
-		CommunityListWrapper cLW = new CommunityListWrapper();
 
 		try {
 			stmt = con.prepareStatement(GET_ALL_COMMUNITIES_SQL);
@@ -81,8 +80,7 @@ public class CommunityDatabaseConnection {
 
 		}
 
-		cLW.setList(communityList);
-		return cLW;
+		return communityList;
 	}
 
 	/**

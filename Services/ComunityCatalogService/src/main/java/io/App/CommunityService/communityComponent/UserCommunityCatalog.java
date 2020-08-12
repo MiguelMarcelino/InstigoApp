@@ -1,9 +1,10 @@
 package io.App.CommunityService.communityComponent;
 
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.App.CommunityService.databaseConnection.UserCommunityDatabaseConnection;
-import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
@@ -16,11 +17,11 @@ public class UserCommunityCatalog {
 		this.uCDC = new UserCommunityDatabaseConnection();
 	}
 
-	public CommunityListWrapper userSubbscribedCommunities(int uID) throws InternalAppException {
+	public List<Community> userSubbscribedCommunities(int uID) throws InternalAppException {
 		return uCDC.userSubCommunities(uID);
 	}
 	
-	public CommunityListWrapper userCreatedCommunities(String ownerUserName) throws InternalAppException {
+	public List<Community> userCreatedCommunities(String ownerUserName) throws InternalAppException {
 		return uCDC.userCreatedCommunities(ownerUserName);
 	}
 

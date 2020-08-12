@@ -32,6 +32,11 @@ export class AppRoutesService {
         return this.appRoutes.communityCatalogApi;
     }
 
+    get apiCommunityMainInfo(): string {
+        this.isLoaded();
+        return this.appRoutes.communityMainInfoApi;
+    }
+
     get apiUserCommunitySubscribeEndPoint(): string {
         this.isLoaded();
         return this.appRoutes.userCommunityApiSubscribe;

@@ -1,5 +1,6 @@
 package io.App.CommunityService.databaseConnection;
 
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,10 +9,10 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.App.CommunityService.communityComponent.Community;
 import io.App.CommunityService.communityComponent.Role;
-import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
@@ -43,12 +44,11 @@ public class UserCommunityDatabaseConnection {
 	 * @return the communities subscribed by a user with id = uID
 	 * @throws InternalAppException 
 	 */
-	public CommunityListWrapper userSubCommunities(int uID) throws InternalAppException {
+	public List<Community> userSubCommunities(int uID) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		CommunityListWrapper cLW = new CommunityListWrapper();
-		ArrayList<Community> lC = new ArrayList<Community>();
+		List<Community> lC = new ArrayList<Community>();
 
 		try {
 			stmt = con.prepareStatement(USER_SUBSCRIBED_COMMUNITIES_SQL);
@@ -85,16 +85,13 @@ public class UserCommunityDatabaseConnection {
 			}
 		}
 
-		cLW.setList(lC);
-
-		return cLW;
+		return lC;
 	}
 	
-	public CommunityListWrapper userCreatedCommunities(String ownerUserName) throws InternalAppException {
+	public ArrayList<Community> userCreatedCommunities(String ownerUserName) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		CommunityListWrapper cLW = new CommunityListWrapper();
 		ArrayList<Community> lC = new ArrayList<Community>();
 
 		try {
@@ -132,9 +129,7 @@ public class UserCommunityDatabaseConnection {
 			}
 		}
 
-		cLW.setList(lC);
-
-		return cLW;
+		return lC;
 	}
 
 	/**

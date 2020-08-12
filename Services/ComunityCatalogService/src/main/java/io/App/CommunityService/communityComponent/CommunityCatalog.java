@@ -1,9 +1,10 @@
 package io.App.CommunityService.communityComponent;
 
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.App.CommunityService.databaseConnection.CommunityDatabaseConnection;
-import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.exceptions.CommunityAlreadyExistsException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
@@ -16,7 +17,7 @@ public class CommunityCatalog {
 		cDC = new CommunityDatabaseConnection();
 	}
 
-	public CommunityListWrapper getCommunityList() throws InternalAppException {
+	public List<Community> getCommunityList() throws InternalAppException {
 		return cDC.getCommunityDatabaseList();
 	}
 

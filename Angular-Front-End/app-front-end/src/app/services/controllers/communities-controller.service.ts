@@ -25,4 +25,24 @@ export class CommunitiesService extends TemplateControllerService<CommunityModel
     return this.appRoutes.apiCommunityEndPoint;
   }
 
+  public getCommunityLists(uID: string) {
+    return this.http.get(`${this.appRoutes.apiCommunityMainInfo}/${uID}`);
+  }
+
+  public subscribeToCommunity(uID: string, cID: string): any {
+    return this.http.post(this.appRoutes.apiUserCommunitySubscribeEndPoint, {uID, cID});
+  }
+
+  public unsubscribeFromCommunity(uID: string, cID: string): any {
+    return this.http.post(this.appRoutes.apiUserCommunityUnsubscribeEndPoint, {uID, cID});
+  }
+
+  public userSubbedCommunities(uID: string): any {
+    return this.http.get(`${this.appRoutes.apiUserSubscribedCommunitiesEndPoint}/${uID}`);
+  }
+
+  public userCreatedCommunities(ownerUserName: string): any {
+    return this.http.get(`${this.appRoutes.apiCommunityMainInfo}/${ownerUserName}`);
+  }
+
 }

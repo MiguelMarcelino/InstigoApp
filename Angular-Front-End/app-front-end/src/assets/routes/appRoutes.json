@@ -9,6 +9,7 @@
     "userCommunityApiUnsubscribe": "http://localhost:8082/userCommunityApi/unsubscribeFromCommunity",
     "userCommunityApiSubscribedCommunities": "http://localhost:8082/userCommunityApi/userSubbedCommunities",
     "userCommunityApiCreatedCommunities": "http://localhost:8082/userCommunityApi/userCreatedCommunities",
+    "communityMainInfoApi": "http://localhost:8082/communityMainInfoApi/communityLists",
 
     "userEventApiAllEvents": "http://localhost:8084/userEventApi/eventsFromSubbedCommunities",
     "eventsCatalogApi": "http://localhost:8084/eventApi/events",

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommunityModel } from 'src/app/models/community.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { UserModel } from 'src/app/models/user.model';
-import { UserCommunityService } from 'src/app/services/controllers/user-community-controller.service'
 import { CommunitiesService } from 'src/app/services/controllers/communities-controller.service';
 import { Role } from 'src/app/models/role.model';
 
@@ -16,11 +15,9 @@ export class CommunitiesListComponent implements OnInit {
   currentUser: UserModel;
   communities: CommunityModel[];
   communitiesCheck: boolean = true;
-  subscribbedCommunities: Map<string, CommunityModel>;
 
   constructor(
     private communitiesService: CommunitiesService,
-    private userCommunityService: UserCommunityService,
     private authenticationService: AuthenticationService,
     ) 
   {
@@ -28,51 +25,41 @@ export class CommunitiesListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getFinalCommunityList();
+    this.getCommunityLists();
   }
 
-  getAllCommunities() {
-    return this.communitiesService.getAll().toPromise();
-  }
+  getCommunityLists(): void {
+    this.communitiesService.getCommunityLists(this.currentUser.id).subscribe( (communityLists:any) => {
+      this.communities = communityLists.second.allCommunities;
 
-  getSubscribbedCommunities() {
-    return this.userCommunityService.userSubbedCommunities(this.currentUser.id).toPromise();
-  }
+      const subscribedCommunities: Map<string, CommunityModel> = new Map();
+      communityLists.second.userSubscribedCommunities.forEach(x => subscribedCommunities.set(x.id, x));
 
-  async getFinalCommunityList() {
-    const communityList = await this.getAllCommunities();
-    this.communities = communityList.second.list;
-    
-    this.subscribbedCommunities = new Map();
-    const subbedCommunities = await this.getSubscribbedCommunities();
-    subbedCommunities.second.list.forEach(x => this.subscribbedCommunities.set(x.id, x));
-
-    if(this.communities && this.subscribbedCommunities) {
-      if(this.communities.length === 0) {
-        this.communitiesCheck = false;
-      } else {
-        this.communities.forEach(x => {
-          if(this.subscribbedCommunities.get(x.id)) {
-            x.isSubscribed = true;
-          } else {
-            x.isSubscribed = false;
-          }
-        });
+      if(this.communities && subscribedCommunities) {
+        if(this.communities.length === 0) {
+          this.communitiesCheck = false;
+        } else {
+          this.communities.forEach(x => {
+            if(subscribedCommunities.get(x.id)) {
+              x.isSubscribed = true;
+            } else {
+              x.isSubscribed = false;
+            }
+          });
+        }
       }
-    }
+    });
   }
 
   subscribeToCommunity(community: CommunityModel): void {
-    this.userCommunityService.subscribeToCommunity(this.currentUser.id, community.id).subscribe( x => {
+    this.communitiesService.subscribeToCommunity(this.currentUser.id, community.id).subscribe( x => {
       console.log(x);
     });
-    this.subscribbedCommunities.set(community.id, community);
     community.isSubscribed = true;
   }
 
   unsubscribeFromCommunity(community: CommunityModel): void {
-    this.userCommunityService.unsubscribeFromCommunity(this.currentUser.id, community.id).subscribe();
-    this.subscribbedCommunities.delete(community.id);
+    this.communitiesService.unsubscribeFromCommunity(this.currentUser.id, community.id).subscribe();
     community.isSubscribed = false;
   }
 
