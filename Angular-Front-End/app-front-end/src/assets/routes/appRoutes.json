@@ -12,7 +12,8 @@
     "userCommunityApiCreatedCommunities": "http://localhost:8082/userCommunityApi/userCreatedCommunities",
     "communityMainInfoApi": "http://localhost:8082/communityMainInfoApi/communityLists",
 
-    "userEventApiAllEvents": "http://localhost:8084/userEventApi/eventsFromSubbedCommunities",
     "eventsCatalogApi": "http://localhost:8084/eventApi/events",
-    "eventCatalogApi": "http://localhost:8084/eventApi/event"
+    "eventCatalogApi": "http://localhost:8084/eventApi/event",
+    "userEventApiAllEvents": "http://localhost:8084/userEventApi/eventsFromSubbedCommunities",
+    "userEventApiCreatedEvents": "http://localhost:8084/userEventApi/userCreatedEvents"
 }

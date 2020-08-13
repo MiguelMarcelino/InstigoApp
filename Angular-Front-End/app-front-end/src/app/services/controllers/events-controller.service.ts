@@ -10,23 +10,28 @@ import { Observable } from 'rxjs';
 })
 export class EventService extends TemplateControllerService<EventModel> {
 
-    constructor(
-      protected http: HttpClient,
-      private appRoutes: AppRoutesService
-    ) {
-      super(http);
-    }
+  constructor(
+    protected http: HttpClient,
+    private appRoutes: AppRoutesService
+  ) {
+    super(http);
+  }
 
-    protected getApiUrlAll() {
-        return this.appRoutes.apiEventsEndPoint;
-    }
+  protected getApiUrlAll() {
+      return this.appRoutes.apiEventsEndPoint;
+  }
 
-    protected getApiUrlObject() {
-        return this.appRoutes.apiEventEndPoint;
-    }
+  protected getApiUrlObject() {
+      return this.appRoutes.apiEventEndPoint;
+  }
 
-    public getEventsFromUser(id: string): Observable<any> {
-      let url = `${this.appRoutes.apiUserEventsEndPoint}/${id}`
-      return this.http.get(url);
+  public getEventsFromUser(id: string): Observable<any> {
+    let url = `${this.appRoutes.apiUserEventsEndPoint}/${id}`
+    return this.http.get(url);
+  }
+
+  public getCreatedEvents(userName: string): Observable<any> {
+    let url = `${this.appRoutes.apiUserEventsCreatedEndPoint}/${userName}`;
+    return this.http.get(url);
   }
 }

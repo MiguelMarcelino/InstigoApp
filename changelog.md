@@ -127,7 +127,7 @@ about the user that has created them
 - Login Page is now working
 - Prepared Event Service backend
 - Updated Database table to receive new User values
-- Events from Comunities are now managed by Event Service instead of User Service
+- Events from Communities are now managed by Event Service instead of User Service
 
 -------------------------------------------------------------------------
 

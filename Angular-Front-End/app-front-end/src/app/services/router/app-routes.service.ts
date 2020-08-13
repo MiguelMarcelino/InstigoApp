@@ -73,6 +73,11 @@ export class AppRoutesService {
         return this.appRoutes.eventCatalogApi;
     }
 
+    get apiUserEventsCreatedEndPoint(): string {
+        this.isLoaded();
+        return this.appRoutes.userEventApiCreatedEvents;
+    }
+
     // User
     get apiUserCatalogLogin(): string {
         this.isLoaded();

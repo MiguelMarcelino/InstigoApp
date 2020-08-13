@@ -71,6 +71,10 @@ p {
     transition: 0.5s ease;
 }
 
+.user-profile-img:hover {
+    cursor: pointer;
+}
+
 .info-left{
     float: left;
     width: 25%;
@@ -83,7 +87,7 @@ p {
     text-align: center;
 }
 
-.subscribed-communities-wrapper {
+.communities-wrapper {
     padding-top: 20pt;
 }
 
@@ -118,13 +122,9 @@ p {
         width: 70%;
     }
 
-    .custom-bnt{
-        top: 70%;
-        left: 35%;
-    }
 }
 
-@media only screen and (max-width: 700px){
+@media only screen and (max-width: 750px){
 
     .img-left {
         margin-bottom: 20pt;
@@ -137,10 +137,5 @@ p {
         width: 100%;
     }
 
-    .custom-bnt{
-        width: 30pt;
-        top: 70%;
-        left: 45%;
-    }
     
 }

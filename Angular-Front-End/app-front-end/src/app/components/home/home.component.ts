@@ -14,7 +14,7 @@ import { Role } from 'src/app/models/role.model';
 export class HomeComponent implements OnInit {
 
   currentUser: UserModel;
-  title = AppSettings.APP_NAME;
+  appIconDirectory = AppSettings.APP_ICON_DIRECTORY;
 
   constructor(
     private authenticationService: AuthenticationService,

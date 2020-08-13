@@ -13,8 +13,10 @@ import { EventService } from 'src/app/services/controllers/events-controller.ser
 export class EventsUserComponent implements OnInit {
 
   currentUser: UserModel;
-  eventList: EventModel[];
-  eventsCheck: boolean = true;
+  subscribedCommunitiesEvents: EventModel[];
+  createdEvents: EventModel[];
+  subscribedEventsCheck: boolean = true;
+  createdEventsCheck: boolean = true;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -25,32 +27,51 @@ export class EventsUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserEventList();
+    this.getListCreatedEvents();
   }
 
   getUserEventList(): void {
     this.eventService.getEventsFromUser(this.currentUser.id).subscribe((eventsFromUser) => {
-      this.eventList = eventsFromUser.second.listEvents;
-      if(this.eventList.length === 0) {
-        this.eventsCheck = false;
+      this.subscribedCommunitiesEvents = eventsFromUser.second.listEvents;
+      if(this.subscribedCommunitiesEvents ) {
+        if(this.subscribedCommunitiesEvents.length === 0){
+          this.subscribedEventsCheck = false;
+        }
+      } else {
+        this.subscribedEventsCheck = false;
       }
     });
   }
 
   getListCreatedEvents(): void {
-    
+    this.eventService.getCreatedEvents(this.currentUser.userName).subscribe((createdEvents) => {
+      this.createdEvents = createdEvents.second.listEvents;
+      if(this.createdEvents) {
+        if(this.createdEvents.length === 0){
+          this.createdEventsCheck = false;
+        }
+      } else {
+        this.createdEventsCheck = false;
+      }
+    })
   }
 
   isEventCreatorOrAdmin(event: EventModel) {
     return ((this.currentUser.userName === event.ownerUserName) || (this.currentUser.role === Role.Admin))
   }
 
+  isAllowed():boolean {
+    return ((this.currentUser.role === Role.Admin) || (this.currentUser.role === Role.Editor));
+  }
+
   deleteEvent(event) {
     this.eventService.deleteObject(event).subscribe((response) => {
       // TODO: handle response
     })
-    const index: number = this.eventList.indexOf(event);
+    const index: number = this.subscribedCommunitiesEvents.indexOf(event);
     if(index !== -1){
-      this.eventList.splice(index, 1);
+      this.subscribedCommunitiesEvents.splice(index, 1);
     }
   }
+
 }

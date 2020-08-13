@@ -1,6 +1,6 @@
 package io.App.EventService.dto;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,18 +8,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class EventListWrapper {
 
     @JsonProperty("listEvents")
-    private ArrayList<EventDTO> list;
+    private List<EventDTO> list;
 
 
     public EventListWrapper() {
         //For REST Only
     }
 
-    public ArrayList<EventDTO> getList() {
+    public EventListWrapper(List<EventDTO> list) {
+		this.list = list;
+	}
+
+	public List<EventDTO> getList() {
         return list;
     }
 
-    public void setList(ArrayList<EventDTO> someList) {
+    public void setList(List<EventDTO> someList) {
         this.list = someList;
     }
 }

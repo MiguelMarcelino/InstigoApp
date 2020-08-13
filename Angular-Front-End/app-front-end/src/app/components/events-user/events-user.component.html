@@ -2,13 +2,13 @@
 <div class="page-style">
   <div class="event-list-wrapper">
     <h2>Events from Subscribed Communities</h2>
-    <div *ngIf="!eventsCheck" class="not-found"> 
+    <div *ngIf="!subscribedEventsCheck" class="not-found"> 
       <app-not-found-page >There are no communities</app-not-found-page>
       <br>
       <p>No events found</p>
     </div>
     
-    <mat-expansion-panel hideToggle class="floating-card" *ngFor="let event of eventList" >
+    <mat-expansion-panel hideToggle class="floating-card" *ngFor="let event of subscribedCommunitiesEvents" >
         <mat-expansion-panel-header  [collapsedHeight]="'80pt'">
           <mat-panel-title>
             <p>{{event.name}}</p>
@@ -32,9 +32,35 @@
     </mat-expansion-panel>
   </div>
 
-  <div class="event-list-wrapper">
+  <div class="event-list-wrapper" *ngIf="isAllowed()">
     <h2>Events from Created Communities</h2>
-    <p>To be implemented</p>
+    <div *ngIf="!createdEventsCheck" class="not-found">
+      <app-not-found-page></app-not-found-page>
+      <br>
+      <p>You haven't created any events yet</p>
+    </div>
+
+    <mat-expansion-panel hideToggle class="floating-card" *ngFor="let cEvent of createdEvents" >
+      <mat-expansion-panel-header  [collapsedHeight]="'80pt'">
+        <mat-panel-title>
+          <p>{{cEvent.name}}</p>
+        </mat-panel-title>
+        <mat-panel-description>
+          <p>{{cEvent.cName}}</p>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <br>
+      <p>Starts at {{cEvent.start}}</p>
+      <p>Ends at {{cEvent.end}}</p>
+      <div class="delete-btn">
+        <button 
+          mat-raised-button 
+          color="warn"
+          (click)="deleteEvent(cEvent)">
+            Delete Event
+        </button>
+      </div>
+  </mat-expansion-panel>
   </div>
 
 </div>
