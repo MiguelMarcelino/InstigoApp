@@ -5,6 +5,19 @@ All changes made to this project will be documented in this file
 
 -------------------------------------------------------------------------
 
+## [0.1.4] - 2020-08-13
+### Added
+- New feature to see events from created communities
+- Added created communities to user profile
+- New logo and new name for App: Now called Instigo
+
+### Changed 
+- Visual tweaks in preparation for presentation
+- Updated Events page (now has events from created communities)
+- Minor visual changes to user profile foto
+
+-------------------------------------------------------------------------
+
 ## [0.1.4] - 2020-08-12
 ### Added
 - New page for user to read feedbacks
