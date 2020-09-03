@@ -3,6 +3,20 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.5] - 2020-09-03
+### Added
+- Class to confirm identity of users when communities are created and deleted
+- OperationsManager class to manage operations from Database
+- operations table in database to store all operations for roles
+- 
+
+### Changed 
+- roles table is being used again. New modifications to role table
+- checked database table names and structure for best practices
+
+### Deleted
+- Enumerator to store roles
+
 -------------------------------------------------------------------------
 
 ## [0.1.4] - 2020-08-13
