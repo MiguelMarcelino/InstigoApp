@@ -8,7 +8,7 @@ All changes made to this project will be documented in this file
 - Class to confirm identity of users when communities are created and deleted
 - OperationsManager class to manage operations from Database
 - operations table in database to store all operations for roles
-- 
+- New method for sending community list to frontend
 
 ### Changed 
 - roles table is being used again. New modifications to role table
