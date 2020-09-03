@@ -4,29 +4,21 @@ import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.App.CommunityService.databaseConnection.UserCommunityDatabaseConnection;
+import io.App.CommunityService.databaseConnection.CommunitySubscriptionDatabaseConnection;
 import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
 @SpringBootApplication
-public class UserCommunityCatalog {
+public class CommunitySubscriptionCatalog {
 
-	private UserCommunityDatabaseConnection uCDC;
+	private CommunitySubscriptionDatabaseConnection uCDC;
 
-	public UserCommunityCatalog() {
-		this.uCDC = new UserCommunityDatabaseConnection();
+	public CommunitySubscriptionCatalog() {
+		this.uCDC = new CommunitySubscriptionDatabaseConnection();
 	}
 
 	public List<Community> userSubbscribedCommunities(int uID) throws InternalAppException {
 		return uCDC.userSubCommunities(uID);
-	}
-	
-	public List<Community> userCreatedCommunities(String ownerUserName) throws InternalAppException {
-		return uCDC.userCreatedCommunities(ownerUserName);
-	}
-
-	public void isRegToCommunity(int uID, int cID) {
-
 	}
 
 	public void subscribeToCommunity(int uID, int cID)

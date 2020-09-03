@@ -9,10 +9,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @ComponentScan(basePackages= {"io.App.CommunityService"})
-public class ComunityCatalogServiceApplication {
+public class ComunityServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ComunityCatalogServiceApplication.class, args);
+		SpringApplication.run(ComunityServiceApplication.class, args);
 	}
 
 	@Bean

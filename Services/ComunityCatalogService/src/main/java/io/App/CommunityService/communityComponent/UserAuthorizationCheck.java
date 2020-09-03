@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import io.App.CommunityService.databaseConnection.OperationsDatabaseConnection;
 import io.App.CommunityService.databaseConnection.UserDatabaseConnection;
 import io.App.CommunityService.exceptions.InternalAppException;
 import io.App.CommunityService.exceptions.NonExistantOperation;
@@ -18,6 +19,7 @@ public class UserAuthorizationCheck {
 	private static final String DELETE_ALL_OPERATION_NAME = "DELETE_ALL";
 
 	private UserDatabaseConnection uDC;
+	private OperationsDatabaseConnection oDC;
 	private OperationsManager oM;
 
 	public UserAuthorizationCheck() {
@@ -29,6 +31,7 @@ public class UserAuthorizationCheck {
 			throws InternalAppException, UserDoesNotExistException,
 			UserNotAuthorizedException, NonExistantOperation {
 		// future iteration --> check JWT token
+
 		int userRoleID = getUserRoleID(communityOwner.getUserName());
 		List<Operation> roleOperations = getOperationsByRoleID(userRoleID);
 		if (!roleOperations
@@ -41,13 +44,14 @@ public class UserAuthorizationCheck {
 			throws InternalAppException, UserDoesNotExistException,
 			UserNotAuthorizedException, NonExistantOperation {
 		// future iteration --> check JWT token
+
 		int userRoleID = getUserRoleID(communityOwner.getUserName());
 		List<Operation> roleOperations = getOperationsByRoleID(userRoleID);
 
-		// the use can delete a community either:
-		// 1. If he has the operation DELETE and is the creator of that
-		// community or
-		// 2. If he has the operation DELETE_ALL
+		// the user can delete a community either:
+		// 1. If he can execute the operation DELETE and is the
+		// creator of that community or
+		// 2. If he can execute the operation DELETE_ALL
 		if (!((roleOperations
 				.contains(oM.getOperationByName(DELETE_OPERATION_NAME))
 				&& loggedInUser.equals(communityOwner))
@@ -64,6 +68,6 @@ public class UserAuthorizationCheck {
 
 	private List<Operation> getOperationsByRoleID(int roleID)
 			throws InternalAppException {
-		return uDC.getOperations(roleID);
+		return oDC.getOperationsForRole(roleID);
 	}
 }

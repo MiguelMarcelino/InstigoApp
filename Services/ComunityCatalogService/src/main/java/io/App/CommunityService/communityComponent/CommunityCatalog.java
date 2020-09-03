@@ -20,6 +20,10 @@ public class CommunityCatalog {
 	public List<Community> getCommunityList() throws InternalAppException {
 		return cDC.getCommunityDatabaseList();
 	}
+	
+	public List<Community> getCommunityListWithSubInfo(int uID) throws InternalAppException {
+		return cDC.getCommunityListWithSubInfo(uID);
+	}
 
 	public void addCommunity(Community c) throws CommunityAlreadyExistsException, InternalAppException {
 		cDC.addCommunityToDatabase(c);
@@ -37,6 +41,10 @@ public class CommunityCatalog {
 	public Community getCommunityByName(String cName) throws InternalAppException {
 		Community community = cDC.getCommunityByName(cName);
 		return community;
+	}
+	
+	public List<Community> userCreatedCommunities(String ownerUserName) throws InternalAppException {
+		return cDC.userCreatedCommunities(ownerUserName);
 	}
 
 }

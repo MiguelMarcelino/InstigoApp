@@ -20,8 +20,8 @@ public class CommunityDTO implements Serializable {
 	private User communityOwner;
 	@JsonProperty("currentUser")
 	private User currentUser;
-	@JsonProperty("isSubscribed") // TODO
-	private boolean isSubscribed; // TODO
+	@JsonProperty("isSubscribed")
+	private boolean isSubscribed;
 
 	public CommunityDTO() {
 		// For REST only

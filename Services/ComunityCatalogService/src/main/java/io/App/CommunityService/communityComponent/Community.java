@@ -6,6 +6,11 @@ public class Community {
 	private String name;
 	private String description;
 	private User user;
+	private boolean isRegistered;
+	
+	public Community() {
+		// For REST only
+	}
 
 	public Community(int id, String name, String description,
 			User user) {
@@ -22,8 +27,13 @@ public class Community {
 		this.user = user;
 	}
 
-	public Community() {
-		// For REST only
+	public Community(int id, String name, String description, User user,
+			boolean isRegistered) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.user = user;
+		this.isRegistered = isRegistered;
 	}
 
 	public int getId() {
@@ -41,6 +51,10 @@ public class Community {
 	public User getCommunityOwner() {
 		return user;
 	}
+	
+	public boolean getIsRegistered() {
+		return isRegistered;
+	}
 
 	public void setId(int id) {
 		this.id = id;
@@ -57,4 +71,9 @@ public class Community {
 	public void setCommunityOwner(User user) {
 		this.user = user;
 	}
+	
+	public void setIsRegistered(boolean isRegistered) {
+		this.isRegistered = isRegistered;
+	}
+
 }

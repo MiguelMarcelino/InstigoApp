@@ -31,6 +31,16 @@ public class CommunityDatabaseConnection {
 			+ "FROM communities AS c WHERE (c.id = ?) "
 			+ "INNER JOIN users u ON c.community_owner_id = u.id;";
 	private static final String GET_COMMUNITY_BY_NAME = "SELECT * FROM communities WHERE (name = ?);";
+	private static final String USER_CREATED_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, u.id, "
+			+ "u.user_name, u.first_name, u.last_name, u.role_id, u.email FROM communities AS c WHERE (community_owner_id = ?) "
+			+ "INNER JOIN users u ON c.community_owner_id = u.id;";
+	private static final String GET_COMMUNITY_LIST_WITH_SUB_INFO = "SELECT c.id, c.name, c.description, u.id,"
+			+ "u.user_name, u.first_name, u.last_name, u.role_id, u.email,"
+			+ "IF(usc.user_id  IS NULL, FALSE, TRUE) as isRegistered"
+			+ "FROM communities c"
+			+ "LEFT JOIN users u ON (c.community_owner_id = u.id)"
+			+ "LEFT JOIN user_subscribed_communities usc ON ((usc.user_id =  ?)"
+			+ "AND (usc.community_id = c.id));";
 
 	public CommunityDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -52,9 +62,9 @@ public class CommunityDatabaseConnection {
 			stmt = con.prepareStatement(GET_ALL_COMMUNITIES_SQL);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				User cOwner = new User(rs.getInt(4),
-						rs.getString(5), rs.getString(6), rs.getString(7),
-						rs.getInt(8), rs.getString(9));
+				User cOwner = new User(rs.getInt(4), rs.getString(5),
+						rs.getString(6), rs.getString(7), rs.getInt(8),
+						rs.getString(9));
 				Community community = new Community(rs.getInt(1),
 						rs.getString(2), rs.getString(3), cOwner);
 				communityList.add(community);
@@ -146,7 +156,8 @@ public class CommunityDatabaseConnection {
 			st1.setInt(1, community.getId());
 			st1.executeUpdate();
 
-			// There is no need to delete the community on user_subscribed_communities
+			// There is no need to delete the community on
+			// user_subscribed_communities
 			// table since it has ON_DELETE_CASCADE
 		} catch (SQLException e) {
 			throw new InternalAppException(e.getMessage());
@@ -194,9 +205,9 @@ public class CommunityDatabaseConnection {
 			stmt.setInt(1, id);
 			rs = stmt.executeQuery();
 			rs.next();
-			User cOwner = new User(rs.getInt(4),
-					rs.getString(5), rs.getString(6), rs.getString(7),
-					rs.getInt(8), rs.getString(9));
+			User cOwner = new User(rs.getInt(4), rs.getString(5),
+					rs.getString(6), rs.getString(7), rs.getInt(8),
+					rs.getString(9));
 			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3),
 					cOwner);
 		} catch (SQLException e) {
@@ -241,9 +252,9 @@ public class CommunityDatabaseConnection {
 			stmt.setString(1, cName);
 			rs = stmt.executeQuery();
 			rs.next();
-			User cOwner = new User(rs.getInt(4),
-					rs.getString(5), rs.getString(6), rs.getString(7),
-					rs.getInt(8), rs.getString(9));
+			User cOwner = new User(rs.getInt(4), rs.getString(5),
+					rs.getString(6), rs.getString(7), rs.getInt(8),
+					rs.getString(9));
 			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3),
 					cOwner);
 		} catch (SQLException e) {
@@ -273,7 +284,115 @@ public class CommunityDatabaseConnection {
 		}
 
 		return c;
+	}
 
+	/**
+	 * 
+	 * @param ownerUserName
+	 * @return
+	 * @throws InternalAppException
+	 */
+	public ArrayList<Community> userCreatedCommunities(String ownerUserName)
+			throws InternalAppException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		ArrayList<Community> lC = new ArrayList<>();
+
+		try {
+			stmt = con.prepareStatement(USER_CREATED_COMMUNITIES_SQL);
+			stmt.setString(1, ownerUserName);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				/*
+				 * 1 - community_id, 2 - community_name, 3 -
+				 * community_description 4 - community_owner id, 5 - owner_name,
+				 * 6 - owner_first_name 7 - owner_last_name, 8 - owner_role:id,
+				 * 9 - owner_email
+				 */
+				User cOwner = new User(rs.getInt(4), rs.getString(5),
+						rs.getString(6), rs.getString(7), rs.getInt(8),
+						rs.getString(9));
+				Community c = new Community(rs.getInt(1), rs.getString(2),
+						rs.getString(3), cOwner);
+				lC.add(c);
+			}
+		} catch (SQLException e) {
+			throw new InternalAppException(e.getMessage());
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return lC;
+	}
+
+	public List<Community> getCommunityListWithSubInfo(int uID)
+			throws InternalAppException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		ArrayList<Community> lC = new ArrayList<>();
+
+		try {
+			stmt = con.prepareStatement(GET_COMMUNITY_LIST_WITH_SUB_INFO);
+			stmt.setInt(1, uID);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				boolean isRegistered = rs.getInt(10) == 1;
+				User cOwner = new User(rs.getInt(4), rs.getString(5),
+						rs.getString(6), rs.getString(7), rs.getInt(8),
+						rs.getString(9));
+				Community c = new Community(rs.getInt(1), rs.getString(2),
+						rs.getString(3), cOwner, isRegistered);
+				lC.add(c);
+			}
+		} catch (SQLException e) {
+			throw new InternalAppException(e.getMessage());
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return lC;
 	}
 
 }

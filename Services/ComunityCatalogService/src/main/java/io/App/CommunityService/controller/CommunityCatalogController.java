@@ -32,13 +32,15 @@ import io.App.CommunityService.exceptions.UserNotAuthorizedException;
 @RequestMapping("/communityCatalogApi")
 public class CommunityCatalogController {
 
+	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
+
 	@Autowired
 	private CommunityCatalog cC;
 	@Autowired
 	private UserAuthorizationCheck uAC;
 
-	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
+	// **NOT** used, instead communityLists method is used
 	@GetMapping(path = "/communities")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
 		CommunityListWrapper cLW = null;
@@ -160,5 +162,56 @@ public class CommunityCatalogController {
 		return new ResponseEntity<>(new Pair<>("Successfull request", cDTO),
 				HttpStatus.OK);
 	}
+
+	@GetMapping("/communityListWithSubInfo/{uID}")
+	public ResponseEntity<Pair<String, CommunityListWrapper>> communityListWithSubInfo(
+			@PathVariable("uID") String uID) {
+		CommunityListWrapper cLW = null;
+
+		try {
+			cLW = new CommunityListWrapper(cC.getCommunityListWithSubInfo(Integer.parseInt(uID)));
+		} catch (NumberFormatException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
+					HttpStatus.OK);
+		}
+
+		System.out.println("Successfully got Community lists");
+		return new ResponseEntity<>(
+				new Pair<>("Successfully got Community list", cLW),
+				HttpStatus.OK);
+	}
+
+	@GetMapping("/userCreatedCommunities/{ownerUserName}")
+	public ResponseEntity<Pair<String, CommunityListWrapper>> userCreatedCommunities(
+			@PathVariable("ownerUserName") String ownerUserName) {
+		CommunityListWrapper cLW = null;
+
+		try {
+			cLW = new CommunityListWrapper(
+					cC.userCreatedCommunities(ownerUserName));
+		} catch (NumberFormatException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		System.out.println("Successfully got user created Community list");
+		return new ResponseEntity<>(
+				new Pair<>("Successfully got Community list", cLW),
+				HttpStatus.OK);
+	}
+
+	
 
 }

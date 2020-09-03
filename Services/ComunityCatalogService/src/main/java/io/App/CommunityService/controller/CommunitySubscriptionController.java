@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.CommunityService.communityComponent.UserCommunityCatalog;
+import io.App.CommunityService.communityComponent.CommunitySubscriptionCatalog;
 import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.dto.CommunitySubscriptionDTO;
 import io.App.CommunityService.dto.Pair;
@@ -24,15 +24,15 @@ import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
 @RestController
-@RequestMapping("/userCommunityApi")
-public class UserCommunityController {
-
-	@Autowired
-	private UserCommunityCatalog uCC;
+@RequestMapping("/communitySubscriptionApi")
+public class CommunitySubscriptionController {
 
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
-	@GetMapping("/userSubbedCommunities/{uID}")
+	@Autowired
+	private CommunitySubscriptionCatalog uCC;
+
+	@GetMapping("/userSubscribedCommunities/{uID}")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> userSubbedCommunities(
 			@PathVariable("uID") String uID) {
 		CommunityListWrapper cLW = null;
@@ -55,36 +55,6 @@ public class UserCommunityController {
 		return new ResponseEntity<>(
 				new Pair<>("Successfully got Community list", cLW),
 				HttpStatus.OK);
-	}
-
-	@GetMapping("/userCreatedCommunities/{ownerUserName}")
-	public ResponseEntity<Pair<String, CommunityListWrapper>> userCreatedCommunities(
-			@PathVariable("ownerUserName") String ownerUserName) {
-		CommunityListWrapper cLW = null;
-
-		try {
-			cLW = new CommunityListWrapper(uCC.userCreatedCommunities(ownerUserName));
-		} catch (NumberFormatException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(
-					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (InternalAppException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		System.out.println("Successfully got user created Community list");
-		return new ResponseEntity<>(
-				new Pair<>("Successfully got Community list", cLW),
-				HttpStatus.OK);
-	}
-
-	@GetMapping("isRegistered/{uID}/{cID}")
-	public void isRegisteredToCommunity(@PathVariable("uID") int uID,
-			@PathVariable("cID") int cID) {
-		uCC.isRegToCommunity(uID, cID);
 	}
 
 	@PostMapping(path = "/subscribeToCommunity", consumes = {
@@ -151,5 +121,4 @@ public class UserCommunityController {
 		return new ResponseEntity<>("Successfully subscribed user to Community",
 				HttpStatus.OK);
 	}
-
 }

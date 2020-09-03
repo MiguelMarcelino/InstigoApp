@@ -1,5 +1,6 @@
 package io.App.CommunityService.communityComponent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ public class OperationsManager {
 
 	public OperationsManager() {
 		getOperationsFromDB();
+		this.operations = new ArrayList<>();
 	}
 
 	private void getOperationsFromDB() {
