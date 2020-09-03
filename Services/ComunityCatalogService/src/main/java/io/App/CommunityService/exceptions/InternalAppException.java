@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InternalAppException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-	
-	public InternalAppException() {
-		super("Internal Error");
+
+	public InternalAppException(String message) {
+		super(message);
 	}
 }

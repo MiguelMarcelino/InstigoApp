@@ -1,5 +1,5 @@
 
--- Database: RolesUtilCommunities
+-- Database: rolesUtilCommunities
 -- ------------------------------------------------------
 -- Server version	5.7.29-0ubuntu0.18.04.1
 
@@ -7,83 +7,93 @@
 -- ------------------------------------------------------
 -- ---------------------Database-------------------------
 -- ------------------------------------------------------
+
 USE RolesUtilCommunities;
+
 -- ------------------------------------------------------
 -- ---------------------Drop Tables----------------------
 -- ------------------------------------------------------
-DROP TABLE IF EXISTS RolesUsersCommunities CASCADE;
-DROP TABLE IF EXISTS Events CASCADE;
-DROP TABLE IF EXISTS Communities CASCADE;
-DROP TABLE IF EXISTS Users CASCADE;
-DROP TABLE IF EXISTS Roles CASCADE;
-DROP TABLE IF EXISTS Feedback CASCADE;
+
+DROP TABLE IF EXISTS user_subscribed_communities CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
+DROP TABLE IF EXISTS communities CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS operations CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS feedback CASCADE;
 
 -- ------------------------------------------------------
 -- --------------------Create Tables---------------------
 -- ------------------------------------------------------
 
-CREATE TABLE Users (
-	`uID` integer auto_increment, 
-	`uName` varchar(50) NOT NULL,
-	`firstName` varchar(30) NOT NULL,
-	`lastName` varchar(30) NOT NULL,
-	`role` varchar(30) NOT NULL,
-	`uEmail` varchar(50) NOT NULL,
-	`uPassword` varchar(20) NOT NULL,
-	PRIMARY KEY (`uID`),
-	UNIQUE KEY `uName` (`uName`)
-);
-
-CREATE TABLE Communities (
-	`cID` integer auto_increment, 
-	`cName` varchar(20) NOT NULL,
-	`description` varchar(500) NOT NULL,
-	`ownerUserName` varchar(50) NOT NULL,
-	PRIMARY KEY (`cID`),
-	UNIQUE KEY `cName` (`cName`),
-	FOREIGN KEY (ownerUserName) REFERENCES Users(uName) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE Roles (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`rName` varchar(30) NOT NULL,
-	`authLevel` int(1) NOT NULL,
+CREATE TABLE users (
+	`id` integer AUTO_INCREMENT, 
+	`user_name` varchar(50) NOT NULL,
+	`first_name` varchar(30) NOT NULL,
+	`last_name` varchar(30) NOT NULL,
+	`role_id` integer NOT NULL,
+	`email` varchar(50) NOT NULL,
+	`password` varchar(20) NOT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `rName` (`rName`)
+	UNIQUE KEY `user_name` (`user_name`)
 );
 
-CREATE TABLE Events (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`eName` varchar(30) NOT NULL,
+CREATE TABLE communities (
+	`id` integer AUTO_INCREMENT, 
+	`name` varchar(20) NOT NULL,
+	`description` varchar(500) NOT NULL,
+	`community_owner_id` integer NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `name` (`name`),
+	FOREIGN KEY (`community_owner_id`) REFERENCES users(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE roles (
+	`id` integer NOT NULL AUTO_INCREMENT,
+	`name` varchar(30) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `name` (`name`)
+);
+
+CREATE TABLE operations (
+	`id` integer NOT NULL AUTO_INCREMENT,
+	`name` varchar(30) NOT NULL,
+	`role_id` integer NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `op_name_role` (`name`, `role_id`),
+	FOREIGN KEY (`role_id`) REFERENCES roles(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE events (
+	`id` integer NOT NULL AUTO_INCREMENT,
+	`name` varchar(30) NOT NULL,
 	`start` date NOT NULL,
 	`end` date NOT NULL,
-	`cID` int(11) NOT NULL,
-	`cName` varchar(20) NOT NULL,
-	`ownerUserName` varchar(50) NOT NULL,
+	`community_id` integer NOT NULL,
+	`event_owner_id` integer NOT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `eName` (`eName`),
-	FOREIGN KEY (cID) REFERENCES Communities(cID) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (ownerUserName) REFERENCES Users(uName) ON DELETE CASCADE ON UPDATE CASCADE
+	UNIQUE KEY `name` (`name`),
+	FOREIGN KEY (`community_id`) REFERENCES communities(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (`event_owner_id`) REFERENCES users(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE RolesUsersCommunities (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`uID` int(11) NOT NULL,
-	`cID` int(11) NOT NULL,
-	`roleName` varchar(30) NOT NULL,
-	`dStart` date NOT NULL,
-	`dEnd` date NOT NULL,
+CREATE TABLE user_subscribed_communities (
+	`id` integer NOT NULL AUTO_INCREMENT,
+	`user_id` integer NOT NULL,
+	`community_id` integer NOT NULL,
+	`start_date` date NOT NULL,
+	`end_date` date NOT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `ruc` (`uID`,`cID`),
-	FOREIGN KEY (uID) REFERENCES Users(uID) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (cID) REFERENCES Communities(cID) ON DELETE CASCADE ON UPDATE CASCADE
+	UNIQUE KEY `usc` (`user_id`,`community_id`),
+	FOREIGN KEY (`community_id`) REFERENCES communities(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (`user_id`) REFERENCES users(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Feedback (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`username` varchar(50) NOT NULL,
-	`datePublished` date NOT NULL,
-	`feedback` varchar(4000) NOT NULL,
+CREATE TABLE feedback (
+	`id` integer NOT NULL AUTO_INCREMENT,
+	`user_name` varchar(50) NOT NULL,
+	`date_published` date NOT NULL,
+	`feedback_content` varchar(4000) NOT NULL,
 	PRIMARY KEY (`id`)
 );
 
@@ -91,52 +101,58 @@ CREATE TABLE Feedback (
 -- -------------------Insert Values----------------------
 -- ------------------------------------------------------
 
--- ----------------------Users------------------------
-LOCK TABLES Users WRITE;
+-- ----------------------roles------------------------
+LOCK TABLES roles WRITE;
+INSERT INTO roles VALUES (1, 'ADMIN'), (2, 'EDITOR'), (3, 'USER');
+
+UNLOCK TABLES;
+
+-- -------------------operations----------------------
+-- ADMIN
+INSERT INTO operations VALUES 
+	(1, 'CREATE', 1), (2, 'DELETE', 1), (3, 'READ', 1), (4, 'MANAGE_OWN_SUBSCRIPTIONS', 1), 
+	(5, 'ADD_USER', 1), (6, 'DELETE_ALL', 1), (7, 'MANAGE_ALL_SUBSCRIPTIONS', 1), (8, 'CREATE_USER', 1);
+
+-- EDITOR
+INSERT INTO operations VALUES 
+	(9, 'CREATE', 2), (10, 'DELETE', 2), (11, 'READ', 2), (12, 'MANAGE_OWN_SUBSCRIPTIONS', 2);
+
+-- USER
+INSERT INTO operations VALUES 
+	(13, 'READ', 3), (14, 'MANAGE_OWN_SUBSCRIPTIONS', 3);
+
+-- ----------------------users------------------------
+LOCK TABLES users WRITE;
 -- Test Values
-INSERT INTO Users VALUES (1,'Admin', 'Admin', 'User', 'ADMIN', 'admin@fculapp.com', 'adminPassword'),
-			 (2,'TestEditor', 'TestEditor', 'Man', 'EDITOR', 'tester@fculapp.com', 'testPassword'),
-			 (3,'Manuel', 'Manuel', 'Goncalves', 'USER', 'manuel@fculapp.com', 'manuelPassword'),
-			 (4,'Pedro', 'Pedro', 'Manuel', 'USER', 'pedro@fculapp.com', 'pedroPassword');
+INSERT INTO users VALUES (1,'Admin', 'Admin', 'User', 1, 'admin@fculapp.com', 'adminPassword'), -- ADMIN --> role_id 1
+			 (2,'TestEditor', 'TestEditor', 'Editor', 2, 'tester@fculapp.com', 'testPassword'), -- EDITOR --> role_id 2
+			 (3,'Manuel', 'Manuel', 'Goncalves', 3, 'manuel@fculapp.com', 'manuelPassword'), -- USER --> role_id 3
+			 (4,'Pedro', 'Pedro', 'Manuel', 3, 'pedro@fculapp.com', 'pedroPassword'); -- USER --> role_id 3
 UNLOCK TABLES;
 
 -- --------------------Communities-----------------------
-LOCK TABLES Communities WRITE;
+LOCK TABLES communities WRITE;
 -- Test Values
-INSERT INTO Communities VALUES (1,'ASC', 'This is meant for all the students that  are participating in the
-	course of ASC', 'TestEditor'),
+INSERT INTO communities VALUES (1,'ASC', 'This is meant for all the students that  are participating in the
+	course of ASC', 2),
 	(2,'LASIGE', 'Computer Science and Engineering research unit at the Department of Informatics, 
-	Faculty of Sciences, University of Lisboa.', 'TestEditor'),
+	Faculty of Sciences, University of Lisboa.', 2),
 	(3,'SD', 'This is meant for all the students that  are participating in the
-	course of SD', 'TestEditor'),
+	course of SD', 2),
 	(4,'SO', 'This is meant for all the students that  are participating in the
-	course of SO', 'TestEditor');
-UNLOCK TABLES;
-
-
--- ----------------------Roles------------------------
--- There is a default role, which all users get when they enter the system. All users
--- are given a role on the ALL_USER_COMMUNITY, which they belong to.
--- Roles go from authLevel 1 to 3, 1 being the authLevel with the least privileges
-Lock Tables Roles WRITE;
-INSERT INTO Roles Values(1, 'COMMUNITY_ADMIN_ROLE', 3);
-INSERT INTO Roles Values(2, 'COMMUNITY_EDITOR_ROLE', 2);
-INSERT INTO Roles Values(3, 'COMMUNITY_USER_ROLE', 1);
-
--- Test Values
+	course of SO', 2);
 UNLOCK TABLES;
 
 -- --------------------Events-------------------------
-LOCK TABLES Events WRITE;
+LOCK TABLES events WRITE;
 -- Test Values
-INSERT INTO Events VALUES (1,'Reunião','2020-02-24','2020-02-25',3,'SD','TestEditor'),
-			  (2,'Almoço_no_LASIGE','2020-03-14','2020-03-14',4,'LASIGE','TestEditor');
+INSERT INTO events VALUES (1,'Reunião','2020-02-24','2020-02-25',3,2),
+			  (2,'Almoço no LASIGE','2020-03-14','2020-03-14',4,2);
 UNLOCK TABLES;
 
--- --------------RolesUsersCommunities----------------
-LOCK TABLES RolesUsersCommunities WRITE;
+-- --------------rolesusersCommunities----------------
+LOCK TABLES user_subscribed_communities WRITE;
 -- Test Values
-INSERT INTO RolesUsersCommunities VALUES (1,3,3,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04'),
-					 (2,4,4,'COMMUNITY_USER_ROLE','2020-01-04','2021-01-04');
+INSERT INTO user_subscribed_communities VALUES (1,3,3,'2020-01-04','2021-01-04'),
+					 (2,4,4,'2020-01-04','2021-01-04');
 UNLOCK TABLES;
-

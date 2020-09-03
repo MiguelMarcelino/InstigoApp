@@ -5,26 +5,26 @@ public class Community {
 	private int id;
 	private String name;
 	private String description;
-	private String ownerUserName;
+	private User user;
 
-	public Community(int id, String name, String description, String ownerUserName) {
+	public Community(int id, String name, String description,
+			User user) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.ownerUserName = ownerUserName;
-	}
-	
-	public Community(String name, String description, String ownerUserName) {
-		this.name = name;
-		this.description = description;
-		this.ownerUserName = ownerUserName;
+		this.user = user;
 	}
 
+	public Community(String name, String description,
+			User user) {
+		this.name = name;
+		this.description = description;
+		this.user = user;
+	}
 
 	public Community() {
 		// For REST only
 	}
-
 
 	public int getId() {
 		return id;
@@ -33,13 +33,13 @@ public class Community {
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
-	public String getOwnerUserName() {
-		return ownerUserName;
+
+	public User getCommunityOwner() {
+		return user;
 	}
 
 	public void setId(int id) {
@@ -53,8 +53,8 @@ public class Community {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public void setOwnerId(String ownerUserName) {
-		this.ownerUserName = ownerUserName;
+
+	public void setCommunityOwner(User user) {
+		this.user = user;
 	}
 }

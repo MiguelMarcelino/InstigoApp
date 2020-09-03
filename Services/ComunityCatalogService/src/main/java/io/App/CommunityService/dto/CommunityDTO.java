@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.App.CommunityService.communityComponent.User;
+
 public class CommunityDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -14,20 +16,50 @@ public class CommunityDTO implements Serializable {
 	private String name;
 	@JsonProperty("description")
 	private String description;
-	@JsonProperty("ownerUserName")
-	private String ownerUserName;
-	@JsonProperty("isSubscribed")
-	private boolean isSubscribed;
+	@JsonProperty("communityOwner")
+	private User communityOwner;
+	@JsonProperty("currentUser")
+	private User currentUser;
+	@JsonProperty("isSubscribed") // TODO
+	private boolean isSubscribed; // TODO
 
 	public CommunityDTO() {
 		// For REST only
 	}
 
-	public CommunityDTO(String id, String name, String description, String ownerUserName) {
+	/**
+	 * This is a dto object for transporting the necessary fields from a
+	 * Community object
+	 * 
+	 * @param id
+	 * @param name
+	 * @param description
+	 * @param user
+	 */
+	public CommunityDTO(String id, String name, String description,
+			User communityOwner) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.ownerUserName = ownerUserName;
+		this.communityOwner = communityOwner;
+	}
+
+	/**
+	 * This is a dto object for receiving the necessary fields from a
+	 * Community object for creating and deleting operations
+	 * 
+	 * @param id
+	 * @param name
+	 * @param description
+	 * @param user
+	 */
+	public CommunityDTO(String id, String name, String description,
+			User communityOwner, User currentUser) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.communityOwner = communityOwner;
+		this.currentUser = currentUser;
 	}
 
 	public String getcID() {
@@ -41,9 +73,13 @@ public class CommunityDTO implements Serializable {
 	public String getDescription() {
 		return description;
 	}
-	
-	public String getOwnerUserName() {
-		return ownerUserName;
+
+	public User getCommunityOwner() {
+		return communityOwner;
+	}
+
+	public User getCurrentUser() {
+		return currentUser;
 	}
 
 }

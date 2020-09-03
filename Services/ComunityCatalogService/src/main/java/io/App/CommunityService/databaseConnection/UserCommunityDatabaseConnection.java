@@ -1,6 +1,5 @@
 package io.App.CommunityService.databaseConnection;
 
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.App.CommunityService.communityComponent.Community;
+import io.App.CommunityService.communityComponent.User;
 import io.App.CommunityService.communityComponent.Role;
 import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
@@ -22,16 +22,21 @@ public class UserCommunityDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String USER_SUBSCRIBED_COMMUNITIES_SQL = "SELECT * FROM Communities AS C WHERE (C.cID = "
-			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE C.cID = RUC.cID "
-			+ "AND RUC.uID = ?));";
-	private static final String USER_CREATED_COMMUNITIES_SQL = "SELECT * FROM Communities WHERE (ownerUserName = ?)";
-	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT cID FROM RolesUsersCommunities "
-			+ "WHERE cID = ? AND uID = ?;";
-	private static final String SUBSCRIBE_USER_TO_COMMUNITY_SQL = "INSERT INTO RolesUsersCommunities "
-			+ "(uID, cID, roleName, dStart, dEnd)" + "VALUES(?, ?, ?, ?, ?);";
-	private static final String UNSUBSCRIBE_USER_FROM_COMMUNITY_SQL = "DELETE FROM RolesUsersCommunities WHERE "
-			+ "(uID = ?) AND (cID = ?);";
+	private static final String USER_SUBSCRIBED_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, u.id, "
+			+ "u.user_name, u.first_name, u.last_name, u.role_id, u.email FROM communities AS c WHERE (c.id = "
+			+ "(SELECT community_id FROM user_subscribed_communities AS usc WHERE c.id = usc.community_id "
+			+ "AND usc.user_id = ?)) "
+			+ "INNER JOIN users u ON c.community_owner_id = u.id;";
+	private static final String USER_CREATED_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, u.id, "
+			+ "u.user_name, u.first_name, u.last_name, u.role_id, u.email FROM communities AS c WHERE (community_owner_id = ?) "
+			+ "INNER JOIN users u ON c.community_owner_id = u.id;";
+	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT community_id FROM user_subscribed_communities "
+			+ "WHERE community_id = ? AND user_id = ?;";
+	private static final String SUBSCRIBE_USER_TO_COMMUNITY_SQL = "INSERT INTO user_subscribed_communities "
+			+ "(user_id, community_id, start_date, end_date)"
+			+ "VALUES(?, ?, ?, ?);";
+	private static final String UNSUBSCRIBE_USER_FROM_COMMUNITY_SQL = "DELETE FROM user_subscribed_communities WHERE "
+			+ "(user_id = ?) AND (community_id = ?);";
 
 	public UserCommunityDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -42,25 +47,35 @@ public class UserCommunityDatabaseConnection {
 	 * 
 	 * @param uID - the user to get the communities
 	 * @return the communities subscribed by a user with id = uID
-	 * @throws InternalAppException 
+	 * @throws InternalAppException
 	 */
-	public List<Community> userSubCommunities(int uID) throws InternalAppException {
+	public List<Community> userSubCommunities(int uID)
+			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		List<Community> lC = new ArrayList<Community>();
+		List<Community> lC = new ArrayList<>();
 
 		try {
 			stmt = con.prepareStatement(USER_SUBSCRIBED_COMMUNITIES_SQL);
 			stmt.setInt(1, uID);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Community c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				/*
+				 * 1 - community_id, 2 - community_name, 3 -
+				 * community_description 4 - community_owner id, 5 - owner_name,
+				 * 6 - owner_first_name 7 - owner_last_name, 8 - owner_role:id,
+				 * 9 - owner_email
+				 */
+				User cOwner = new User(rs.getInt(4),
+						rs.getString(5), rs.getString(6), rs.getString(7),
+						rs.getInt(8), rs.getString(9));
+				Community c = new Community(rs.getInt(1), rs.getString(2),
+						rs.getString(3), cOwner);
 				lC.add(c);
 			}
 		} catch (SQLException e) {
-			System.err.print(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -87,24 +102,34 @@ public class UserCommunityDatabaseConnection {
 
 		return lC;
 	}
-	
-	public ArrayList<Community> userCreatedCommunities(String ownerUserName) throws InternalAppException {
+
+	public ArrayList<Community> userCreatedCommunities(String ownerUserName)
+			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		ArrayList<Community> lC = new ArrayList<Community>();
+		ArrayList<Community> lC = new ArrayList<>();
 
 		try {
 			stmt = con.prepareStatement(USER_CREATED_COMMUNITIES_SQL);
 			stmt.setString(1, ownerUserName);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Community c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				/*
+				 * 1 - community_id, 2 - community_name, 3 -
+				 * community_description 4 - community_owner id, 5 - owner_name,
+				 * 6 - owner_first_name 7 - owner_last_name, 8 - owner_role:id,
+				 * 9 - owner_email
+				 */
+				User cOwner = new User(rs.getInt(4),
+						rs.getString(5), rs.getString(6), rs.getString(7),
+						rs.getInt(8), rs.getString(9));
+				Community c = new Community(rs.getInt(1), rs.getString(2),
+						rs.getString(3), cOwner);
 				lC.add(c);
 			}
 		} catch (SQLException e) {
-			System.err.print(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -214,8 +239,7 @@ public class UserCommunityDatabaseConnection {
 		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new AlreadySubscribedException(uID, cID);
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -235,7 +259,8 @@ public class UserCommunityDatabaseConnection {
 
 	}
 
-	public void unsubscribeFromCommunity(int uID, int cID) throws InternalAppException {
+	public void unsubscribeFromCommunity(int uID, int cID)
+			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement stmt = null;
 
@@ -246,8 +271,7 @@ public class UserCommunityDatabaseConnection {
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -265,7 +289,5 @@ public class UserCommunityDatabaseConnection {
 			}
 		}
 	}
-
-	
 
 }

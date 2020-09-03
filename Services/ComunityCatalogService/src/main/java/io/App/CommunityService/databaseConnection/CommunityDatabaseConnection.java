@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.App.CommunityService.communityComponent.Community;
+import io.App.CommunityService.communityComponent.User;
 import io.App.CommunityService.exceptions.CommunityAlreadyExistsException;
 import io.App.CommunityService.exceptions.CommunityDoesNotExistException;
 import io.App.CommunityService.exceptions.InternalAppException;
@@ -19,14 +20,17 @@ public class CommunityDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT * FROM Communities";
-	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO Communities (cName, description, ownerUserName) VALUES (?, ?, ?)";
-	private static final String DELETE_COMMUNITY_SQL = "DELETE FROM Communities WHERE cName = ?";
-	// private static final String
-	// DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL =
-	// "DELETE FROM RolesUsersCommunities WHERE cID2 = ?;";
-	private static final String GET_COMMUNITY_BY_ID = "SELECT * FROM Communities WHERE cID = ?";
-	private static final String GET_COMMUNITY_BY_NAME = "SELECT * FROM Communities WHERE cName = ?";;
+	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, u.id, "
+			+ "u.user_name, u.first_name, u.last_name, u.role_id, u.email FROM communities AS c"
+			+ "INNER JOIN users u ON c.community_owner_id = u.id;";
+	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO communities (name, description, community_owner_id) "
+			+ "VALUES (?, ?, ?);";
+	private static final String DELETE_COMMUNITY_SQL = "DELETE FROM communities WHERE id = ?";
+	private static final String GET_COMMUNITY_BY_ID = "SELECT c.id, c.name, c.description, u.id, "
+			+ "u.user_name, u.first_name, u.last_name, u.role_id, u.email "
+			+ "FROM communities AS c WHERE (c.id = ?) "
+			+ "INNER JOIN users u ON c.community_owner_id = u.id;";
+	private static final String GET_COMMUNITY_BY_NAME = "SELECT * FROM communities WHERE (name = ?);";
 
 	public CommunityDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -48,13 +52,15 @@ public class CommunityDatabaseConnection {
 			stmt = con.prepareStatement(GET_ALL_COMMUNITIES_SQL);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
+				User cOwner = new User(rs.getInt(4),
+						rs.getString(5), rs.getString(6), rs.getString(7),
+						rs.getInt(8), rs.getString(9));
 				Community community = new Community(rs.getInt(1),
-						rs.getString(2), rs.getString(3), rs.getString(4));
+						rs.getString(2), rs.getString(3), cOwner);
 				communityList.add(community);
 			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -98,13 +104,12 @@ public class CommunityDatabaseConnection {
 			st = con.prepareStatement(INSERT_COMMUNITY_SQL);
 			st.setString(1, community.getName());
 			st.setString(2, community.getDescription());
-			st.setString(3, community.getOwnerUserName());
+			st.setInt(3, community.getCommunityOwner().getId());
 			st.executeUpdate();
 		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new CommunityAlreadyExistsException(community.getName());
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -138,21 +143,13 @@ public class CommunityDatabaseConnection {
 
 		try {
 			st1 = con.prepareStatement(DELETE_COMMUNITY_SQL);
-			st1.setString(1, community.getName());
+			st1.setInt(1, community.getId());
 			st1.executeUpdate();
 
-			// There is no need to delete the community on RolesUsersCommunities
-			// table
-			// since it has ON_DELETE_CASCADE
-			// st2 =
-			// con.prepareStatement(DELETE_COMMUNITY_FROM_ROLESUSERSCOMMUNITIES_SQL);
-			// st2.setInt(1, community.getId());
-			// st2.executeUpdate();
+			// There is no need to delete the community on user_subscribed_communities
+			// table since it has ON_DELETE_CASCADE
 		} catch (SQLException e) {
-			// TODO Review this
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
-			// throw new CommunityDoesNotExistException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -197,13 +194,13 @@ public class CommunityDatabaseConnection {
 			stmt.setInt(1, id);
 			rs = stmt.executeQuery();
 			rs.next();
+			User cOwner = new User(rs.getInt(4),
+					rs.getString(5), rs.getString(6), rs.getString(7),
+					rs.getInt(8), rs.getString(9));
 			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3),
-					rs.getString(4));
+					cOwner);
 		} catch (SQLException e) {
-			// TODO Review this
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
-			// throw new CommunityDoesNotExistException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -244,13 +241,13 @@ public class CommunityDatabaseConnection {
 			stmt.setString(1, cName);
 			rs = stmt.executeQuery();
 			rs.next();
+			User cOwner = new User(rs.getInt(4),
+					rs.getString(5), rs.getString(6), rs.getString(7),
+					rs.getInt(8), rs.getString(9));
 			c = new Community(rs.getInt(1), rs.getString(2), rs.getString(3),
-					rs.getString(4));
+					cOwner);
 		} catch (SQLException e) {
-			// TODO Review this
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
-			// throw new CommunityDoesNotExistException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
