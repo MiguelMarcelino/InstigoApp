@@ -6,29 +6,26 @@ public class Event {
 	private String name;
 	private String start;
 	private String end;
-	private int cID;
-	private String cName;
-	private String ownerUserName;
+	private User eventOwner;
+	private Community community;
 
-	public Event(int id, String name, String start, String end, int cID,
-			String cName, String ownerUserName) {
+	public Event(int id, String name, String start, String end,
+			Community community, User eventOwner) {
 		this.id = id;
 		this.name = name;
 		this.start = start;
 		this.end = end;
-		this.cID = cID;
-		this.cName = cName;
-		this.ownerUserName = ownerUserName;
+		this.community = community;
+		this.eventOwner = eventOwner;
 	}
-	
-	public Event(String name, String start, String end, int cID,
-			String cName, String ownerUserName) {
+
+	public Event(String name, String start, String end,
+			Community community, User eventOwner) {
 		this.name = name;
 		this.start = start;
 		this.end = end;
-		this.cID = cID;
-		this.cName = cName;
-		this.ownerUserName = ownerUserName;
+		this.community = community;
+		this.eventOwner = eventOwner;
 	}
 
 	public Event() {
@@ -51,16 +48,12 @@ public class Event {
 		return end;
 	}
 
-	public int getcID() {
-		return cID;
+	public Community getCommunity() {
+		return community;
 	}
 
-	public String getcName() {
-		return cName;
-	}
-
-	public String getOwnerUserName() {
-		return ownerUserName;
+	public User getEventOwner() {
+		return eventOwner;
 	}
 
 }

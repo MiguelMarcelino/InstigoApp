@@ -3,6 +3,23 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+-------------------------------------------------------------------------
+
+## [0.1.5] - 2020-09-04
+### Added
+- New database queries on Event Microservice
+- New classes in the data access layer in Event Microservice to access 
+Operations and Roles
+- Added Authorization verification to Event Microservice
+- New Mapper class to map Event objects to EventDTO (and conversely)
+
+### Changed
+- Fixed some bugs in the Event Microservice
+- All methods in the database layer now return Event objects instead of 
+EventDTO
+
+-------------------------------------------------------------------------
+
 ## [0.1.5] - 2020-09-03
 ### Added
 - Class to confirm identity of users when communities are created and deleted
@@ -197,7 +214,6 @@ about the user that has created them
 ### Changed
 - Testing with community Component in Angular
 - Changed Database Structure
-
 
 ## [0.1.2] - 2020-07-13
 ### Added

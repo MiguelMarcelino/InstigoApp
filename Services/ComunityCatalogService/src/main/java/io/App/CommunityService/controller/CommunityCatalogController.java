@@ -24,7 +24,7 @@ import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.dto.Pair;
 import io.App.CommunityService.exceptions.CommunityAlreadyExistsException;
 import io.App.CommunityService.exceptions.InternalAppException;
-import io.App.CommunityService.exceptions.NonExistantOperation;
+import io.App.CommunityService.exceptions.NonExistantOperationException;
 import io.App.CommunityService.exceptions.UserDoesNotExistException;
 import io.App.CommunityService.exceptions.UserNotAuthorizedException;
 
@@ -39,8 +39,6 @@ public class CommunityCatalogController {
 	@Autowired
 	private UserAuthorizationCheck uAC;
 
-
-	// **NOT** used, instead communityLists method is used
 	@GetMapping(path = "/communities")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
 		CommunityListWrapper cLW = null;
@@ -90,7 +88,7 @@ public class CommunityCatalogController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (InternalAppException | CommunityAlreadyExistsException
 				| UserDoesNotExistException | UserNotAuthorizedException
-				| NonExistantOperation e) {
+				| NonExistantOperationException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(),
 					HttpStatus.INTERNAL_SERVER_ERROR);
@@ -132,7 +130,7 @@ public class CommunityCatalogController {
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (InternalAppException | UserNotAuthorizedException
-				| UserDoesNotExistException | NonExistantOperation e) {
+				| UserDoesNotExistException | NonExistantOperationException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
 		}

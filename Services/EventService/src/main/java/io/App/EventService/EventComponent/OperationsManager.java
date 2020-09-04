@@ -1,12 +1,12 @@
-package io.App.CommunityService.communityComponent;
+package io.App.EventService.EventComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.App.CommunityService.databaseConnection.OperationsDatabaseConnection;
-import io.App.CommunityService.exceptions.InternalAppException;
-import io.App.CommunityService.exceptions.NonExistantOperationException;
+import io.App.EventService.databaseConnection.OperationsDatabaseConnection;
+import io.App.EventService.exceptions.InternalAppException;
+import io.App.EventService.exceptions.NonExistantOperationException;
 
 public class OperationsManager {
 

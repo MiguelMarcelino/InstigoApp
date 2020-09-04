@@ -12,7 +12,6 @@ import java.util.List;
 
 import io.App.CommunityService.communityComponent.Community;
 import io.App.CommunityService.communityComponent.User;
-import io.App.CommunityService.communityComponent.Role;
 import io.App.CommunityService.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.exceptions.InternalAppException;
 
@@ -64,9 +63,9 @@ public class CommunitySubscriptionDatabaseConnection {
 				 * 6 - owner_first_name 7 - owner_last_name, 8 - owner_role:id,
 				 * 9 - owner_email
 				 */
-				User cOwner = new User(rs.getInt(4),
-						rs.getString(5), rs.getString(6), rs.getString(7),
-						rs.getInt(8), rs.getString(9));
+				User cOwner = new User(rs.getInt(4), rs.getString(5),
+						rs.getString(6), rs.getString(7), rs.getInt(8),
+						rs.getString(9));
 				Community c = new Community(rs.getInt(1), rs.getString(2),
 						rs.getString(3), cOwner);
 				lC.add(c);
@@ -168,10 +167,6 @@ public class CommunitySubscriptionDatabaseConnection {
 			stmt = con.prepareStatement(SUBSCRIBE_USER_TO_COMMUNITY_SQL);
 			stmt.setInt(1, uID);
 			stmt.setInt(2, cID);
-
-			// Every user gets the default role when they subscribe to a
-			// community
-			stmt.setString(3, Role.USER.name());
 
 			// create new Dates. Every user has a default end date of 1 year
 			LocalDate dateStart = LocalDate.now();

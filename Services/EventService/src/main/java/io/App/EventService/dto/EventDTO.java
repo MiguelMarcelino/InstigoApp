@@ -4,12 +4,15 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.App.EventService.EventComponent.Community;
+import io.App.EventService.EventComponent.User;
+
 public class EventDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("id")
-	private String id;
+	private int id;
 
 	@JsonProperty("name")
 	private String name;
@@ -19,32 +22,31 @@ public class EventDTO implements Serializable {
 
 	@JsonProperty("end")
 	private String end;
+	
+	@JsonProperty("community")
+	private Community community;
 
-	@JsonProperty("cID")
-	private String cID;
-
-	@JsonProperty("cName")
-	private String cName;
-
-	@JsonProperty("ownerUserName")
-	private String ownerUserName;
+	@JsonProperty("eventOwner")
+	private User eventOwner;
+	
+	@JsonProperty("currentUser")
+	private User currentUser;
 
 	public EventDTO() {
 		// For REST only
 	}
 
-	public EventDTO(String id, String name, String start, String end,
-			String cID, String cName, String ownerUserName) {
-		this.id = id;
+	public EventDTO(int i, String name, String start, String end,
+			Community community, User eventOwner) {
+		this.id = i;
 		this.name = name;
 		this.start = start;
 		this.end = end;
-		this.cID = cID;
-		this.cName = cName;
-		this.ownerUserName = ownerUserName;
+		this.eventOwner = eventOwner;
+		this.community = community;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -60,16 +62,16 @@ public class EventDTO implements Serializable {
 		return end;
 	}
 
-	public String getcID() {
-		return cID;
+	public User getEventOwner() {
+		return this.eventOwner;
 	}
 
-	public String getcName() {
-		return cName;
+	public Community getCommunity() {
+		return community;
 	}
-
-	public String getOwnerUserName() {
-		return this.ownerUserName;
+	
+	public User getCurrentUser() {
+		return currentUser;
 	}
 
 }

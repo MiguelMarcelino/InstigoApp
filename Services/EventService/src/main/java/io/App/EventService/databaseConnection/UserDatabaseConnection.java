@@ -5,17 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.App.EventService.EventComponent.Role;
 import io.App.EventService.exceptions.InternalAppException;
 import io.App.EventService.exceptions.UserDoesNotExistException;
 
 public class UserDatabaseConnection {
-	
+
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
-	
-	private static final String GET_USER_ROLE_BY_NAME_SQL = "SELECT (role) FROM Users WHERE uName = ?;";
-	
+
+	private static final String GET_USER_ROLE_BY_NAME_SQL = "SELECT role_id FROM users WHERE (user_name = ?);";
+
 	public UserDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
 	}
@@ -27,12 +26,12 @@ public class UserDatabaseConnection {
 	 * @throws InternalAppException
 	 * @throws UserDoesNotExistException
 	 */
-	public Role getUserRole(String username)
+	public int getUserRoleID(String username)
 			throws InternalAppException, UserDoesNotExistException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		Role r = null;
+		int roleID;
 
 		try {
 			st = con.prepareStatement(GET_USER_ROLE_BY_NAME_SQL);
@@ -41,14 +40,13 @@ public class UserDatabaseConnection {
 
 			// get user
 			if (rs.next()) {
-				r = Role.valueOf(rs.getString(1));
+				roleID = rs.getInt(1);
 			} else {
 				throw new UserDoesNotExistException();
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -72,7 +70,7 @@ public class UserDatabaseConnection {
 				}
 			}
 		}
-
-		return r;
+		return roleID;
 	}
+
 }

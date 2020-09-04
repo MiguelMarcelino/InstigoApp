@@ -1,10 +1,10 @@
 package io.App.CommunityService.exceptions;
 
-public class NonExistantOperation extends Exception {
+public class NonExistantOperationException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public NonExistantOperation() {
+	public NonExistantOperationException() {
 		super("The operation you are trying to get does not exist");
 	}
 }
