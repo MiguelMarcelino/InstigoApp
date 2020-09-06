@@ -30,7 +30,7 @@ public class Feedback {
 		return datePublished;
 	}
 
-	public String getFeedback() {
+	public String getFeedbackContent() {
 		return feedback;
 	}
 	

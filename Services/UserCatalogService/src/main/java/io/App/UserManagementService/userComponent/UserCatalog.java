@@ -1,9 +1,10 @@
 package io.App.UserManagementService.userComponent;
 
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.App.UserManagementService.databaseConnection.UserDatabaseConnection;
-import io.App.UserManagementService.dto.UserListWrapper;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
@@ -21,8 +22,9 @@ public class UserCatalog {
 	 * Get all users registered
 	 * 
 	 * @return
+	 * @throws InternalAppException 
 	 */
-	public UserListWrapper getUsers() {
+	public List<User> getUsers() throws InternalAppException {
 		return uDC.getUsersFromDatabase();
 	}
 
@@ -47,8 +49,8 @@ public class UserCatalog {
 	 * @throws InternalAppException - in case there is an internal error with
 	 * the Application
 	 */
-	public void removeUser(User user) throws InternalAppException {
-		uDC.removeUser(user);
+	public void removeUser(int userId) throws InternalAppException {
+		uDC.removeUser(userId);
 	}
 
 	/**

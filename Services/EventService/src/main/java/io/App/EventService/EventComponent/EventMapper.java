@@ -1,7 +1,7 @@
 package io.App.EventService.EventComponent;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.App.EventService.dto.EventDTO;
 
@@ -22,11 +22,12 @@ public class EventMapper {
 
 	public static List<EventDTO> eventListToEventDTOListMapper(
 			List<Event> events) {
-		List<EventDTO> eventDTOs = events.stream()
-				.map(event -> new EventDTO(event.getId(), event.getName(),
-						event.getStart(), event.getEnd(), event.getCommunity(),
-						event.getEventOwner()))
-				.collect(Collectors.toList());
+		List<EventDTO> eventDTOs = new ArrayList<>();
+		for (Event event : events) {
+			eventDTOs.add(new EventDTO(event.getId(), event.getName(),
+					event.getStart(), event.getEnd(), event.getCommunity(),
+					event.getEventOwner()));
+		}
 		return eventDTOs;
 	}
 
@@ -39,11 +40,12 @@ public class EventMapper {
 
 	public static List<Event> eventDTOListToEventListMapper(
 			List<EventDTO> eventDTOs) {
-		List<Event> events = eventDTOs.stream()
-				.map(eventDTO -> new Event(eventDTO.getId(), eventDTO.getName(),
-						eventDTO.getStart(), eventDTO.getEnd(),
-						eventDTO.getCommunity(), eventDTO.getEventOwner()))
-				.collect(Collectors.toList());
+		List<Event> events = new ArrayList<>();
+		for (EventDTO eventDTO : eventDTOs) {
+			events.add(new Event(eventDTO.getId(), eventDTO.getName(),
+					eventDTO.getStart(), eventDTO.getEnd(),
+					eventDTO.getCommunity(), eventDTO.getEventOwner()));
+		}
 		return events;
 	}
 }

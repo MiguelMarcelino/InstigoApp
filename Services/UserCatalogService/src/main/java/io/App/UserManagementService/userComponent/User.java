@@ -6,9 +6,9 @@ public class User {
 	private String userName;
 	private String firstName;
 	private String lastName;
-	private String roleName;
 	private String email;
 	private String password;
+	private Role role;
 
 	public User() {
 		// For REST only
@@ -16,32 +16,33 @@ public class User {
 
 	/**
 	 * 
-	 * @param id
-	 *            - id of the user
-	 * @param name
-	 *            - name of the user
+	 * @param id - id of the user
+	 * @param name - name of the user
 	 */
-	public User(int id, String userName, String firstName, String lastName, String roleName, String email, String password) {
+	public User(int id, String userName, String firstName, String lastName,
+			String email, String password, Role role) {
 		this.id = id;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.roleName = roleName;
 		this.email = email;
 		this.password = password;
+		this.role = role;
 	}
-	
-	public User(int id, String userName, String firstName, String lastName, String roleName, String email) {
+
+	public User(int id, String userName, String firstName, String lastName,
+			String email, Role role) {
 		this.id = id;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.roleName = roleName;
 		this.email = email;
+		this.role = role;
 	}
 
 	/**
 	 * This contructor is used to remove users from the system
+	 * 
 	 * @param getuName
 	 * @param password2
 	 */
@@ -56,24 +57,24 @@ public class User {
 	public String getUserName() {
 		return userName;
 	}
-	
+
 	public String getFirstName() {
 		return firstName;
 	}
-	
+
 	public String getLastName() {
 		return lastName;
 	}
 
-	public String getRoleName() {
-		return roleName;
-	}
-	
 	public String getEmail() {
 		return this.email;
 	}
 
 	public String getPassword() {
 		return password;
+	}
+
+	public Role getRole() {
+		return role;
 	}
 }

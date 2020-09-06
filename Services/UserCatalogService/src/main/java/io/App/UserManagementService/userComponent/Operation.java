@@ -1,18 +1,15 @@
 package io.App.UserManagementService.userComponent;
 
-import java.util.List;
-
-public class Role {
+public class Operation {
 
 	private int id;
 	private String name;
-	private List<Operation> operations;
 
-	public Role() {
+	public Operation() {
 		// For REST only
 	}
 
-	public Role(int id, String name) {
+	public Operation(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -31,14 +28,6 @@ public class Role {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<Operation> getOperations() {
-		return operations;
-	}
-
-	public void setOperations(List<Operation> operations) {
-		this.operations = operations;
 	}
 
 }

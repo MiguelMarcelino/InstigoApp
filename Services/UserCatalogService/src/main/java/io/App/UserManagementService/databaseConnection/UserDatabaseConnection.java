@@ -4,10 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.List;
 
-import io.App.UserManagementService.dto.UserListWrapper;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
@@ -20,12 +19,18 @@ public class UserDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String GET_ALL_USERS_SQL = "SELECT (uID, uName, firstName, lastName, role, uEmail) FROM Users";
-	private static final String INSERT_USER_SQL = "INSERT INTO Users (uName, firstName, lastName, role, uEmail, uPassword) VALUES (?, ?, ?, ?, ?)";
-	private static final String DELETE_USER_FROM_USER_TABLE_SQL = "DELETE FROM Users WHERE uID = ?;";
-	private static final String DELETE_USER_FROM_ROLESUSERSCOMMUNITIES_SQL = "DELETE FROM RolesUsersCommunities WHERE uID = ?;";
-	private static final String SELECT_USER_BY_ID_SQL = "SELECT uName FROM Users WHERE uID = ?;";
-	private static final String SELECT_USER_BY_NAME_SQL = "SELECT * FROM Users WHERE uName = ?;";
+	private static final String GET_ALL_USERS_SQL = "SELECT u.id, u.user_name, u.first_name, u.last_name, u.email,"
+			+ "r.id, r.name FROM users u "
+			+ "INNER JOIN roles r ON (role.id = u.role_id);";
+	private static final String CREATE_USER_SQL = "INSERT INTO users (user_name, first_name, last_name, role_id, email, "
+			+ "password) VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String DELETE_USER_SQL = "DELETE FROM Users WHERE id = ?;";
+	private static final String GET_USER_BY_ID_SQL = "SELECT u.id, u.user_name, u.first_name, u.last_name, u.email,"
+			+ "r.id, r.name FROM users u "
+			+ "INNER JOIN roles r ON (r.id = u.role_id)" + "WHERE u.id = ?;";
+	private static final String GET_USER_BY_NAME_SQL = "SELECT u.id, u.user_name, u.first_name, u.last_name, u.email,"
+			+ "r.id, r.name FROM users u "
+			+ "INNER JOIN roles r ON (r.id = u.role_id)" + "WHERE u.name = ?";
 
 	public UserDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -35,25 +40,26 @@ public class UserDatabaseConnection {
 	 * This method returns a list of registered users on the database
 	 * 
 	 * @return List of users on the database
+	 * @throws InternalAppException
 	 */
-	public UserListWrapper getUsersFromDatabase() {
+	public List<User> getUsersFromDatabase() throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		UserListWrapper uLW = new UserListWrapper();
-		ArrayList<User> userList = new ArrayList<User>();
+		List<User> userList = new ArrayList<User>();
 
 		try {
 			st = con.prepareStatement(GET_ALL_USERS_SQL);
 			rs = st.executeQuery();
 			while (rs.next()) {
+				Role role = new Role(rs.getInt(6), rs.getString(7));
 				User user = new User(rs.getInt(1), rs.getString(2),
 						rs.getString(3), rs.getString(4), rs.getString(5),
-						rs.getString(6));
+						role);
 				userList.add(user);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace(); // TODO Review
+			throw new InternalAppException();
 		} finally {
 			if (con != null) {
 				try {
@@ -78,8 +84,7 @@ public class UserDatabaseConnection {
 			}
 		}
 
-		uLW.setList(userList);
-		return uLW;
+		return userList;
 	}
 
 	/**
@@ -89,25 +94,22 @@ public class UserDatabaseConnection {
 	 * @throws UserAlreadyExistsException
 	 * @throws InternalAppException
 	 */
-	public void addUser(User user)
-			throws UserAlreadyExistsException, InternalAppException {
+	public void addUser(User user) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
-		PreparedStatement st2 = null;
 		ResultSet rs = null;
 
 		try {
-			st = con.prepareStatement(INSERT_USER_SQL);
+			st = con.prepareStatement(CREATE_USER_SQL);
 			st.setString(1, user.getUserName());
 			st.setString(2, user.getFirstName());
 			st.setString(3, user.getLastName());
-			st.setString(4, Role.USER.name());
+			st.setString(4, user.getRole().getName());
 			st.setString(5, user.getEmail());
+			// protect password with hash and salt
 			st.setString(6, user.getPassword());
 			st.executeUpdate();
 
-		} catch (SQLIntegrityConstraintViolationException e) {
-			throw new UserAlreadyExistsException();
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new InternalAppException();
@@ -122,13 +124,6 @@ public class UserDatabaseConnection {
 			if (st != null) {
 				try {
 					st.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (st2 != null) {
-				try {
-					st2.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -150,20 +145,17 @@ public class UserDatabaseConnection {
 	 * @param user - the user to remove
 	 * @throws InternalAppException
 	 */
-	public void removeUser(User user) throws InternalAppException {
+	public void removeUser(int userId) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st1 = null;
-		PreparedStatement st2 = null;
 
 		try {
-			st1 = con.prepareStatement(DELETE_USER_FROM_USER_TABLE_SQL);
-			st1.setInt(1, user.getId());
+			st1 = con.prepareStatement(DELETE_USER_SQL);
+			st1.setInt(1, userId);
 			st1.executeUpdate();
 
-			st2 = con.prepareStatement(
-					DELETE_USER_FROM_ROLESUSERSCOMMUNITIES_SQL);
-			st2.setInt(1, user.getId());
-			st2.executeUpdate();
+			// Because we use ON DELETE CASCADE there is no need to delete
+			// The user from the table user_subscribed_communities
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new InternalAppException();
@@ -182,92 +174,33 @@ public class UserDatabaseConnection {
 					e.printStackTrace();
 				}
 			}
-			if (st2 != null) {
-				try {
-					st2.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 
 	}
 
 	/**
+	 * This method gets a user from the database by its id
 	 * 
 	 * @param uID - Get user info based on user id
 	 * @return a user with all parameters from database
 	 * @throws InternalAppException
-	 */
-	public User getUserById(int uID) throws InternalAppException {
-		Connection con = databaseConnection.connectToDatabase();
-		PreparedStatement st = null;
-		ResultSet rs = null;
-		User u = null;
-		try {
-			// ver se o Utilizador esta associado a uma dada communidade
-			st = con.prepareStatement(SELECT_USER_BY_ID_SQL);
-			st.setInt(1, uID);
-			rs = st.executeQuery();
-
-			rs.next();
-			u = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
-					rs.getString(4), rs.getString(5), rs.getString(6));
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (st != null) {
-				try {
-					st.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return u;
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws InternalAppException
 	 * @throws UserDoesNotExistException
 	 */
-	public User getUserByName(String name)
+	public User getUserById(int uID)
 			throws InternalAppException, UserDoesNotExistException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		User u = null;
-
+		User user = null;
 		try {
-			st = con.prepareStatement(SELECT_USER_BY_NAME_SQL);
-			st.setString(1, name);
+			st = con.prepareStatement(GET_USER_BY_ID_SQL);
+			st.setInt(1, uID);
 			rs = st.executeQuery();
 
-			// get user
 			if (rs.next()) {
-				u = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
-						rs.getString(4), rs.getString(5), rs.getString(6),
-						rs.getString(7));
+				Role role = new Role(rs.getInt(6), rs.getString(7));
+				user = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
+						rs.getString(4), rs.getString(5), role);
 			} else {
 				throw new UserDoesNotExistException();
 			}
@@ -299,7 +232,65 @@ public class UserDatabaseConnection {
 			}
 		}
 
-		return u;
+		return user;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 * @throws InternalAppException
+	 * @throws UserDoesNotExistException
+	 */
+	public User getUserByName(String name)
+			throws InternalAppException, UserDoesNotExistException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		User user = null;
+
+		try {
+			st = con.prepareStatement(GET_USER_BY_NAME_SQL);
+			st.setString(1, name);
+			rs = st.executeQuery();
+
+			// get user
+			if (rs.next()) {
+				Role role = new Role(rs.getInt(6), rs.getString(7));
+				user = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
+						rs.getString(4), rs.getString(5), role);
+			} else {
+				throw new UserDoesNotExistException();
+			}
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new InternalAppException();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (st != null) {
+				try {
+					st.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return user;
 	}
 
 }

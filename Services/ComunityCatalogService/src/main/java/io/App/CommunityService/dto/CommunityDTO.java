@@ -11,7 +11,7 @@ public class CommunityDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("id")
-	private String id;
+	private int id;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("description")
@@ -36,7 +36,7 @@ public class CommunityDTO implements Serializable {
 	 * @param description
 	 * @param user
 	 */
-	public CommunityDTO(String id, String name, String description,
+	public CommunityDTO(int id, String name, String description,
 			User communityOwner) {
 		this.id = id;
 		this.name = name;
@@ -45,15 +45,15 @@ public class CommunityDTO implements Serializable {
 	}
 
 	/**
-	 * This is a dto object for receiving the necessary fields from a
-	 * Community object for creating and deleting operations
+	 * This is a dto object for receiving the necessary fields from a Community
+	 * object for creating and deleting operations
 	 * 
 	 * @param id
 	 * @param name
 	 * @param description
 	 * @param user
 	 */
-	public CommunityDTO(String id, String name, String description,
+	public CommunityDTO(int id, String name, String description,
 			User communityOwner, User currentUser) {
 		this.id = id;
 		this.name = name;
@@ -62,7 +62,7 @@ public class CommunityDTO implements Serializable {
 		this.currentUser = currentUser;
 	}
 
-	public String getcID() {
+	public int getId() {
 		return id;
 	}
 

@@ -1,21 +1,24 @@
 package io.App.UserManagementService.dto;
 
 import java.util.ArrayList;
-
-import io.App.UserManagementService.userComponent.User;
+import java.util.List;
 
 //Esta classe foi criada visto que no RegisterService o 
 //restTemplate.getForObject nao aceita listas
 public class UserListWrapper {
 
-	private ArrayList<User> list;
+	private List<UserDTO> userDTOList;
 
-	public ArrayList<User> getList() {
-		return list;
+	public UserListWrapper(List<UserDTO> userDTOs) {
+		this.userDTOList = userDTOs;
+	}
+	
+	public List<UserDTO> getList() {
+		return userDTOList;
 	}
 
-	public void setList(ArrayList<User> someList) {
-		this.list = someList;
+	public void setList(ArrayList<UserDTO> someList) {
+		this.userDTOList = someList;
 	}
 
 }

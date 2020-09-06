@@ -16,11 +16,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.UserManagementService.dto.FeedbackDataDTO;
+import io.App.UserManagementService.dto.FeedbackDTO;
 import io.App.UserManagementService.dto.FeedbackListWrapper;
 import io.App.UserManagementService.dto.Pair;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.userComponent.FeedbackCatalog;
+import io.App.UserManagementService.userComponent.FeedbackMapper;
 
 @RestController
 @RequestMapping("/userFeedbackApi")
@@ -35,15 +36,15 @@ public class UserFeedbackController {
 	public ResponseEntity<String> receiveFeedback(
 			@RequestBody String feedbackJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		FeedbackDataDTO feedbackDataDTO = null;
+		FeedbackDTO feedbackDTO = null;
 
 		try {
-			feedbackDataDTO = objectMapper.readValue(feedbackJSON,
-					FeedbackDataDTO.class);
+			feedbackDTO = objectMapper.readValue(feedbackJSON,
+					FeedbackDTO.class);
 
-			this.fC.storeFeedback(feedbackDataDTO.getUserName(),
-					feedbackDataDTO.getDatePublished(),
-					feedbackDataDTO.getFeedback());
+			this.fC.storeFeedback(feedbackDTO.getUserName(),
+					feedbackDTO.getDatePublished(),
+					feedbackDTO.getFeedbackContent());
 		} catch (JsonParseException | JsonMappingException
 				| InternalAppException e) {
 			System.err.println(e.getMessage());
@@ -66,7 +67,8 @@ public class UserFeedbackController {
 		FeedbackListWrapper fLW = null;
 
 		try {
-			fLW = new FeedbackListWrapper(fC.getAllFeedback());
+			fLW = new FeedbackListWrapper(FeedbackMapper
+					.feedbackListToFeedbackDTOListMapper(fC.getAllFeedback()));
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),

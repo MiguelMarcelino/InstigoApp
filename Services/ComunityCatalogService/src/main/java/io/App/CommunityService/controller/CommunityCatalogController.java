@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.App.CommunityService.communityComponent.Community;
 import io.App.CommunityService.communityComponent.CommunityCatalog;
+import io.App.CommunityService.communityComponent.CommunityMapper;
 import io.App.CommunityService.communityComponent.UserAuthorizationCheck;
 import io.App.CommunityService.dto.CommunityDTO;
 import io.App.CommunityService.dto.CommunityListWrapper;
@@ -43,7 +44,8 @@ public class CommunityCatalogController {
 	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
 		CommunityListWrapper cLW = null;
 		try {
-			cLW = new CommunityListWrapper(cC.getCommunityList());
+			cLW = new CommunityListWrapper(CommunityMapper
+					.communityListToCommunityDTOList(cC.getCommunityList()));
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
@@ -118,8 +120,7 @@ public class CommunityCatalogController {
 					cDTO.getCurrentUser());
 
 			// if no exception is thrown, the new community gets deleted
-			this.cC.removeCommunity(new Community(
-					Integer.parseInt(cDTO.getcID()), cDTO.getName(),
+			this.cC.removeCommunity(new Community(cDTO.getId(), cDTO.getName(),
 					cDTO.getDescription(), cDTO.getCommunityOwner()));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
@@ -155,8 +156,8 @@ public class CommunityCatalogController {
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
 					HttpStatus.CONFLICT);
 		}
-		CommunityDTO cDTO = new CommunityDTO(String.valueOf(c.getId()),
-				c.getName(), c.getDescription(), c.getCommunityOwner());
+		CommunityDTO cDTO = new CommunityDTO(c.getId(), c.getName(),
+				c.getDescription(), c.getCommunityOwner());
 		return new ResponseEntity<>(new Pair<>("Successfull request", cDTO),
 				HttpStatus.OK);
 	}
@@ -167,7 +168,10 @@ public class CommunityCatalogController {
 		CommunityListWrapper cLW = null;
 
 		try {
-			cLW = new CommunityListWrapper(cC.getCommunityListWithSubInfo(Integer.parseInt(uID)));
+			cLW = new CommunityListWrapper(
+					CommunityMapper.communityListToCommunityDTOList(
+							cC.getCommunityListWithSubInfo(
+									Integer.parseInt(uID))));
 		} catch (NumberFormatException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
@@ -192,7 +196,8 @@ public class CommunityCatalogController {
 
 		try {
 			cLW = new CommunityListWrapper(
-					cC.userCreatedCommunities(ownerUserName));
+					CommunityMapper.communityListToCommunityDTOList(
+							cC.userCreatedCommunities(ownerUserName)));
 		} catch (NumberFormatException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
@@ -209,7 +214,5 @@ public class CommunityCatalogController {
 				new Pair<>("Successfully got Community list", cLW),
 				HttpStatus.OK);
 	}
-
-	
 
 }

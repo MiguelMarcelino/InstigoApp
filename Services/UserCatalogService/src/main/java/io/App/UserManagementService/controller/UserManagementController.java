@@ -24,25 +24,42 @@ import io.App.UserManagementService.dto.UserLoginModel;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
+import io.App.UserManagementService.exceptions.WrongCredentialsException;
 import io.App.UserManagementService.userComponent.User;
+import io.App.UserManagementService.userComponent.UserAuthorizationCheck;
 import io.App.UserManagementService.userComponent.UserCatalog;
+import io.App.UserManagementService.userComponent.UserMapper;
 
 @RestController
 @RequestMapping("/userCatalogApi")
 public class UserManagementController {
 
+	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
+
 	@Autowired
 	private UserCatalog uC;
-
-	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
+	private UserAuthorizationCheck uAC;
 
 	public UserManagementController() {
 		// Empty constructor
 	}
 
 	@GetMapping(path = "/users")
-	public UserListWrapper userList() {
-		return uC.getUsers();
+	public ResponseEntity<Pair<String, UserListWrapper>> userList() {
+		UserListWrapper uLW = null;
+
+		try {
+			uLW = new UserListWrapper(
+					UserMapper.userListToUserDTOListMapper(uC.getUsers()));
+		} catch (InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
+					HttpStatus.OK);
+		}
+
+		System.out.println("Successfully got users");
+		return new ResponseEntity<>(new Pair<>("Successfully got users", uLW),
+				HttpStatus.OK);
 	}
 
 	@PostMapping(path = "addUser", consumes = { "application/json" })
@@ -71,12 +88,22 @@ public class UserManagementController {
 					HttpStatus.OK);
 		}
 		Date currDate = new Date();
-		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()),
-				user.getUserName(), user.getFirstName(), user.getLastName(),
-				user.getRoleName(), user.getEmail(), currDate);
+		UserDTO uDTO = new UserDTO(user.getId(), user.getUserName(),
+				user.getFirstName(), user.getLastName(), user.getRole(),
+				user.getEmail(), currDate);
 		System.out.println("Successfully added new User");
 		return new ResponseEntity<>(
 				new Pair<>("Successfully added new User", uDTO), HttpStatus.OK);
+	}
+
+	/**
+	 * This method creates a new editor.
+	 * 
+	 * @return
+	 */
+	public ResponseEntity<Pair<String, UserDTO>> addEditor() {
+		// TODO
+		return null;
 	}
 
 	@PostMapping(path = "login", consumes = { "application/json" })
@@ -85,20 +112,16 @@ public class UserManagementController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		UserLoginModel uMD = null;
 		User user = null;
+
 		try {
 			uMD = objectMapper.readValue(userModelJSON, UserLoginModel.class);
 
-			// check User information (going to change after implementation of
-			// security features)
 			user = uC.getUserByName(uMD.getUsername());
 
-			if (!user.getPassword().equals(uMD.getPassword())) {
-				return new ResponseEntity<>(new Pair<>(
-						"The inserted password doesn't match that users password",
-						null), HttpStatus.CONFLICT);
-			}
-		} catch (JsonParseException | JsonMappingException
-				| InternalAppException e) {
+			// Verify user Login information
+			uAC.verifyUserLogin(uMD, user);
+
+		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
 					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
@@ -108,7 +131,8 @@ public class UserManagementController {
 			return new ResponseEntity<>(
 					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (UserDoesNotExistException e) {
+		} catch (UserDoesNotExistException | WrongCredentialsException
+				| InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
 					HttpStatus.OK);
@@ -117,9 +141,9 @@ public class UserManagementController {
 		// if password matches
 		// create new Date which represents moment from which user is logged in
 		Date currDate = new Date();
-		UserDTO uDTO = new UserDTO(String.valueOf(user.getId()),
-				user.getUserName(), user.getFirstName(), user.getLastName(),
-				user.getRoleName(), user.getEmail(), currDate);
+		UserDTO uDTO = new UserDTO(user.getId(), user.getUserName(),
+				user.getFirstName(), user.getLastName(), user.getRole(),
+				user.getEmail(), currDate);
 		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
 				HttpStatus.OK);
 	}
@@ -135,18 +159,15 @@ public class UserManagementController {
 	@PostMapping("removeUser/user")
 	public ResponseEntity<String> removeUser(@RequestBody String userDTO) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		UserDTO uDTO = null;
-		User userToRemove = null;
 
 		try {
-			uDTO = objectMapper.readValue(userDTO, UserDTO.class);
+			UserDTO uDTO = objectMapper.readValue(userDTO, UserDTO.class);
 
-			// user can only be removed if he was previously logged in, so no
-			// need to check password again
-			userToRemove = new User(Integer.parseInt(uDTO.getId()),
-					uDTO.getName(), uDTO.getFirstName(), uDTO.getLastName(),
-					uDTO.getRole(), uDTO.getEmail(), null);
-			uC.removeUser(userToRemove);
+			// check credentials
+			User userToRemove = new User(uDTO.getId(), uDTO.getName(),
+					uDTO.getFirstName(), uDTO.getLastName(), uDTO.getEmail(),
+					uDTO.getRole());
+			uC.removeUser(userToRemove.getId());
 		} catch (JsonParseException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>("Internal Application Error",

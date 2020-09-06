@@ -20,15 +20,15 @@ public class FeedbackDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String STORE_FEEDBACK_SQL = "INSERT INTO Feedback (username, datePublished, feedback) VALUES (?, ?, ?)";
-	private static final String GET_FEEDBACK_SQL = "SELECT * FROM Feedback";
+	private static final String STORE_FEEDBACK_SQL = "INSERT INTO feedback (user_name, date_published, feedback_content) VALUES (?, ?, ?)";
+	private static final String GET_FEEDBACK_SQL = "SELECT * FROM feedback";
 
 	public FeedbackDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
 	}
 
-	public void storeFeedbackData(String username, String datePublished, String feedback)
-			throws InternalAppException {
+	public void storeFeedbackData(String username, String datePublished,
+			String feedback) throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
 
@@ -37,8 +37,10 @@ public class FeedbackDatabaseConnection {
 			st.setString(1, username);
 
 			DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-			LocalDate dateOfPublication = LocalDate.parse(datePublished, formatter);
+			DateTimeFormatter formatter = DateTimeFormatter
+					.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+			LocalDate dateOfPublication = LocalDate.parse(datePublished,
+					formatter);
 
 			st.setDate(2, Date.valueOf(dateOfPublication));
 			st.setString(3, feedback);
@@ -75,10 +77,11 @@ public class FeedbackDatabaseConnection {
 			st = con.prepareStatement(GET_FEEDBACK_SQL);
 			rs = st.executeQuery();
 
-			while(rs.next()) {
-				fLW.add(new Feedback(rs.getInt(1) ,rs.getString(2), rs.getString(3), rs.getString(4)));
+			while (rs.next()) {
+				fLW.add(new Feedback(rs.getInt(1), rs.getString(2),
+						rs.getString(3), rs.getString(4)));
 			}
-			
+
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new InternalAppException();
@@ -97,7 +100,7 @@ public class FeedbackDatabaseConnection {
 					e.printStackTrace();
 				}
 			}
-			if(rs != null) {
+			if (rs != null) {
 				try {
 					rs.close();
 				} catch (SQLException e) {
@@ -105,7 +108,7 @@ public class FeedbackDatabaseConnection {
 				}
 			}
 		}
-		
+
 		return fLW;
 	}
 }

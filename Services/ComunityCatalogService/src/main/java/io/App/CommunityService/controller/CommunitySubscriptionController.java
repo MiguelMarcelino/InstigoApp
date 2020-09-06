@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.App.CommunityService.communityComponent.CommunityMapper;
 import io.App.CommunityService.communityComponent.CommunitySubscriptionCatalog;
 import io.App.CommunityService.dto.CommunityListWrapper;
 import io.App.CommunityService.dto.CommunitySubscriptionDTO;
@@ -39,7 +40,9 @@ public class CommunitySubscriptionController {
 
 		try {
 			cLW = new CommunityListWrapper(
-					uCC.userSubbscribedCommunities(Integer.parseInt(uID)));
+					CommunityMapper.communityListToCommunityDTOList(
+							uCC.userSubbscribedCommunities(
+									Integer.parseInt(uID))));
 		} catch (NumberFormatException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(
