@@ -89,4 +89,8 @@ public class UserDTO implements Serializable {
 	public Date getDateLogin() {
 		return dateLogin;
 	}
+
+	public void setDate(Date dateLogin) {
+		this.dateLogin = dateLogin;
+	}
 }

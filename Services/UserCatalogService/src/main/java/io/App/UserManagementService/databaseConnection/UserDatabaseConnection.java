@@ -59,7 +59,7 @@ public class UserDatabaseConnection {
 				userList.add(user);
 			}
 		} catch (SQLException e) {
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -111,8 +111,7 @@ public class UserDatabaseConnection {
 			st.executeUpdate();
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -157,8 +156,7 @@ public class UserDatabaseConnection {
 			// Because we use ON DELETE CASCADE there is no need to delete
 			// The user from the table user_subscribed_communities
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -206,8 +204,7 @@ public class UserDatabaseConnection {
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -264,8 +261,7 @@ public class UserDatabaseConnection {
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {

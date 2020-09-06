@@ -8,7 +8,7 @@ public class InternalAppException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
-	public InternalAppException() {
+	public InternalAppException(String message) {
 		super("Internal Error");
 	}
 }

@@ -46,8 +46,7 @@ public class FeedbackDatabaseConnection {
 			st.setString(3, feedback);
 			st.executeUpdate();
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {
@@ -83,8 +82,7 @@ public class FeedbackDatabaseConnection {
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new InternalAppException();
+			throw new InternalAppException(e.getMessage());
 		} finally {
 			if (con != null) {
 				try {

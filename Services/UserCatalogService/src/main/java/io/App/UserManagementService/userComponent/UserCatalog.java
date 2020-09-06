@@ -22,7 +22,7 @@ public class UserCatalog {
 	 * Get all users registered
 	 * 
 	 * @return
-	 * @throws InternalAppException 
+	 * @throws InternalAppException
 	 */
 	public List<User> getUsers() throws InternalAppException {
 		return uDC.getUsersFromDatabase();
@@ -58,9 +58,12 @@ public class UserCatalog {
 	 * 
 	 * @param uID - id of the user to get
 	 * @return - the user with the given id
+	 * @throws UserDoesNotExistException
+	 * @throws InternalAppException
 	 */
-	public User getUserInfo(int uID) {
-		return null;
+	public User getUserInfo(int id)
+			throws InternalAppException, UserDoesNotExistException {
+		return uDC.getUserById(id);
 	}
 
 	/**
@@ -70,9 +73,10 @@ public class UserCatalog {
 	 * @return - the user with the given name
 	 * @throws InternalAppException - in case there is an internal error with
 	 * the Application
-	 * @throws UserDoesNotExistException 
+	 * @throws UserDoesNotExistException
 	 */
-	public User getUserByName(String uName) throws InternalAppException, UserDoesNotExistException {
+	public User getUserByName(String uName)
+			throws InternalAppException, UserDoesNotExistException {
 		return uDC.getUserByName(uName);
 	}
 

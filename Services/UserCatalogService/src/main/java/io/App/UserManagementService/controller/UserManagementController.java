@@ -2,6 +2,7 @@ package io.App.UserManagementService.controller;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
 import io.App.UserManagementService.exceptions.WrongCredentialsException;
+import io.App.UserManagementService.userComponent.Operation;
+import io.App.UserManagementService.userComponent.OperationsCatalog;
 import io.App.UserManagementService.userComponent.User;
 import io.App.UserManagementService.userComponent.UserAuthorizationCheck;
 import io.App.UserManagementService.userComponent.UserCatalog;
@@ -38,6 +41,10 @@ public class UserManagementController {
 
 	@Autowired
 	private UserCatalog uC;
+
+	@Autowired
+	private OperationsCatalog rC;
+
 	private UserAuthorizationCheck uAC;
 
 	public UserManagementController() {
@@ -60,6 +67,24 @@ public class UserManagementController {
 		System.out.println("Successfully got users");
 		return new ResponseEntity<>(new Pair<>("Successfully got users", uLW),
 				HttpStatus.OK);
+	}
+
+	@RequestMapping("getUserById/{uID}")
+	public ResponseEntity<Pair<String, UserDTO>> getUserInfo(
+			@PathVariable("uID") int uID) {
+		UserDTO userDTO = null;
+
+		try {
+			userDTO = UserMapper.userToUserDTOMapper(uC.getUserInfo(uID));
+		} catch (InternalAppException | UserDoesNotExistException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
+					HttpStatus.OK);
+		}
+
+		System.out.println("Successfully got user");
+		return new ResponseEntity<>(
+				new Pair<>("Successfully got user", userDTO), HttpStatus.OK);
 	}
 
 	@PostMapping(path = "addUser", consumes = { "application/json" })
@@ -106,56 +131,6 @@ public class UserManagementController {
 		return null;
 	}
 
-	@PostMapping(path = "login", consumes = { "application/json" })
-	public ResponseEntity<Pair<String, UserDTO>> loginUser(
-			@RequestBody String userModelJSON) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		UserLoginModel uMD = null;
-		User user = null;
-
-		try {
-			uMD = objectMapper.readValue(userModelJSON, UserLoginModel.class);
-
-			user = uC.getUserByName(uMD.getUsername());
-
-			// Verify user Login information
-			uAC.verifyUserLogin(uMD, user);
-
-		} catch (JsonParseException | JsonMappingException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(
-					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(
-					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (UserDoesNotExistException | WrongCredentialsException
-				| InternalAppException e) {
-			System.err.println(e.getMessage());
-			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
-					HttpStatus.OK);
-		}
-
-		// if password matches
-		// create new Date which represents moment from which user is logged in
-		Date currDate = new Date();
-		UserDTO uDTO = new UserDTO(user.getId(), user.getUserName(),
-				user.getFirstName(), user.getLastName(), user.getRole(),
-				user.getEmail(), currDate);
-		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
-				HttpStatus.OK);
-	}
-
-	// Update User
-	@PostMapping(path = "updateUser", consumes = { "application/json" })
-	public ResponseEntity<String> updateUser(
-			@RequestBody String userModelJSON) {
-		// TODO
-		return null;
-	}
-
 	@PostMapping("removeUser/user")
 	public ResponseEntity<String> removeUser(@RequestBody String userDTO) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -189,9 +164,57 @@ public class UserManagementController {
 		return new ResponseEntity<>("Successfully removed User", HttpStatus.OK);
 	}
 
-	@RequestMapping("getUserInfo/{uID}")
-	public void getUserInfo(@PathVariable("uID") int uID) {
-		uC.getUserInfo(uID);
+	@PostMapping(path = "login", consumes = { "application/json" })
+	public ResponseEntity<Pair<String, UserDTO>> loginUser(
+			@RequestBody String userModelJSON) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		UserLoginModel uMD = null;
+		User user = null;
+
+		try {
+			uMD = objectMapper.readValue(userModelJSON, UserLoginModel.class);
+
+			user = uC.getUserByName(uMD.getUsername());
+			List<Operation> operations = rC
+					.getOperationsForRoleID(user.getRole().getId());
+			user.getRole().setOperations(operations);
+
+			// Verify user Login information
+			uAC.verifyUserLogin(uMD, user);
+
+		} catch (JsonParseException | JsonMappingException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(
+					new Pair<>(INTERNAL_APP_ERROR_MESSAGE, null),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (UserDoesNotExistException | WrongCredentialsException
+				| InternalAppException e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
+					HttpStatus.OK);
+		}
+
+		// after verification of user login
+		// create new Date which represents moment from which user is logged in
+		Date currDate = new Date();
+		UserDTO uDTO = UserMapper.userToUserDTOMapper(user);
+		uDTO.setDate(currDate);
+
+		return new ResponseEntity<>(new Pair<>("Successfull request", uDTO),
+				HttpStatus.OK);
+	}
+
+	// Update User
+	@PostMapping(path = "updateUser", consumes = { "application/json" })
+	public ResponseEntity<String> updateUser(
+			@RequestBody String userModelJSON) {
+		// TODO
+		return null;
 	}
 
 }
