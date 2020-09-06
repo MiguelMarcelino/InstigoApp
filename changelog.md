@@ -7,6 +7,18 @@ All changes made to this project will be documented in this file
 
 ## [0.1.5] - 2020-09-04
 ### Added
+- New Mapper class to User Microservice
+- New Database Queries to User Microservice
+- Added Mapper to Community Microservice
+
+## Changed
+- Improved user verification for operations
+- Fixed bugs in User Microservice
+
+-------------------------------------------------------------------------
+
+## [0.1.5] - 2020-09-04
+### Added
 - New database queries on Event Microservice
 - New classes in the data access layer in Event Microservice to access 
 Operations and Roles
