@@ -7,18 +7,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class CommunityListWrapper {
 
 	@JsonProperty("list")
-	private List<CommunityDTO> list;
+	private List<CommunityDTO> communityList;
 
 	public CommunityListWrapper() {
 		// For REST only
 	}
 	
 	public CommunityListWrapper(List<CommunityDTO> communityList) {
-		this.list = communityList;
+		this.communityList = communityList;
 	}
 
 	public List<CommunityDTO> getList() {
-		return list;
+		return communityList;
 	}
 
 }

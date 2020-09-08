@@ -3,6 +3,17 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.5] - 2020-09-08
+### Added
+- New User Mapper in Community Microservice
+- New Domain Model diagram for CommunityService
+- Created new Role model in CommunityService
+
+### Changed
+- Changed structure of Community Microservice 
+- Fixed some bugs in database calls
+- Changed User Model in CommunityService
+
 -------------------------------------------------------------------------
 
 ## [0.1.5] - 2020-09-04
