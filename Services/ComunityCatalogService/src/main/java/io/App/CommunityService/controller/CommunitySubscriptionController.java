@@ -16,13 +16,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.CommunityService.communityComponent.CommunityMapper;
-import io.App.CommunityService.communityComponent.CommunitySubscriptionCatalog;
-import io.App.CommunityService.dto.CommunityListWrapper;
-import io.App.CommunityService.dto.CommunitySubscriptionDTO;
-import io.App.CommunityService.dto.Pair;
-import io.App.CommunityService.exceptions.AlreadySubscribedException;
-import io.App.CommunityService.exceptions.InternalAppException;
+import io.App.CommunityService.business.catalogs.CommunitySubscriptionCatalog;
+import io.App.CommunityService.business.mappers.CommunityMapper;
+import io.App.CommunityService.facade.dto.CommunityListWrapper;
+import io.App.CommunityService.facade.dto.CommunitySubscriptionDTO;
+import io.App.CommunityService.facade.dto.Pair;
+import io.App.CommunityService.facade.exceptions.AlreadySubscribedException;
+import io.App.CommunityService.facade.exceptions.InternalAppException;
 
 @RestController
 @RequestMapping("/communitySubscriptionApi")

@@ -16,18 +16,19 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.CommunityService.communityComponent.Community;
-import io.App.CommunityService.communityComponent.CommunityCatalog;
-import io.App.CommunityService.communityComponent.CommunityMapper;
-import io.App.CommunityService.communityComponent.UserAuthorizationCheck;
-import io.App.CommunityService.dto.CommunityDTO;
-import io.App.CommunityService.dto.CommunityListWrapper;
-import io.App.CommunityService.dto.Pair;
-import io.App.CommunityService.exceptions.CommunityAlreadyExistsException;
-import io.App.CommunityService.exceptions.InternalAppException;
-import io.App.CommunityService.exceptions.NonExistantOperationException;
-import io.App.CommunityService.exceptions.UserDoesNotExistException;
-import io.App.CommunityService.exceptions.UserNotAuthorizedException;
+import io.App.CommunityService.business.Community;
+import io.App.CommunityService.business.UserAuthorizationCheck;
+import io.App.CommunityService.business.catalogs.CommunityCatalog;
+import io.App.CommunityService.business.mappers.CommunityMapper;
+import io.App.CommunityService.business.mappers.UserMapper;
+import io.App.CommunityService.facade.dto.CommunityDTO;
+import io.App.CommunityService.facade.dto.CommunityListWrapper;
+import io.App.CommunityService.facade.dto.Pair;
+import io.App.CommunityService.facade.exceptions.CommunityAlreadyExistsException;
+import io.App.CommunityService.facade.exceptions.InternalAppException;
+import io.App.CommunityService.facade.exceptions.NonExistantOperationException;
+import io.App.CommunityService.facade.exceptions.UserDoesNotExistException;
+import io.App.CommunityService.facade.exceptions.UserNotAuthorizedException;
 
 @RestController
 @RequestMapping("/communityCatalogApi")
@@ -74,11 +75,12 @@ public class CommunityCatalogController {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
 
 			// check user authorization to perform a creation
-			uAC.checkCreateAuthorization(cDTO.getCommunityOwner());
+			uAC.checkCreateAuthorization(
+					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner()));
 
 			// if no exception is thrown, the new community gets created
 			cC.addCommunity(new Community(cDTO.getName(), cDTO.getDescription(),
-					cDTO.getCommunityOwner()));
+					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner())));
 
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
@@ -116,12 +118,14 @@ public class CommunityCatalogController {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
 
 			// check user authorization to perform a deletion
-			uAC.checkDeleteAuthorization(cDTO.getCommunityOwner(),
-					cDTO.getCurrentUser());
+			uAC.checkDeleteAuthorization(
+					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner()),
+					UserMapper.userDTOToUserMapper(cDTO.getCurrentUser()));
 
 			// if no exception is thrown, the new community gets deleted
 			this.cC.removeCommunity(new Community(cDTO.getId(), cDTO.getName(),
-					cDTO.getDescription(), cDTO.getCommunityOwner()));
+					cDTO.getDescription(),
+					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner())));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
@@ -157,7 +161,8 @@ public class CommunityCatalogController {
 					HttpStatus.CONFLICT);
 		}
 		CommunityDTO cDTO = new CommunityDTO(c.getId(), c.getName(),
-				c.getDescription(), c.getCommunityOwner());
+				c.getDescription(),
+				UserMapper.userToUserDTOMapper(c.getCommunityOwner()));
 		return new ResponseEntity<>(new Pair<>("Successfull request", cDTO),
 				HttpStatus.OK);
 	}

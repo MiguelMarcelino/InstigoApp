@@ -12,7 +12,8 @@ import io.App.UserManagementService.userComponent.Operation;
 
 public class OperationsDatabaseConnection {
 
-	private static final String GET_OPERATIONS_FOR_ROLE_ID = "SELECT * FROM operations WHERE (role_id = ?)";
+	private static final String GET_OPERATIONS_FOR_ROLE_ID = "SELECT * FROM operations "
+			+ "WHERE (role_id = ?)";
 
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
