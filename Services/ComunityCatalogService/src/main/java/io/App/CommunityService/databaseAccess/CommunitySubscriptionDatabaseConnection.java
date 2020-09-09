@@ -13,8 +13,8 @@ import java.util.List;
 import io.App.CommunityService.business.Community;
 import io.App.CommunityService.business.Role;
 import io.App.CommunityService.business.User;
-import io.App.CommunityService.facade.exceptions.AlreadySubscribedException;
-import io.App.CommunityService.facade.exceptions.InternalAppException;
+import io.App.CommunityService.business.exceptions.AlreadySubscribedException;
+import io.App.CommunityService.business.exceptions.InternalAppException;
 
 public class CommunitySubscriptionDatabaseConnection {
 

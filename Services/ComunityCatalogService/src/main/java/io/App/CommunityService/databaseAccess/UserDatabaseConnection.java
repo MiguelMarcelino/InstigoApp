@@ -7,8 +7,8 @@ import java.sql.SQLException;
 
 import io.App.CommunityService.business.Role;
 import io.App.CommunityService.business.User;
-import io.App.CommunityService.facade.exceptions.InternalAppException;
-import io.App.CommunityService.facade.exceptions.UserDoesNotExistException;
+import io.App.CommunityService.business.exceptions.InternalAppException;
+import io.App.CommunityService.business.exceptions.UserDoesNotExistException;
 
 public class UserDatabaseConnection {
 

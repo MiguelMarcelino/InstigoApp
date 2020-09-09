@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.App.CommunityService.business.Operation;
-import io.App.CommunityService.facade.exceptions.InternalAppException;
-import io.App.CommunityService.facade.exceptions.NonExistantOperationException;
+import io.App.CommunityService.business.exceptions.InternalAppException;
+import io.App.CommunityService.business.exceptions.NonExistantOperationException;
 
 public class OperationsDatabaseConnection {
 

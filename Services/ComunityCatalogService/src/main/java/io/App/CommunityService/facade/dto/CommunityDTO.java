@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CommunityDTO implements Serializable {
+public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -16,8 +16,6 @@ public class CommunityDTO implements Serializable {
 	private String description;
 	@JsonProperty("communityOwner")
 	private UserDTO communityOwner;
-	@JsonProperty("currentUser")
-	private UserDTO currentUser;
 	@JsonProperty("isSubscribed")
 	private boolean isSubscribed;
 
@@ -27,7 +25,8 @@ public class CommunityDTO implements Serializable {
 
 	/**
 	 * This is a dto object for transporting the necessary fields from a
-	 * Community object
+	 * Community object and for receiving the necessary fields from a Community
+	 * object for creating and deleting operations
 	 * 
 	 * @param id
 	 * @param name
@@ -40,24 +39,6 @@ public class CommunityDTO implements Serializable {
 		this.name = name;
 		this.description = description;
 		this.communityOwner = communityOwner;
-	}
-
-	/**
-	 * This is a dto object for receiving the necessary fields from a Community
-	 * object for creating and deleting operations
-	 * 
-	 * @param id
-	 * @param name
-	 * @param description
-	 * @param user
-	 */
-	public CommunityDTO(int id, String name, String description,
-			UserDTO communityOwner, UserDTO currentUser) {
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.communityOwner = communityOwner;
-		this.currentUser = currentUser;
 	}
 
 	public int getId() {
@@ -75,9 +56,4 @@ public class CommunityDTO implements Serializable {
 	public UserDTO getCommunityOwner() {
 		return communityOwner;
 	}
-
-	public UserDTO getCurrentUser() {
-		return currentUser;
-	}
-
 }

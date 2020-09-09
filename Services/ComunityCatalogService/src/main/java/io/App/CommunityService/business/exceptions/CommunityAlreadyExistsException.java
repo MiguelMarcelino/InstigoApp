@@ -1,4 +1,4 @@
-package io.App.CommunityService.facade.exceptions;
+package io.App.CommunityService.business.exceptions;
 
 public class CommunityAlreadyExistsException extends Exception {
 

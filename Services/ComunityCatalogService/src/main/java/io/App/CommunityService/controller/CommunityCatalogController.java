@@ -19,16 +19,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.App.CommunityService.business.Community;
 import io.App.CommunityService.business.UserAuthorizationCheck;
 import io.App.CommunityService.business.catalogs.CommunityCatalog;
+import io.App.CommunityService.business.exceptions.CommunityAlreadyExistsException;
+import io.App.CommunityService.business.exceptions.InternalAppException;
+import io.App.CommunityService.business.exceptions.NonExistantOperationException;
+import io.App.CommunityService.business.exceptions.UserDoesNotExistException;
+import io.App.CommunityService.business.exceptions.UserNotAuthorizedException;
 import io.App.CommunityService.business.mappers.CommunityMapper;
 import io.App.CommunityService.business.mappers.UserMapper;
 import io.App.CommunityService.facade.dto.CommunityDTO;
 import io.App.CommunityService.facade.dto.CommunityListWrapper;
 import io.App.CommunityService.facade.dto.Pair;
-import io.App.CommunityService.facade.exceptions.CommunityAlreadyExistsException;
-import io.App.CommunityService.facade.exceptions.InternalAppException;
-import io.App.CommunityService.facade.exceptions.NonExistantOperationException;
-import io.App.CommunityService.facade.exceptions.UserDoesNotExistException;
-import io.App.CommunityService.facade.exceptions.UserNotAuthorizedException;
 
 @RestController
 @RequestMapping("/communityCatalogApi")

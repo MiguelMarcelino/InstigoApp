@@ -3,6 +3,19 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+-------------------------------------------------------------------------
+
+## [0.1.5] - 2020-09-09
+### Added
+- New class to wrap the clients request to the server
+
+### Changed
+- Started new restructuring of EventService
+- Finished restructuring of CommunityService
+- Finished Diagram for CommunityService
+
+-------------------------------------------------------------------------
+
 ## [0.1.5] - 2020-09-08
 ### Added
 - New User Mapper in Community Microservice

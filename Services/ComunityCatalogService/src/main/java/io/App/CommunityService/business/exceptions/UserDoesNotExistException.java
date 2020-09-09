@@ -1,4 +1,4 @@
-package io.App.CommunityService.facade.exceptions;
+package io.App.CommunityService.business.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

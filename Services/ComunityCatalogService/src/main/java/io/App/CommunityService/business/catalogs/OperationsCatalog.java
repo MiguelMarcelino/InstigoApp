@@ -3,24 +3,28 @@ package io.App.CommunityService.business.catalogs;
 import java.util.List;
 
 import io.App.CommunityService.business.Operation;
+import io.App.CommunityService.business.exceptions.InternalAppException;
+import io.App.CommunityService.business.exceptions.NonExistantOperationException;
 import io.App.CommunityService.databaseAccess.OperationsDatabaseConnection;
-import io.App.CommunityService.facade.exceptions.InternalAppException;
-import io.App.CommunityService.facade.exceptions.NonExistantOperationException;
 
 public class OperationsCatalog {
 
-	private OperationsDatabaseConnection oDC;
+	private OperationsDatabaseConnection operationsDBConnection;
 
 	public OperationsCatalog() {
-		oDC = new OperationsDatabaseConnection();
+		operationsDBConnection = new OperationsDatabaseConnection();
 	}
 
 	public List<Operation> getAllOperations() throws InternalAppException {
-		return oDC.getAllOperations();
+		return operationsDBConnection.getAllOperations();
 	}
 
 	public Operation getOperationByName(String name)
 			throws NonExistantOperationException, InternalAppException {
-		return oDC.getOperationByName(name);
+		return operationsDBConnection.getOperationByName(name);
+	}
+
+	public List<Operation> getOperationsForRoleID(int roleId) throws InternalAppException {
+		return operationsDBConnection.getOperationsForRole(roleId);
 	}
 }
