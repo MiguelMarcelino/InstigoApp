@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class EventListWrapper {
 
     @JsonProperty("listEvents")
-    private List<EventDTO> list;
+    private List<EventDTO> eventList;
 
 
     public EventListWrapper() {
@@ -16,14 +16,14 @@ public class EventListWrapper {
     }
 
     public EventListWrapper(List<EventDTO> list) {
-		this.list = list;
+		this.eventList = list;
 	}
 
 	public List<EventDTO> getList() {
-        return list;
+        return eventList;
     }
 
     public void setList(List<EventDTO> someList) {
-        this.list = someList;
+        this.eventList = someList;
     }
 }

@@ -16,14 +16,14 @@ import io.App.EventService.facade.dto.Pair;
 
 @RestController
 @RequestMapping("/userEventApi")
-public class UserEventController {
+public class EventSubscriptionController {
 
 	@Autowired
 	private EventSubscriptionCatalog uEC;
 
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
-	public UserEventController() {
+	public EventSubscriptionController() {
 		// Empty Constructor
 	}
 
