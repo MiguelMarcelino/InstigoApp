@@ -3,6 +3,16 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
+## [0.1.5] - 2020-09-10
+### Added
+- FeedbackService that handles all user Feedback
+- New EventService Domain Model
+
+### Changed
+- Structure of UserService changed to comply with all other Microservices
+- Simplified UserService
+- Data transfer objects matched between Microservices
+
 -------------------------------------------------------------------------
 
 ## [0.1.5] - 2020-09-09
@@ -12,7 +22,7 @@ All changes made to this project will be documented in this file
 ### Changed
 - Started new restructuring of EventService
 - Finished restructuring of CommunityService
-- Finished Diagram for CommunityService
+- Finished Domain Model for CommunityService
 
 -------------------------------------------------------------------------
 

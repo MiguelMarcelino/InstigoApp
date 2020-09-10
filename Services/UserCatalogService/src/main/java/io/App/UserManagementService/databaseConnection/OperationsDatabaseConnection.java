@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.App.UserManagementService.business.Operation;
 import io.App.UserManagementService.exceptions.InternalAppException;
-import io.App.UserManagementService.userComponent.Operation;
 
 public class OperationsDatabaseConnection {
 

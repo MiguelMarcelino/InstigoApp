@@ -7,11 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.App.UserManagementService.business.User;
 import io.App.UserManagementService.exceptions.InternalAppException;
 import io.App.UserManagementService.exceptions.UserAlreadyExistsException;
 import io.App.UserManagementService.exceptions.UserDoesNotExistException;
-import io.App.UserManagementService.userComponent.Role;
-import io.App.UserManagementService.userComponent.User;
 
 public class UserDatabaseConnection {
 
@@ -20,17 +19,14 @@ public class UserDatabaseConnection {
 
 	// SQL Queries
 	private static final String GET_ALL_USERS_SQL = "SELECT u.id, u.user_name, u.first_name, u.last_name, u.email,"
-			+ "r.id, r.name FROM users u "
-			+ "INNER JOIN roles r ON (role.id = u.role_id);";
+			+ "role_id FROM users;";
 	private static final String CREATE_USER_SQL = "INSERT INTO users (user_name, first_name, last_name, role_id, email, "
 			+ "password) VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String DELETE_USER_SQL = "DELETE FROM Users WHERE id = ?;";
-	private static final String GET_USER_BY_ID_SQL = "SELECT u.id, u.user_name, u.first_name, u.last_name, u.email,"
-			+ "r.id, r.name FROM users u "
-			+ "INNER JOIN roles r ON (r.id = u.role_id)" + "WHERE u.id = ?;";
-	private static final String GET_USER_BY_NAME_SQL = "SELECT u.id, u.user_name, u.first_name, u.last_name, u.email,"
-			+ "r.id, r.name FROM users u "
-			+ "INNER JOIN roles r ON (r.id = u.role_id)" + "WHERE u.name = ?";
+	private static final String GET_USER_BY_ID_SQL = "SELECT id, user_name, first_name, last_name, email,"
+			+ "role_id FROM users;";
+	private static final String GET_USER_BY_USER_NAME_SQL = "SELECT id, user_name, first_name, last_name, email,"
+			+ "role_id FROM users WHERE user_name = ?";
 
 	public UserDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -52,10 +48,9 @@ public class UserDatabaseConnection {
 			st = con.prepareStatement(GET_ALL_USERS_SQL);
 			rs = st.executeQuery();
 			while (rs.next()) {
-				Role role = new Role(rs.getInt(6), rs.getString(7));
 				User user = new User(rs.getInt(1), rs.getString(2),
 						rs.getString(3), rs.getString(4), rs.getString(5),
-						role);
+						rs.getInt(6));
 				userList.add(user);
 			}
 		} catch (SQLException e) {
@@ -104,7 +99,7 @@ public class UserDatabaseConnection {
 			st.setString(1, user.getUserName());
 			st.setString(2, user.getFirstName());
 			st.setString(3, user.getLastName());
-			st.setString(4, user.getRole().getName());
+			st.setInt(4, user.getRoleId());
 			st.setString(5, user.getEmail());
 			// protect password with hash and salt
 			st.setString(6, user.getPassword());
@@ -196,9 +191,8 @@ public class UserDatabaseConnection {
 			rs = st.executeQuery();
 
 			if (rs.next()) {
-				Role role = new Role(rs.getInt(6), rs.getString(7));
 				user = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
-						rs.getString(4), rs.getString(5), role);
+						rs.getString(4), rs.getString(5), rs.getInt(6));
 			} else {
 				throw new UserDoesNotExistException();
 			}
@@ -247,15 +241,14 @@ public class UserDatabaseConnection {
 		User user = null;
 
 		try {
-			st = con.prepareStatement(GET_USER_BY_NAME_SQL);
+			st = con.prepareStatement(GET_USER_BY_USER_NAME_SQL);
 			st.setString(1, name);
 			rs = st.executeQuery();
 
 			// get user
 			if (rs.next()) {
-				Role role = new Role(rs.getInt(6), rs.getString(7));
 				user = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
-						rs.getString(4), rs.getString(5), role);
+						rs.getString(4), rs.getString(5), rs.getInt(6));
 			} else {
 				throw new UserDoesNotExistException();
 			}

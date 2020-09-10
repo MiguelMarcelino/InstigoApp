@@ -5,9 +5,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.App.UserManagementService.userComponent.Role;
-
-public class UserDTO implements Serializable {
+public class UserDTO extends UserLoginInfoWrapper implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,8 +24,8 @@ public class UserDTO implements Serializable {
 	@JsonProperty("email")
 	private String email;
 
-	@JsonProperty("role")
-	private Role role;
+	@JsonProperty("roleId")
+	private int roleId;
 
 	@JsonProperty("dateLogin")
 	private Date dateLogin;
@@ -42,24 +40,24 @@ public class UserDTO implements Serializable {
 	 * @param name - name of the user
 	 */
 	public UserDTO(int id, String userName, String firstName,
-			String lastName, Role role, String email, Date dateLogin) {
+			String lastName, int roleId, String email, Date dateLogin) {
 		this.id = id;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.role = role;
+		this.roleId = roleId;
 		this.dateLogin = dateLogin;
 	}
 
 	public UserDTO(int id, String userName, String firstName,
-			String lastName, Role role, String email) {
+			String lastName, int roleId, String email) {
 		this.id = id;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.role = role;
+		this.roleId = roleId;
 	}
 
 	public int getId() {
@@ -82,8 +80,8 @@ public class UserDTO implements Serializable {
 		return lastName;
 	}
 
-	public Role getRole() {
-		return role;
+	public int getRole() {
+		return roleId;
 	}
 
 	public Date getDateLogin() {
