@@ -1,4 +1,4 @@
-package io.App.EventService.EventComponent;
+package io.App.EventService.business;
 
 public class User {
 
@@ -6,17 +6,17 @@ public class User {
 	private String userName;
 	private String firstName;
 	private String lastName;
-	private int roleID;
 	private String email;
+	private int roleId;
 
-	public User(int id, String userName, String firstName,
-			String lastName, int roleID, String email) {
+	public User(int id, String userName, String firstName, String lastName,
+			String email, int roleId) {
 		this.id = id;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.roleID = roleID;
 		this.email = email;
+		this.roleId = roleId;
 	}
 
 	public User() {
@@ -40,7 +40,7 @@ public class User {
 	}
 
 	public int getRoleID() {
-		return roleID;
+		return roleId;
 	}
 
 	public String getEmail() {

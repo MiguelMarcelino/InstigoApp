@@ -1,13 +1,10 @@
-package io.App.EventService.dto;
+package io.App.EventService.facade.dto;
 
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.App.EventService.EventComponent.Community;
-import io.App.EventService.EventComponent.User;
-
-public class EventDTO implements Serializable {
+public class EventDTO extends ClientRequestWrapper implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,28 +19,25 @@ public class EventDTO implements Serializable {
 
 	@JsonProperty("end")
 	private String end;
-	
+
 	@JsonProperty("community")
-	private Community community;
+	private int communityId;
 
 	@JsonProperty("eventOwner")
-	private User eventOwner;
-	
-	@JsonProperty("currentUser")
-	private User currentUser;
+	private int eventOwnerId;
 
 	public EventDTO() {
 		// For REST only
 	}
 
 	public EventDTO(int i, String name, String start, String end,
-			Community community, User eventOwner) {
+			int communityId, int eventOwnerId) {
 		this.id = i;
 		this.name = name;
 		this.start = start;
 		this.end = end;
-		this.eventOwner = eventOwner;
-		this.community = community;
+		this.eventOwnerId = eventOwnerId;
+		this.communityId = communityId;
 	}
 
 	public int getId() {
@@ -62,16 +56,12 @@ public class EventDTO implements Serializable {
 		return end;
 	}
 
-	public User getEventOwner() {
-		return this.eventOwner;
+	public int getEventOwnerId() {
+		return this.eventOwnerId;
 	}
 
-	public Community getCommunity() {
-		return community;
-	}
-	
-	public User getCurrentUser() {
-		return currentUser;
+	public int getCommunity() {
+		return communityId;
 	}
 
 }

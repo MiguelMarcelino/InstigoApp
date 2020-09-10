@@ -2,11 +2,14 @@ package io.App.CommunityService.business.catalogs;
 
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import io.App.CommunityService.business.Operation;
 import io.App.CommunityService.business.exceptions.InternalAppException;
 import io.App.CommunityService.business.exceptions.NonExistantOperationException;
 import io.App.CommunityService.databaseAccess.OperationsDatabaseConnection;
 
+@SpringBootApplication
 public class OperationsCatalog {
 
 	private OperationsDatabaseConnection operationsDBConnection;
@@ -25,6 +28,6 @@ public class OperationsCatalog {
 	}
 
 	public List<Operation> getOperationsForRoleID(int roleId) throws InternalAppException {
-		return operationsDBConnection.getOperationsForRole(roleId);
+		return operationsDBConnection.getOperationsForRoleID(roleId);
 	}
 }

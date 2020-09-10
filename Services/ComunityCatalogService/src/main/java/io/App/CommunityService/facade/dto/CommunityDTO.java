@@ -15,7 +15,7 @@ public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 	@JsonProperty("description")
 	private String description;
 	@JsonProperty("communityOwner")
-	private UserDTO communityOwner;
+	private int communityOwnerId;
 	@JsonProperty("isSubscribed")
 	private boolean isSubscribed;
 
@@ -34,11 +34,11 @@ public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 	 * @param user
 	 */
 	public CommunityDTO(int id, String name, String description,
-			UserDTO communityOwner) {
+			int communityOwner) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.communityOwner = communityOwner;
+		this.communityOwnerId = communityOwner;
 	}
 
 	public int getId() {
@@ -53,7 +53,7 @@ public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 		return description;
 	}
 
-	public UserDTO getCommunityOwner() {
-		return communityOwner;
+	public int getCommunityOwnerId() {
+		return communityOwnerId;
 	}
 }

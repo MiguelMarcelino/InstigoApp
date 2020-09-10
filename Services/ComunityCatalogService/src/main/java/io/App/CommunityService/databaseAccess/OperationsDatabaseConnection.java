@@ -69,7 +69,7 @@ public class OperationsDatabaseConnection {
 		return operationList;
 	}
 
-	public List<Operation> getOperationsForRole(int roleID)
+	public List<Operation> getOperationsForRoleID(int roleID)
 			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;

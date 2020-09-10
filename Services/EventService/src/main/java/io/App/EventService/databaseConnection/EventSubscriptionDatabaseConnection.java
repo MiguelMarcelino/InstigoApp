@@ -7,10 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.App.EventService.EventComponent.Community;
-import io.App.EventService.EventComponent.Event;
-import io.App.EventService.EventComponent.User;
-import io.App.EventService.exceptions.InternalAppException;
+import io.App.EventService.business.Event;
+import io.App.EventService.business.exceptions.InternalAppException;
 
 public class EventSubscriptionDatabaseConnection {
 
@@ -19,16 +17,9 @@ public class EventSubscriptionDatabaseConnection {
 
 	// LEFT JOIN TODO
 	private static final String EVENTS_FROM_SUBSCRIBED_COMMUNITIES_SQL = "SELECT e.id, e.name, e.start, e.end,"
-			+ "u.id, u.user_name, u.first_name, u.last_name, u.role_id, u.email," 
-			+ "c.id, c.name, c.description, c.community_owner_id  FROM events e "
-			+ "INNER JOIN users u ON e.event_owner_id = u.id "
-			+ "INNER JOIN communities c ON e.community_id = c.id "
+			+ "e.community_id, e.event_owner_id FROM events e "
 			+ "INNER JOIN user_subscribed_communities usc ON ((usc.user_id =  ?) "
 			+ "AND (usc.community_id = c.id));";
-			
-			
-//			"SELECT * FROM Events AS E WHERE (E.cID = "
-//			+ "(SELECT cID FROM RolesUsersCommunities AS RUC WHERE (RUC.cID = E.cID) AND (RUC.uID = ?)));";
 
 	public EventSubscriptionDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -53,21 +44,9 @@ public class EventSubscriptionDatabaseConnection {
 			stmt.setInt(1, uID);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				/*
-				 * 1-eventId, 2-eventName, 3-eventStart, 4-eventEnd, 5-userId,
-				 * 6-userName, 7-userFirstName, 8-userLastName, 9-userRoleId,
-				 * 10-userEmail, 11-communityId, 12-communityName,
-				 * 13-communityDescription, 14-communityOwnerId
-				 */
-				User eventOwner = new User(rs.getInt(5), rs.getString(6),
-						rs.getString(7), rs.getString(8), rs.getInt(9),
-						rs.getString(10));
-				Community community = new Community(rs.getInt(11),
-						rs.getString(12), rs.getString(13), rs.getInt(14));
-
 				Event event = new Event(rs.getInt(1), rs.getString(2),
 						rs.getDate(3).toString(), rs.getDate(4).toString(),
-						community, eventOwner);
+						rs.getInt(5), rs.getInt(6));
 
 				// insert Event into List
 				listEvents.add(event);

@@ -12,7 +12,7 @@ public class CommunityMapper {
 			Community community) {
 		CommunityDTO communityDTO = new CommunityDTO(community.getId(),
 				community.getName(), community.getDescription(),
-				UserMapper.userToUserDTOMapper(community.getCommunityOwner()));
+				community.getCommunityOwnerId());
 		return communityDTO;
 	}
 
@@ -21,8 +21,7 @@ public class CommunityMapper {
 		List<CommunityDTO> communityDTOs = new ArrayList<>();
 		for (Community c : communities) {
 			communityDTOs.add(new CommunityDTO(c.getId(), c.getName(),
-					c.getDescription(),
-					UserMapper.userToUserDTOMapper(c.getCommunityOwner())));
+					c.getDescription(), c.getCommunityOwnerId()));
 		}
 		return communityDTOs;
 	}
@@ -31,8 +30,7 @@ public class CommunityMapper {
 			CommunityDTO communityDTO) {
 		Community community = new Community(communityDTO.getId(),
 				communityDTO.getName(), communityDTO.getDescription(),
-				UserMapper
-						.userDTOToUserMapper(communityDTO.getCommunityOwner()));
+				communityDTO.getCommunityOwnerId());
 		return community;
 	}
 
@@ -41,7 +39,7 @@ public class CommunityMapper {
 		List<Community> communities = new ArrayList<>();
 		for (CommunityDTO c : communityDTOs) {
 			communityDTOs.add(new CommunityDTO(c.getId(), c.getName(),
-					c.getDescription(), c.getCommunityOwner()));
+					c.getDescription(), c.getCommunityOwnerId()));
 		}
 		return communities;
 	}

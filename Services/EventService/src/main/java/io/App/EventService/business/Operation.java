@@ -1,4 +1,4 @@
-package io.App.EventService.EventComponent;
+package io.App.EventService.business;
 
 public class Operation {
 

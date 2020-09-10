@@ -1,23 +1,22 @@
-package io.App.EventService.EventComponent;
-
+package io.App.EventService.business;
 
 public class Community {
 
 	private int id;
 	private String name;
 	private String description;
-	private int ownerUserId;
-	
+	private int communityOnwerID;
+
 	public Community() {
 		// For REST only
 	}
 
 	public Community(int id, String name, String description,
-			int ownerUserId) {
+			int communityOnwerID) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.ownerUserId = ownerUserId;
+		this.communityOnwerID = communityOnwerID;
 	}
 
 	public int getId() {
@@ -33,7 +32,7 @@ public class Community {
 	}
 
 	public int getCommunityOwner() {
-		return ownerUserId;
+		return communityOnwerID;
 	}
 
 	public void setId(int id) {
@@ -48,8 +47,8 @@ public class Community {
 		this.description = description;
 	}
 
-	public void setCommunityOwner(int ownerUserId) {
-		this.ownerUserId = ownerUserId;
+	public void setCommunityOwner(int communityOnwerID) {
+		this.communityOnwerID = communityOnwerID;
 	}
 
 }

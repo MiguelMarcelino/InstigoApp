@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.App.CommunityService.business.Role;
 import io.App.CommunityService.business.User;
 import io.App.CommunityService.business.exceptions.InternalAppException;
 import io.App.CommunityService.business.exceptions.UserDoesNotExistException;
@@ -15,9 +14,8 @@ public class UserDatabaseConnection {
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
 
-	private static final String GET_USER_BY_ID_SQL = "SELECT u.id, u.user_name, "
-			+ "u.first_name, u.last_name, u.email, r.id, r.name FROM users u "
-			+ "INNER JOIN roles r ON (r.id = u.role_id)" + "WHERE u.id = ?;";
+	private static final String GET_USER_BY_ID_SQL = "SELECT id, user_name, first_name, last_name, role_id, email  "
+			+ "FROM users WHERE (id = ?);";
 
 	public UserDatabaseConnection() {
 		databaseConnection = new DatabaseConnection();
@@ -43,9 +41,8 @@ public class UserDatabaseConnection {
 			rs = st.executeQuery();
 
 			if (rs.next()) {
-				Role role = new Role(rs.getInt(6), rs.getString(7));
 				user = new User(rs.getInt(1), rs.getString(2), rs.getString(3),
-						rs.getString(4), rs.getString(5), role);
+						rs.getString(4), rs.getString(6), rs.getInt(5));
 			} else {
 				throw new UserDoesNotExistException();
 			}

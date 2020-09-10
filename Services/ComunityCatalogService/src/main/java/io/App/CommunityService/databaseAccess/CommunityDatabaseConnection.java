@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.App.CommunityService.business.Community;
-import io.App.CommunityService.business.Role;
-import io.App.CommunityService.business.User;
 import io.App.CommunityService.business.exceptions.CommunityAlreadyExistsException;
 import io.App.CommunityService.business.exceptions.CommunityDoesNotExistException;
 import io.App.CommunityService.business.exceptions.InternalAppException;
@@ -21,36 +19,22 @@ public class CommunityDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, u.id, "
-			+ "u.user_name, u.first_name, u.last_name, u.email, r.id, r.name FROM communities AS c"
-			+ "INNER JOIN users u ON c.community_owner_id = u.id"
-			+ "INNER JOIN roles r ON r.id = u.role_id;";
+	private static final String GET_ALL_COMMUNITIES_SQL = "SELECT * FROM communities";
 	private static final String INSERT_COMMUNITY_SQL = "INSERT INTO communities "
 			+ "(name, description, community_owner_id) "
 			+ "VALUES (?, ?, ?);";
-	private static final String DELETE_COMMUNITY_SQL = "DELETE FROM communities WHERE id = ?";
-	private static final String GET_COMMUNITY_BY_ID = "SELECT c.id, c.name, c.description, u.id, "
-			+ "u.user_name, u.first_name, u.last_name, u.email, r.id, r.name"
-			+ "FROM communities AS c WHERE (c.id = ?) "
-			+ "INNER JOIN users u ON c.community_owner_id = u.id"
-			+ "INNER JOIN roles r ON r.id = u.role_id;";
-	private static final String GET_COMMUNITY_BY_NAME = "SELECT c.id, c.name, c.description, u.id, "
-			+ "u.user_name, u.first_name, u.last_name, u.email, r.id, r.name FROM communities AS c"
-			+ "INNER JOIN users u ON c.community_owner_id = u.id"
-			+ "INNER JOIN roles r ON r.id = u.role_id;"
-			+ "WHERE (c.name = ?)";
-	private static final String USER_CREATED_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, u.id, "
-			+ "u.user_name, u.first_name, u.last_name, u.email, r.id, r.name FROM communities "
-			+ "AS c WHERE (community_owner_id = ?) "
-			+ "INNER JOIN users u ON c.community_owner_id = u.id"
-			+ "INNER JOIN roles r ON r.id = u.role_id;";
+	private static final String DELETE_COMMUNITY_SQL = "DELETE FROM communities "
+			+ "WHERE id = ?";
+	private static final String GET_COMMUNITY_BY_ID = "SELECT * FROM communities "
+			+ "WHERE (id = ?)";
+	private static final String GET_COMMUNITY_BY_NAME = "SELETC * FROM communities "
+			+ "WHERE (name = ?)";
+	private static final String USER_CREATED_COMMUNITIES_SQL = "SELECT * FROM communities"
+			+ "WHERE (community_owner_id = ?)";
 	private static final String GET_COMMUNITY_LIST_WITH_SUB_INFO = "SELECT c.id, "
-			+ "c.name, c.description, u.id, u.user_name, u.first_name, u.last_name, "
-			+ "u.email, r.id, r.name "
+			+ "c.name, c.description, c.community_owner_id, "
 			+ "IF(usc.user_id  IS NULL, FALSE, TRUE) as isRegistered"
 			+ "FROM communities c"
-			+ "LEFT JOIN users u ON (c.community_owner_id = u.id)"
-			+ "INNER JOIN roles r ON r.id = u.role_id;"
 			+ "LEFT JOIN user_subscribed_communities usc ON ((usc.user_id =  ?)"
 			+ "AND (usc.community_id = c.id));";
 
@@ -74,12 +58,8 @@ public class CommunityDatabaseConnection {
 			stmt = con.prepareStatement(GET_ALL_COMMUNITIES_SQL);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Role role = new Role(rs.getInt(9), rs.getString(10));
-				User cOwner = new User(rs.getInt(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getString(8),
-						role);
 				Community community = new Community(rs.getInt(1),
-						rs.getString(2), rs.getString(3), cOwner);
+						rs.getString(2), rs.getString(3), rs.getInt(4));
 				communityList.add(community);
 			}
 		} catch (SQLException e) {
@@ -127,7 +107,7 @@ public class CommunityDatabaseConnection {
 			st = con.prepareStatement(INSERT_COMMUNITY_SQL);
 			st.setString(1, community.getName());
 			st.setString(2, community.getDescription());
-			st.setInt(3, community.getCommunityOwner().getId());
+			st.setInt(3, community.getCommunityOwnerId());
 			st.executeUpdate();
 		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new CommunityAlreadyExistsException(community.getName());
@@ -220,11 +200,8 @@ public class CommunityDatabaseConnection {
 			
 			// get community
 			rs.next();
-			Role role = new Role(rs.getInt(9), rs.getString(10));
-			User cOwner = new User(rs.getInt(4), rs.getString(5),
-					rs.getString(6), rs.getString(7), rs.getString(8), role);
 			community = new Community(rs.getInt(1), rs.getString(2),
-					rs.getString(3), cOwner);
+					rs.getString(3), rs.getInt(4));
 		} catch (SQLException e) {
 			throw new InternalAppException(e.getMessage());
 		} finally {
@@ -269,11 +246,8 @@ public class CommunityDatabaseConnection {
 
 			// Get next community
 			rs.next();
-			Role role = new Role(rs.getInt(9), rs.getString(10));
-			User cOwner = new User(rs.getInt(4), rs.getString(5),
-					rs.getString(6), rs.getString(7), rs.getString(8), role);
 			community = new Community(rs.getInt(1), rs.getString(2),
-					rs.getString(3), cOwner);
+					rs.getString(3), rs.getInt(4));
 		} catch (SQLException e) {
 			throw new InternalAppException(e.getMessage());
 		} finally {
@@ -321,18 +295,8 @@ public class CommunityDatabaseConnection {
 			stmt.setString(1, ownerUserName);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				/*
-				 * 1 - community_id, 2 - community_name, 3 -
-				 * community_description 4 - community_owner id, 5 - owner_name,
-				 * 6 - owner_first_name 7 - owner_last_name, 8 - owner_role:id,
-				 * 9 - owner_email
-				 */
-				Role role = new Role(rs.getInt(9), rs.getString(10));
-				User cOwner = new User(rs.getInt(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getString(8),
-						role);
 				Community community = new Community(rs.getInt(1),
-						rs.getString(2), rs.getString(3), cOwner);
+						rs.getString(2), rs.getString(3), rs.getInt(4));
 				lC.add(community);
 			}
 		} catch (SQLException e) {
@@ -377,12 +341,8 @@ public class CommunityDatabaseConnection {
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				boolean isRegistered = rs.getInt(10) == 1;
-				Role role = new Role(rs.getInt(9), rs.getString(10));
-				User cOwner = new User(rs.getInt(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getString(8),
-						role);
 				Community community = new Community(rs.getInt(1),
-						rs.getString(2), rs.getString(3), cOwner, isRegistered);
+						rs.getString(2), rs.getString(3), rs.getInt(4), isRegistered);
 				lC.add(community);
 			}
 		} catch (SQLException e) {

@@ -1,11 +1,12 @@
-package io.App.EventService.EventComponent;
+package io.App.EventService.business.catalogs;
 
 import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import io.App.EventService.business.Event;
+import io.App.EventService.business.exceptions.InternalAppException;
 import io.App.EventService.databaseConnection.EventSubscriptionDatabaseConnection;
-import io.App.EventService.exceptions.InternalAppException;
 
 @SpringBootApplication
 public class EventSubscriptionCatalog {

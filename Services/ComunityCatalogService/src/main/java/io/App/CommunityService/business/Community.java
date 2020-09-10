@@ -5,34 +5,33 @@ public class Community {
 	private int id;
 	private String name;
 	private String description;
-	private User communityOwner;
+	private int communityOwnerId;
 	private boolean isRegistered;
-	
+
 	public Community() {
 		// For REST only
 	}
 
 	public Community(int id, String name, String description,
-			User communityOwner) {
+			int communityOwnerId) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.communityOwner = communityOwner;
+		this.communityOwnerId = communityOwnerId;
 	}
 
-	public Community(String name, String description,
-			User communityOwner) {
+	public Community(String name, String description, int communityOwnerId) {
 		this.name = name;
 		this.description = description;
-		this.communityOwner = communityOwner;
+		this.communityOwnerId = communityOwnerId;
 	}
 
-	public Community(int id, String name, String description, User user,
-			boolean isRegistered) {
+	public Community(int id, String name, String description,
+			int communityOwnerId, boolean isRegistered) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.communityOwner = user;
+		this.communityOwnerId = communityOwnerId;
 		this.isRegistered = isRegistered;
 	}
 
@@ -48,10 +47,10 @@ public class Community {
 		return description;
 	}
 
-	public User getCommunityOwner() {
-		return communityOwner;
+	public int getCommunityOwnerId() {
+		return communityOwnerId;
 	}
-	
+
 	public boolean getIsRegistered() {
 		return isRegistered;
 	}
@@ -68,10 +67,10 @@ public class Community {
 		this.description = description;
 	}
 
-	public void setCommunityOwner(User user) {
-		this.communityOwner = user;
+	public void setCommunityOwner(int communityOwnerId) {
+		this.communityOwnerId = communityOwnerId;
 	}
-	
+
 	public void setIsRegistered(boolean isRegistered) {
 		this.isRegistered = isRegistered;
 	}

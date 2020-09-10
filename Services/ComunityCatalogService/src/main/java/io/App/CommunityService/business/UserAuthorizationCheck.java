@@ -1,5 +1,7 @@
 package io.App.CommunityService.business;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -25,38 +27,38 @@ public class UserAuthorizationCheck {
 	public UserAuthorizationCheck() {
 	}
 
-	public void checkCreateAuthorization(User communityOwner)
+	public void checkCreateCommunityAuthorization(int communityOwnerId)
 			throws InternalAppException, UserDoesNotExistException,
 			UserNotAuthorizedException, NonExistantOperationException {
 		// future iteration --> check JWT token
 
-		User user = userCatalog.getUserById(communityOwner.getId());
-		user.getRole().setOperations(operationsCatalog
-				.getOperationsForRoleID(user.getRole().getId()));
+		User user = userCatalog.getUserById(communityOwnerId);
+		List<Operation> operations = operationsCatalog.getOperationsForRoleID(user.getRoleId());
 
-		if (!user.getRole().getOperations().contains(
-				operationsCatalog.getOperationByName(CREATE_COMMUNITY_OP_NAME))) {
+		if (operations.contains(operationsCatalog
+				.getOperationByName(CREATE_COMMUNITY_OP_NAME))) {
 			throw new UserNotAuthorizedException();
 		}
 	}
 
-	public void checkDeleteAuthorization(User communityOwner, User loggedInUser)
+	public void checkDeleteCommunityAuthorization(int communityOwnerId,
+			int loggedInUserId)
 			throws InternalAppException, UserDoesNotExistException,
 			UserNotAuthorizedException, NonExistantOperationException {
 		// future iteration --> check JWT token
 
-		User user = userCatalog.getUserById(communityOwner.getId());
-		user.getRole().setOperations(operationsCatalog
-				.getOperationsForRoleID(user.getRole().getId()));
+		User communityOwner = userCatalog.getUserById(communityOwnerId);
+		User currentUser = userCatalog.getUserById(loggedInUserId);
+		List<Operation> operations = operationsCatalog.getOperationsForRoleID(currentUser.getRoleId());
 
 		// the user can delete a community either:
 		// 1. If he can execute the operation DELETE and is the
 		// creator of that community or
 		// 2. If he can execute the operation DELETE_ALL
-		if (!((user.getRole().getOperations().contains(
+		if (!((operations.contains(
 				operationsCatalog.getOperationByName(DELETE_COMMUNITY_OP_NAME))
-				&& loggedInUser.equals(communityOwner))
-				|| (user.getRole().getOperations().contains(operationsCatalog
+				&& currentUser.equals(communityOwner))
+				|| (operations.contains(operationsCatalog
 						.getOperationByName(DELETE_ALL_COMMUNITY_OP_NAME))))) {
 			throw new UserNotAuthorizedException();
 		}

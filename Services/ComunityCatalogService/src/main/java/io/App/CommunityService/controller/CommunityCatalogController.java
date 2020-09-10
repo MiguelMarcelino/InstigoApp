@@ -25,7 +25,6 @@ import io.App.CommunityService.business.exceptions.NonExistantOperationException
 import io.App.CommunityService.business.exceptions.UserDoesNotExistException;
 import io.App.CommunityService.business.exceptions.UserNotAuthorizedException;
 import io.App.CommunityService.business.mappers.CommunityMapper;
-import io.App.CommunityService.business.mappers.UserMapper;
 import io.App.CommunityService.facade.dto.CommunityDTO;
 import io.App.CommunityService.facade.dto.CommunityListWrapper;
 import io.App.CommunityService.facade.dto.Pair;
@@ -75,12 +74,11 @@ public class CommunityCatalogController {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
 
 			// check user authorization to perform a creation
-			uAC.checkCreateAuthorization(
-					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner()));
+			uAC.checkCreateCommunityAuthorization(cDTO.getCommunityOwnerId());
 
 			// if no exception is thrown, the new community gets created
 			cC.addCommunity(new Community(cDTO.getName(), cDTO.getDescription(),
-					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner())));
+					cDTO.getCommunityOwnerId()));
 
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
@@ -112,20 +110,21 @@ public class CommunityCatalogController {
 	public ResponseEntity<String> removeCommunity(
 			@RequestBody String communityJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		CommunityDTO cDTO = null;
+		CommunityDTO communityDTO = null;
 
 		try {
-			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
+			communityDTO = objectMapper.readValue(communityJSON,
+					CommunityDTO.class);
 
 			// check user authorization to perform a deletion
-			uAC.checkDeleteAuthorization(
-					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner()),
-					UserMapper.userDTOToUserMapper(cDTO.getCurrentUser()));
+			uAC.checkDeleteCommunityAuthorization(
+					communityDTO.getCommunityOwnerId(),
+					communityDTO.getCurrentUserId());
 
 			// if no exception is thrown, the new community gets deleted
-			this.cC.removeCommunity(new Community(cDTO.getId(), cDTO.getName(),
-					cDTO.getDescription(),
-					UserMapper.userDTOToUserMapper(cDTO.getCommunityOwner())));
+			this.cC.removeCommunity(new Community(communityDTO.getId(),
+					communityDTO.getName(), communityDTO.getDescription(),
+					communityDTO.getCommunityOwnerId()));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
@@ -161,8 +160,7 @@ public class CommunityCatalogController {
 					HttpStatus.CONFLICT);
 		}
 		CommunityDTO cDTO = new CommunityDTO(c.getId(), c.getName(),
-				c.getDescription(),
-				UserMapper.userToUserDTOMapper(c.getCommunityOwner()));
+				c.getDescription(), c.getCommunityOwnerId());
 		return new ResponseEntity<>(new Pair<>("Successfull request", cDTO),
 				HttpStatus.OK);
 	}

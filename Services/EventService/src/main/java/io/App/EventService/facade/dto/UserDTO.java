@@ -1,4 +1,4 @@
-package io.App.CommunityService.facade.dto;
+package io.App.EventService.facade.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,15 +16,11 @@ public class UserDTO {
 	@JsonProperty("lastName")
 	private String lastName;
 
-	@JsonProperty("roleId")
-	private int roleId;
-
 	@JsonProperty("email")
 	private String email;
 
-	public UserDTO() {
-		// For REST only
-	}
+	@JsonProperty("roleId")
+	private int roleId;
 
 	public UserDTO(int id, String userName, String firstName, String lastName,
 			String email, int roleId) {
@@ -32,8 +28,12 @@ public class UserDTO {
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.email = email;
 		this.roleId = roleId;
+		this.email = email;
+	}
+
+	public UserDTO() {
+		// For REST only
 	}
 
 	public int getId() {
@@ -52,7 +52,7 @@ public class UserDTO {
 		return lastName;
 	}
 
-	public int getRoleId() {
+	public int getRoleID() {
 		return roleId;
 	}
 

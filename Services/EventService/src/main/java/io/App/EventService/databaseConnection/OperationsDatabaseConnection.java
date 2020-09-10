@@ -7,14 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.App.EventService.EventComponent.Operation;
-import io.App.EventService.exceptions.InternalAppException;
+import io.App.EventService.business.Operation;
+import io.App.EventService.business.exceptions.InternalAppException;
+import io.App.EventService.business.exceptions.NonExistantOperationException;
 
 public class OperationsDatabaseConnection {
 
 	// SQL Queries
 	private static final String GET_ALL_OPERATIONS_SQL = "SELECT * FROM operations";
 	private static final String GET_OPERATIONS_FOR_ROLE_ID = "SELECT * FROM operations WHERE (role_id = ?)";
+	private static final String GET_OPERATION_BY_NAME_SQL = "SELECT * FROM operations WHERE (name = ?)";
 
 	// import class for establishing SQL connection
 	private DatabaseConnection databaseConnection;
@@ -64,8 +66,8 @@ public class OperationsDatabaseConnection {
 
 		return operationList;
 	}
-	
-	public List<Operation> getOperationsForRole(int roleID)
+
+	public List<Operation> getOperationsForRoleId(int roleID)
 			throws InternalAppException {
 		Connection con = databaseConnection.connectToDatabase();
 		PreparedStatement st = null;
@@ -109,5 +111,53 @@ public class OperationsDatabaseConnection {
 			}
 		}
 		return operations;
+	}
+
+	public Operation getOperationByName(String name)
+			throws InternalAppException, NonExistantOperationException {
+		Connection con = databaseConnection.connectToDatabase();
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		Operation operation = null;
+
+		try {
+			st = con.prepareStatement(GET_OPERATION_BY_NAME_SQL);
+			st.setString(1, name);
+			rs = st.executeQuery();
+
+			// get operation
+			if (rs.next()) {
+				operation = new Operation(rs.getInt(1), rs.getString(2),
+						rs.getInt(3));
+			} else {
+				throw new NonExistantOperationException();
+			}
+
+		} catch (SQLException e) {
+			throw new InternalAppException(e.getMessage());
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (st != null) {
+				try {
+					st.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return operation;
 	}
 }

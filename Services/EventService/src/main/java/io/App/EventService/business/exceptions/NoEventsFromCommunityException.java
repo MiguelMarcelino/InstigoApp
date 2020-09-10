@@ -1,4 +1,4 @@
-package io.App.EventService.exceptions;
+package io.App.EventService.business.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

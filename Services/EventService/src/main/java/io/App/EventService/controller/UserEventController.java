@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.App.EventService.EventComponent.EventMapper;
-import io.App.EventService.EventComponent.EventSubscriptionCatalog;
-import io.App.EventService.dto.EventListWrapper;
-import io.App.EventService.dto.Pair;
-import io.App.EventService.exceptions.InternalAppException;
+import io.App.EventService.business.catalogs.EventSubscriptionCatalog;
+import io.App.EventService.business.exceptions.InternalAppException;
+import io.App.EventService.business.mappers.EventMapper;
+import io.App.EventService.facade.dto.EventListWrapper;
+import io.App.EventService.facade.dto.Pair;
 
 @RestController
 @RequestMapping("/userEventApi")

@@ -1,4 +1,4 @@
-package io.App.EventService.dto;
+package io.App.EventService.facade.dto;
 
 import java.util.List;
 

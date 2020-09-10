@@ -1,4 +1,4 @@
-package io.App.EventService.exceptions;
+package io.App.EventService.business.exceptions;
 
 public class UserNotAuthorizedException extends Exception {
 

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.App.CommunityService.business.Community;
-import io.App.CommunityService.business.Role;
-import io.App.CommunityService.business.User;
 import io.App.CommunityService.business.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.business.exceptions.InternalAppException;
 
@@ -22,12 +20,10 @@ public class CommunitySubscriptionDatabaseConnection {
 	private DatabaseConnection databaseConnection;
 
 	// SQL Queries
-	private static final String USER_SUBSCRIBED_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, u.id, "
-			+ "u.user_name, u.first_name, u.last_name, u.email, r.id, r.name FROM communities AS c WHERE (c.id = "
+	private static final String USER_SUBSCRIBED_COMMUNITIES_SQL = "SELECT c.id, c.name, c.description, c.community_owner_id, "
+			+ "FROM communities AS c WHERE (c.id = "
 			+ "(SELECT community_id FROM user_subscribed_communities AS usc WHERE c.id = usc.community_id "
-			+ "AND usc.user_id = ?)) "
-			+ "INNER JOIN users u ON c.community_owner_id = u.id"
-			+ "INNER JOIN roles r ON r.id = u.role_id;";
+			+ "AND usc.user_id = ?)); ";
 	private static final String CHECK_USER_COMMUNITY_REGISTRATION_SQL = "SELECT community_id FROM user_subscribed_communities "
 			+ "WHERE community_id = ? AND user_id = ?;";
 	private static final String SUBSCRIBE_USER_TO_COMMUNITY_SQL = "INSERT INTO user_subscribed_communities "
@@ -59,17 +55,8 @@ public class CommunitySubscriptionDatabaseConnection {
 			stmt.setInt(1, uID);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				/*
-				 * 1 - community_id, 2 - community_name, 3 -
-				 * community_description 4 - community_owner id, 5 - owner_name,
-				 * 6 - owner_first_name 7 - owner_last_name, 8 - owner_role:id,
-				 * 9 - owner_email
-				 */
-				Role role = new Role(rs.getInt(9), rs.getString(10));
-				User cOwner = new User(rs.getInt(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getString(8), role);
 				Community community = new Community(rs.getInt(1), rs.getString(2),
-						rs.getString(3), cOwner);
+						rs.getString(3), rs.getInt(4));
 				lC.add(community);
 			}
 		} catch (SQLException e) {

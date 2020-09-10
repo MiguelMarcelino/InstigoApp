@@ -17,27 +17,27 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.EventService.EventComponent.Event;
-import io.App.EventService.EventComponent.EventCatalog;
-import io.App.EventService.EventComponent.EventMapper;
-import io.App.EventService.EventComponent.UserAuthorizationCheck;
-import io.App.EventService.dto.EventDTO;
-import io.App.EventService.dto.EventListWrapper;
-import io.App.EventService.dto.Pair;
-import io.App.EventService.exceptions.EventAlreadyExistsException;
-import io.App.EventService.exceptions.InternalAppException;
-import io.App.EventService.exceptions.NonExistantOperationException;
-import io.App.EventService.exceptions.UserDoesNotExistException;
-import io.App.EventService.exceptions.UserNotAuthorizedException;
+import io.App.EventService.business.Event;
+import io.App.EventService.business.UserAuthorizationCheck;
+import io.App.EventService.business.catalogs.EventCatalog;
+import io.App.EventService.business.exceptions.EventAlreadyExistsException;
+import io.App.EventService.business.exceptions.InternalAppException;
+import io.App.EventService.business.exceptions.NonExistantOperationException;
+import io.App.EventService.business.exceptions.UserDoesNotExistException;
+import io.App.EventService.business.exceptions.UserNotAuthorizedException;
+import io.App.EventService.business.mappers.EventMapper;
+import io.App.EventService.facade.dto.EventDTO;
+import io.App.EventService.facade.dto.EventListWrapper;
+import io.App.EventService.facade.dto.Pair;
 
 @RestController
 @RequestMapping("/eventApi")
 public class EventCatalogController {
 
 	@Autowired
-	private EventCatalog eC;
+	private EventCatalog eventCatalog;
 	@Autowired
-	private UserAuthorizationCheck uAC;
+	private UserAuthorizationCheck userAuthCheck;
 
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
@@ -46,7 +46,7 @@ public class EventCatalogController {
 		EventListWrapper eLW = null;
 		try {
 			eLW = new EventListWrapper(EventMapper
-					.eventListToEventDTOListMapper(eC.getAllEvents()));
+					.eventListToEventDTOListMapper(eventCatalog.getAllEvents()));
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
@@ -65,7 +65,7 @@ public class EventCatalogController {
 		try {
 			eLW = new EventListWrapper(
 					EventMapper.eventListToEventDTOListMapper(
-							eC.getEventsFromCommunity(cID)));
+							eventCatalog.getEventsFromCommunity(cID)));
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),
@@ -82,16 +82,16 @@ public class EventCatalogController {
 	public ResponseEntity<String> registerNewEvent(
 			@RequestBody String eventJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		EventDTO eDTO = null;
+		EventDTO eventDTO = null;
 
 		try {
-			eDTO = objectMapper.readValue(eventJSON, EventDTO.class);
+			eventDTO = objectMapper.readValue(eventJSON, EventDTO.class);
 
 			// check user authorization to perform a creation
-			uAC.checkCreateAuthorization(eDTO.getCurrentUser());
+			userAuthCheck.checkCreateEventAuthorization(eventDTO.getCurrentUserId());
 
-			this.eC.registerNewEvent(new Event(eDTO.getName(), eDTO.getStart(),
-					eDTO.getEnd(), eDTO.getCommunity(), eDTO.getEventOwner()));
+			this.eventCatalog.registerNewEvent(new Event(eventDTO.getName(), eventDTO.getStart(),
+					eventDTO.getEnd(), eventDTO.getCommunity(), eventDTO.getEventOwnerId()));
 
 		} catch (JsonParseException | JsonMappingException
 				| NumberFormatException e) {
@@ -123,12 +123,12 @@ public class EventCatalogController {
 			eDTO = objectMapper.readValue(eventJSON, EventDTO.class);
 
 			// check user authorization to perform a creation
-			uAC.checkDeleteAuthorization(eDTO.getEventOwner(),
-					eDTO.getCurrentUser());
+			userAuthCheck.checkDeleteEventAuthorization(eDTO.getEventOwnerId(),
+					eDTO.getCurrentUserId());
 
-			this.eC.deleteEvent(new Event(eDTO.getId(), eDTO.getName(),
+			this.eventCatalog.deleteEvent(new Event(eDTO.getId(), eDTO.getName(),
 					eDTO.getStart(), eDTO.getEnd(), eDTO.getCommunity(),
-					eDTO.getEventOwner()));
+					eDTO.getEventOwnerId()));
 		} catch (JsonParseException | JsonMappingException
 				| NumberFormatException e) {
 			System.err.println(e.getMessage());
@@ -158,7 +158,7 @@ public class EventCatalogController {
 		try {
 			eLW = new EventListWrapper(
 					EventMapper.eventListToEventDTOListMapper(
-							eC.eventsCreatedByUser(userName)));
+							eventCatalog.eventsCreatedByUser(userName)));
 		} catch (InternalAppException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(new Pair<>(e.getMessage(), null),

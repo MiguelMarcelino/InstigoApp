@@ -1,4 +1,4 @@
-package io.App.CommunityService.facade.dto;
+package io.App.EventService.facade.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,9 +10,9 @@ public class ClientRequestWrapper {
 	public ClientRequestWrapper() {
 		// For REST only
 	}
-	
+
 	public int getCurrentUserId() {
 		return currentUserId;
 	}
-	
+
 }
