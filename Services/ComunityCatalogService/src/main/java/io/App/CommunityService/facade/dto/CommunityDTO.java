@@ -34,11 +34,11 @@ public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 	 * @param user
 	 */
 	public CommunityDTO(int id, String name, String description,
-			int communityOwner) {
+			int communityCreator) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.communityOwnerId = communityOwner;
+		this.communityOwnerId = communityCreator;
 	}
 
 	public int getId() {
@@ -53,7 +53,7 @@ public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 		return description;
 	}
 
-	public int getCommunityOwnerId() {
+	public int getCommunityCreatorId() {
 		return communityOwnerId;
 	}
 }

@@ -27,12 +27,12 @@ public class UserAuthorizationCheck {
 	public UserAuthorizationCheck() {
 	}
 
-	public void checkCreateCommunityAuthorization(int communityOwnerId)
+	public void checkCreateCommunityAuthorization(int communityCreatorId)
 			throws InternalAppException, UserDoesNotExistException,
 			UserNotAuthorizedException, NonExistantOperationException {
 		// future iteration --> check JWT token
 
-		User user = userCatalog.getUserById(communityOwnerId);
+		User user = userCatalog.getUserById(communityCreatorId);
 		List<Operation> operations = operationsCatalog.getOperationsForRoleID(user.getRoleId());
 
 		if (operations.contains(operationsCatalog

@@ -30,7 +30,7 @@ public class CommunityMapper {
 			CommunityDTO communityDTO) {
 		Community community = new Community(communityDTO.getId(),
 				communityDTO.getName(), communityDTO.getDescription(),
-				communityDTO.getCommunityOwnerId());
+				communityDTO.getCommunityCreatorId());
 		return community;
 	}
 
@@ -39,7 +39,7 @@ public class CommunityMapper {
 		List<Community> communities = new ArrayList<>();
 		for (CommunityDTO c : communityDTOs) {
 			communityDTOs.add(new CommunityDTO(c.getId(), c.getName(),
-					c.getDescription(), c.getCommunityOwnerId()));
+					c.getDescription(), c.getCommunityCreatorId()));
 		}
 		return communities;
 	}

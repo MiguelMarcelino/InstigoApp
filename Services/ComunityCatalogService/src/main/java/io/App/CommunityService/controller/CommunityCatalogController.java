@@ -74,11 +74,11 @@ public class CommunityCatalogController {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
 
 			// check user authorization to perform a creation
-			uAC.checkCreateCommunityAuthorization(cDTO.getCommunityOwnerId());
+			uAC.checkCreateCommunityAuthorization(cDTO.getCommunityCreatorId());
 
 			// if no exception is thrown, the new community gets created
 			cC.addCommunity(new Community(cDTO.getName(), cDTO.getDescription(),
-					cDTO.getCommunityOwnerId()));
+					cDTO.getCommunityCreatorId()));
 
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
@@ -118,13 +118,13 @@ public class CommunityCatalogController {
 
 			// check user authorization to perform a deletion
 			uAC.checkDeleteCommunityAuthorization(
-					communityDTO.getCommunityOwnerId(),
+					communityDTO.getCommunityCreatorId(),
 					communityDTO.getCurrentUserId());
 
 			// if no exception is thrown, the new community gets deleted
 			this.cC.removeCommunity(new Community(communityDTO.getId(),
 					communityDTO.getName(), communityDTO.getDescription(),
-					communityDTO.getCommunityOwnerId()));
+					communityDTO.getCommunityCreatorId()));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
