@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,17 +18,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.App.CommunityService.business.Community;
-import io.App.CommunityService.business.UserAuthorizationCheck;
-import io.App.CommunityService.business.catalogs.CommunityCatalog;
 import io.App.CommunityService.business.exceptions.CommunityAlreadyExistsException;
 import io.App.CommunityService.business.exceptions.InternalAppException;
-import io.App.CommunityService.business.exceptions.NonExistantOperationException;
-import io.App.CommunityService.business.exceptions.UserDoesNotExistException;
-import io.App.CommunityService.business.exceptions.UserNotAuthorizedException;
 import io.App.CommunityService.business.mappers.CommunityMapper;
-import io.App.CommunityService.facade.dto.CommunityDTO;
-import io.App.CommunityService.facade.dto.CommunityListWrapper;
-import io.App.CommunityService.facade.dto.Pair;
+import io.App.CommunityService.business.services.CommunityService;
+import io.App.CommunityService.dto.CommunityDTO;
+import io.App.CommunityService.dto.CommunityListWrapper;
+import io.App.CommunityService.dto.Pair;
 
 @RestController
 @RequestMapping("/communityCatalogApi")
@@ -36,11 +33,10 @@ public class CommunityCatalogController {
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
 	@Autowired
-	private CommunityCatalog cC;
-	@Autowired
-	private UserAuthorizationCheck uAC;
+	private CommunityService cC;
 
 	@GetMapping(path = "/communities")
+	@PreAuthorize("hasPermission(#currUserID, READ_COMMUNITY)")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> communityList() {
 		CommunityListWrapper cLW = null;
 		try {
@@ -65,7 +61,8 @@ public class CommunityCatalogController {
 	 */
 	@PostMapping(path = "/community/create", consumes = {
 			"application/json" }, produces = { "application/json" })
-	public ResponseEntity<String> addCommunity(
+	@PreAuthorize("hasPermission(#currUserID, ADD_COMMUNITY)")
+	public ResponseEntity<String> addCommunity(int currUserID,
 			@RequestBody String communityJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		CommunityDTO cDTO = null;
@@ -73,12 +70,9 @@ public class CommunityCatalogController {
 		try {
 			cDTO = objectMapper.readValue(communityJSON, CommunityDTO.class);
 
-			// check user authorization to perform a creation
-			uAC.checkCreateCommunityAuthorization(cDTO.getCommunityCreatorId());
-
 			// if no exception is thrown, the new community gets created
 			cC.addCommunity(new Community(cDTO.getName(), cDTO.getDescription(),
-					cDTO.getCommunityCreatorId()));
+					currUserID));
 
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
@@ -88,9 +82,7 @@ public class CommunityCatalogController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (InternalAppException | CommunityAlreadyExistsException
-				| UserDoesNotExistException | UserNotAuthorizedException
-				| NonExistantOperationException e) {
+		} catch (InternalAppException | CommunityAlreadyExistsException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(),
 					HttpStatus.INTERNAL_SERVER_ERROR);
@@ -107,8 +99,10 @@ public class CommunityCatalogController {
 	 * @return
 	 */
 	@PostMapping(path = "/community/delete", consumes = { "application/json" })
+	@PreAuthorize("hasPermission(#currUserID, DELETE_COMMUNITY) or "
+			+ "hasPermission(#currUserID, DELETE_ALL_COMMUNITY)")
 	public ResponseEntity<String> removeCommunity(
-			@RequestBody String communityJSON) {
+			int currUserID, @RequestBody String communityJSON) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		CommunityDTO communityDTO = null;
 
@@ -116,15 +110,10 @@ public class CommunityCatalogController {
 			communityDTO = objectMapper.readValue(communityJSON,
 					CommunityDTO.class);
 
-			// check user authorization to perform a deletion
-			uAC.checkDeleteCommunityAuthorization(
-					communityDTO.getCommunityCreatorId(),
-					communityDTO.getCurrentUserId());
-
 			// if no exception is thrown, the new community gets deleted
 			this.cC.removeCommunity(new Community(communityDTO.getId(),
 					communityDTO.getName(), communityDTO.getDescription(),
-					communityDTO.getCommunityCreatorId()));
+					currUserID));
 		} catch (JsonParseException | JsonMappingException e) {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
@@ -133,10 +122,9 @@ public class CommunityCatalogController {
 			System.err.println(e.getMessage());
 			return new ResponseEntity<>(INTERNAL_APP_ERROR_MESSAGE,
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (InternalAppException | UserNotAuthorizedException
-				| UserDoesNotExistException | NonExistantOperationException e) {
+		} catch (InternalAppException  e) {
 			System.err.println(e.getMessage());
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
 		}
 		System.out.println("Successfully removed Community");
 		return new ResponseEntity<>("Successfully removed Community",
@@ -149,6 +137,7 @@ public class CommunityCatalogController {
 	 * @return
 	 */
 	@GetMapping(path = "/community/{cName}")
+	@PreAuthorize("hasPermission(#currUserID, READ_COMMUNITY)")
 	public ResponseEntity<Pair<String, CommunityDTO>> getCommunityByName(
 			@PathVariable("cName") String cName) {
 		Community c;
@@ -166,6 +155,7 @@ public class CommunityCatalogController {
 	}
 
 	@GetMapping("/communityListWithSubInfo/{uID}")
+	@PreAuthorize("hasPermission(#currUserID, READ_COMMUNITY)")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> communityListWithSubInfo(
 			@PathVariable("uID") String uID) {
 		CommunityListWrapper cLW = null;
@@ -193,6 +183,7 @@ public class CommunityCatalogController {
 	}
 
 	@GetMapping("/userCreatedCommunities/{ownerUserName}")
+	@PreAuthorize("hasPermission(#currUserID, CREATE_COMMUNITY)")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> userCreatedCommunities(
 			@PathVariable("ownerUserName") String ownerUserName) {
 		CommunityListWrapper cLW = null;

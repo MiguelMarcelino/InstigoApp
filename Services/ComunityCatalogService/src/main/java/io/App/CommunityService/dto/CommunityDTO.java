@@ -1,10 +1,10 @@
-package io.App.CommunityService.facade.dto;
+package io.App.CommunityService.dto;
 
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CommunityDTO extends ClientRequestWrapper implements Serializable {
+public class CommunityDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,8 +33,13 @@ public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 	 * @param description
 	 * @param user
 	 */
-	public CommunityDTO(int id, String name, String description,
-			int communityCreator) {
+	public CommunityDTO(int id, String name, String description) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+	}
+	
+	public CommunityDTO(int id, String name, String description, int communityCreator) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -53,7 +58,7 @@ public class CommunityDTO extends ClientRequestWrapper implements Serializable {
 		return description;
 	}
 
-	public int getCommunityCreatorId() {
+	public int getCommunityOwnerID() {
 		return communityOwnerId;
 	}
 }

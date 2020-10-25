@@ -1,4 +1,4 @@
-package io.App.CommunityService.business.catalogs;
+package io.App.CommunityService.business.services;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import io.App.CommunityService.business.exceptions.InternalAppException;
 import io.App.CommunityService.databaseAccess.CommunityDatabaseConnection;
 
 @SpringBootApplication
-public class CommunityCatalog {
+public class CommunityService {
 
 	private CommunityDatabaseConnection communityDBConnection;
 
-	public CommunityCatalog() {
+	public CommunityService() {
 		communityDBConnection = new CommunityDatabaseConnection();
 	}
 

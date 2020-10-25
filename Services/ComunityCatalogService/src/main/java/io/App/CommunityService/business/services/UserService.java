@@ -1,4 +1,4 @@
-package io.App.CommunityService.business.catalogs;
+package io.App.CommunityService.business.services;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,11 +8,11 @@ import io.App.CommunityService.business.exceptions.UserDoesNotExistException;
 import io.App.CommunityService.databaseAccess.UserDatabaseConnection;
 
 @SpringBootApplication
-public class UserCatalog {
+public class UserService {
 
 	private UserDatabaseConnection userDBConnection;
 
-	public UserCatalog() {
+	public UserService() {
 		userDBConnection = new UserDatabaseConnection();
 	}
 

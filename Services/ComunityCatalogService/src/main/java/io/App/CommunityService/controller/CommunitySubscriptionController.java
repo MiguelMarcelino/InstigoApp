@@ -16,13 +16,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.App.CommunityService.business.catalogs.CommunitySubscriptionCatalog;
 import io.App.CommunityService.business.exceptions.AlreadySubscribedException;
 import io.App.CommunityService.business.exceptions.InternalAppException;
 import io.App.CommunityService.business.mappers.CommunityMapper;
-import io.App.CommunityService.facade.dto.CommunityListWrapper;
-import io.App.CommunityService.facade.dto.CommunitySubscriptionDTO;
-import io.App.CommunityService.facade.dto.Pair;
+import io.App.CommunityService.business.services.CommunitySubscriptionService;
+import io.App.CommunityService.dto.CommunityListWrapper;
+import io.App.CommunityService.dto.CommunitySubscriptionDTO;
+import io.App.CommunityService.dto.Pair;
 
 @RestController
 @RequestMapping("/communitySubscriptionApi")
@@ -31,7 +31,7 @@ public class CommunitySubscriptionController {
 	private static final String INTERNAL_APP_ERROR_MESSAGE = "Internal Application Error";
 
 	@Autowired
-	private CommunitySubscriptionCatalog uCC;
+	private CommunitySubscriptionService uCC;
 
 	@GetMapping("/userSubscribedCommunities/{uID}")
 	public ResponseEntity<Pair<String, CommunityListWrapper>> userSubbedCommunities(

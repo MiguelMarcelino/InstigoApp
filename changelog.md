@@ -3,13 +3,25 @@ All changes made to this project will be documented in this file
 
 ## [Unreleased]
 
-## [0.1.5] - 2020-09-10
-### Added
-- FeedbackService that handles all user Feedback
-- New EventService Domain Model
+-------------------------------------------------------------------------
+## [0.1.5] - 2020-10-25
+### Added 
+- New *CommunityPermissionEvaluator* with Spring security verification
 
 ### Changed
-- Structure of UserService changed to comply with all other Microservices
+- Updated *CommunityCatalogController*
+- Added some operations to Database
+- Fixed Policy vs Mechanism
+
+-------------------------------------------------------------------------
+
+## [0.1.5] - 2020-09-10
+### Added
+- *FeedbackService* that handles all user Feedback
+- New *EventService* Domain Model
+
+### Changed
+- Structure of *UserService* changed to comply with all other Microservices
 - Simplified UserService
 - Data transfer objects matched between Microservices
 

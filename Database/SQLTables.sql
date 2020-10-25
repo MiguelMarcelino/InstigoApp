@@ -110,7 +110,8 @@ UNLOCK TABLES;
 -- -------------------operations----------------------
 -- ADMIN
 INSERT INTO operations VALUES 
-	(1, 'CREATE', 1), (2, 'DELETE', 1), (3, 'READ', 1), (4, 'MANAGE_OWN_SUBSCRIPTIONS', 1), 
+	(1, 'READ_COMMUNITY', 1)
+	(1, 'CREATE_COMMUNITY', 1), (2, 'DELETE_COMMUNITY', 1), (2, 'DELETE_ALL_COMMUNITY', 1), (2, 'DELETE', 1), (3, 'READ', 1), (4, 'MANAGE_OWN_SUBSCRIPTIONS', 1), 
 	(5, 'ADD_USER', 1), (6, 'DELETE_ALL', 1), (7, 'MANAGE_ALL_SUBSCRIPTIONS', 1), (8, 'CREATE_USER', 1);
 
 -- EDITOR

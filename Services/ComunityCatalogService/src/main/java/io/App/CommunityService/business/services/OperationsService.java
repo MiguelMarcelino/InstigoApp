@@ -1,4 +1,4 @@
-package io.App.CommunityService.business.catalogs;
+package io.App.CommunityService.business.services;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import io.App.CommunityService.business.exceptions.NonExistantOperationException
 import io.App.CommunityService.databaseAccess.OperationsDatabaseConnection;
 
 @SpringBootApplication
-public class OperationsCatalog {
+public class OperationsService {
 
 	private OperationsDatabaseConnection operationsDBConnection;
 
-	public OperationsCatalog() {
+	public OperationsService() {
 		operationsDBConnection = new OperationsDatabaseConnection();
 	}
 

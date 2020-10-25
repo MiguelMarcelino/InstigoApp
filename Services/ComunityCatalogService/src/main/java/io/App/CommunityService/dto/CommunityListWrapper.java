@@ -1,4 +1,4 @@
-package io.App.CommunityService.facade.dto;
+package io.App.CommunityService.dto;
 
 import java.util.List;
 

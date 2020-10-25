@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.App.CommunityService.business.Community;
-import io.App.CommunityService.facade.dto.CommunityDTO;
+import io.App.CommunityService.dto.CommunityDTO;
 
 public class CommunityMapper {
 
@@ -30,7 +30,7 @@ public class CommunityMapper {
 			CommunityDTO communityDTO) {
 		Community community = new Community(communityDTO.getId(),
 				communityDTO.getName(), communityDTO.getDescription(),
-				communityDTO.getCommunityCreatorId());
+				communityDTO.getCommunityOwnerID());
 		return community;
 	}
 
@@ -39,7 +39,7 @@ public class CommunityMapper {
 		List<Community> communities = new ArrayList<>();
 		for (CommunityDTO c : communityDTOs) {
 			communityDTOs.add(new CommunityDTO(c.getId(), c.getName(),
-					c.getDescription(), c.getCommunityCreatorId()));
+					c.getDescription()));
 		}
 		return communities;
 	}
